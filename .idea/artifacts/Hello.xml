@@ -1,0 +1,11 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="Hello">
+    <output-path>$PROJECT_DIR$/out/artifacts/Hello</output-path>
+    <root id="archive" name="Hello.jar">
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/META-INF/MANIFEST.MF" />
+      </element>
+      <element id="module-output" name="2024-Huawei-CodeCraft" />
+    </root>
+  </artifact>
+</component>
