@@ -8,16 +8,14 @@ package com.huawei.codecraft;
  */
 
 public class Goods {
-    private int x;
-    private int y;
+    private Pos pos;
     private int value;
     /**
      * 生成时的帧数
      */
     private int summonFrame;
     public Goods(int x, int y, int value, int summonFrame) {
-        this.x = x;
-        this.y = y;
+        this.pos = new Pos(x, y);
         this.value = value;
         this.summonFrame = summonFrame;
     }

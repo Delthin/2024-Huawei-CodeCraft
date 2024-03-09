@@ -56,6 +56,7 @@ public class Main{
         int money = scanf.nextInt();
         Frame frame = new Frame(id, money);
         // todo: 读取其他信息并添加到frame中
+        //目前打算每一帧使用一个地图，如果耗时长再说
         return frame;
     }
     /**

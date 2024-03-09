@@ -2,16 +2,13 @@ package com.huawei.codecraft;
 
 /**
  * Robot
- * 表示机器人对象,包含机器人ID、坐标、状态(是否携带货物、是否恢复中)、携带的货物(可选)、移动方向、产生行为（移动、拾取、卸货）
- * 属性:ID、坐标(x,y)、状态(是否携带货物、是否恢复中)、携带的货物(可选)
- * 构造方法:Robot(int id)
+ * 表示机器人对象,包含机器人ID、坐标、状态(是否携带货物、是否恢复中)、携带的货物(可选)、移动方向、产生行为（移动、拾取、卸货）、目标位置
  */
 
 public class Robot {
     //todo: 添加机器人的其他属性和方法
     private int id;
-    private int x;
-    private int y;
+    private Pos pos;
     private boolean hasGoods;
     private boolean isRecovering;
     private Goods goods;
@@ -23,6 +20,7 @@ public class Robot {
      * 0:移动,1:拾取,2:卸货
      */
     private int action;
+    private Pos targetPos;
 
     public Robot(int id) {
         this.id = id;

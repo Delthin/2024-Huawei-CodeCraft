@@ -10,15 +10,16 @@ package com.huawei.codecraft;
 
 public class Berth {
     private int id;
-    private int x;
-    private int y;
+    /**
+     * 左上角坐标
+     */
+    private Pos pos;
     private int transportTime;
     private int loadingSpeed;
 
     public Berth(int id, int x, int y, int transportTime, int loadingSpeed) {
         this.id = id;
-        this.x = x;
-        this.y = y;
+        this.pos = new Pos(x, y);
         this.transportTime = transportTime;
         this.loadingSpeed = loadingSpeed;
     }
@@ -27,12 +28,8 @@ public class Berth {
         return id;
     }
 
-    public int getX() {
-        return x;
-    }
-
-    public int getY() {
-        return y;
+    public Pos getPos(){
+        return pos;
     }
 
     public int getTransportTime() {
