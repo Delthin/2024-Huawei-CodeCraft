@@ -11,15 +11,18 @@ package com.huawei.codecraft;
  */
 
 public class Frame {
+    //todo: 添加必要的当前帧信息和获取方法
+    private Map map;
     private int frameNumber;
     private int money;
-    private Goods[] newGoods;
+    private Goods[] Goods;
     private Robot[] robots;
     private Boat[] boats;
 
     public Frame(int frameNumber, int money) {
         this.frameNumber = frameNumber;
         this.money = money;
+        map = Map.duplicateMap(Main.map);
     }
 
     public void addNewGoods(Goods goods) {
@@ -34,6 +37,8 @@ public class Frame {
         return boats;
     }
 
+    public Goods[] getGoods() {return Goods;
+    }
 }
 
 

@@ -10,23 +10,29 @@ package com.huawei.codecraft;
  * formatSailBoat(int boatId)方法:格式化船只运输指令
  */
 public class OutputFormatter {
-    public static String formatMoveRobot(int robotId, int direction) {
-        return null;
-    }
+    /**
+     * 根据当前帧信息，输出机器人与船只指令
+     */
+    public static void formatOutput(Frame frame) {
 
-    public static String formatPickUpGoods(int robotId) {
-        return null;
     }
-
-    public static String formatPutDownGoods(int robotId) {
-        return null;
-    }
-
-    public static String formatMoveBoat(int shipId, int berthId) {
-        return null;
-    }
-
-    public static String formatSailBoat(int BoatId) {
-        return null;
-    }
+//    public static String formatMoveRobot(int robotId, int direction) {
+//        return null;
+//    }
+//
+//    public static String formatPickUpGoods(int robotId) {
+//        return null;
+//    }
+//
+//    public static String formatPutDownGoods(int robotId) {
+//        return null;
+//    }
+//
+//    public static String formatMoveBoat(int shipId, int berthId) {
+//        return null;
+//    }
+//
+//    public static String formatSailBoat(int BoatId) {
+//        return null;
+//    }
 }

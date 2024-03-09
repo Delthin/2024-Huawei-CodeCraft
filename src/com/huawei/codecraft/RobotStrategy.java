@@ -3,19 +3,48 @@ package com.huawei.codecraft;
 
 /**
  * RobotStrategy
- * 这是一个抽象类或接口,定义了机器人行为的算法接口
- * 需要实现的方法:
- * decideMove(Robot robot, Frame frame): 根据机器人当前状态和场景信息,决定机器人下一步的移动方向
- * decidePickUp(Robot robot, Frame frame): 根据机器人当前状态和场景信息,决定是否捡起货物
- * decidePutDown(Robot robot, Frame frame): 根据机器人当前状态和场景信息,决定是否在港口放下货物
- * 你可以实现不同的具体策略类,如:
- * RandomRobotStrategy: 随机移动和操作
- * GreedyRobotStrategy: 贪心策略,优先移动到最近的货物或港口
- * HeuristicRobotStrategy: 使用启发式算法进行路径规划和决策
+ * 决定机器人策略
  */
 
-public abstract class RobotStrategy {
-    public abstract void decideMove(Robot robot, Frame frame);
-    public abstract void decidePickUp(Robot robot, Frame frame);
-    public abstract void decidePutDown(Robot robot, Frame frame);
+public class RobotStrategy {
+    /**
+     * 机器人策略
+     * 1.分配机器人目标 a.如果机器人有货物，将货物送到目的地 b.如果机器人没有货物，选择最近的货物
+     * 2.为每个机器人规划路径，可能包含碰撞处理（CBS基于冲突的搜索算法）
+     * 3.决定机器人指令 a.当前处在货物且空闲，捡起货物 b.当前处在停泊点且携带货物，放下货物 c.移动到下一个位置 d.可能停在原地规避碰撞
+     * 4.将机器人指令写入Robot类，等待输出（可能修改输出部分，输出到输出缓存区）
+     * @param frame
+     */
+    public static void process(Frame frame) {
+        assignTarget(frame);
+        planPath(frame);
+        decideInstruction(frame);
+    }
+    /**
+     * 分配机器人目标
+     * a.如果机器人有货物，将货物送到目的地
+     * b.如果机器人没有货物，选择最近的货物(暂定)
+     * @param frame
+     */
+    private static void assignTarget(Frame frame) {
+
+    }
+    /**
+     * 为每个机器人规划路径，可能包含碰撞处理（CBS基于冲突的搜索算法）
+     */
+    private static void planPath(Frame frame) {
+
+    }
+    /**
+     * 决定机器人指令并且写入Robot类
+     * a.当前处在货物且空闲，捡起货物
+     * b.当前处在停泊点且携带货物，放下货物
+     * c.移动到下一个位置
+     * d.可能停在原地规避碰撞
+     * 注意：同一个机器人和轮船可以在同一帧内执行多条指令，因此，机器人可以同一帧内移动后立刻取货
+     * @param frame
+     */
+    private static void decideInstruction(Frame frame) {
+
+    }
 }
