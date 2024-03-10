@@ -6,91 +6,72 @@ package com.huawei.codecraft;
  */
 
 public class Robot {
-    //todo: 添加机器人的其他属性和方法
     private int id;
     private Pos pos;
     private boolean hasGoods;
-    private boolean isRecovering;
+    /**
+     * 0:恢复中,1:正常
+     * 此属性从输入获取
+     */
+    private int state;
+    /**
+     * 机器人携带的货物（可选）
+     */
     private Goods goods;
     /**
      * 0:右,1:左,2:上,3:下,-1:停止
+     * 此属性用于输出处理
      */
     private int direction;
     /**
-     * 0:移动,1:拾取,2:卸货
+     * 0:移动（move）,1:拾取（get）,2:卸货（pull）
+     * 此属性用于输出处理
      */
     private int action;
     private Pos targetPos;
 
-    public Robot(int id) {
+    public Robot(int id, int hasGoods, int x, int y, int state) {
         this.id = id;
+        this.pos = new Pos(x, y);
+        this.hasGoods = hasGoods == 1;
+        this.state = state;
     }
 
-//    public void moveTo(int x, int y) {
-//        this.x = x;
-//        this.y = y;
-//    }
-//
-//    public void pickUpGoods(Goods goods) {
-//        this.goods = goods;
-//        this.hasGoods = true;
-//    }
-//
-//    public void putDownGoods() {
-//        this.goods = null;
-//        this.hasGoods = false;
-//    }
-//
-//    public boolean isRecovering() {
-//        return isRecovering;
-//    }
-//
-//    public void recover() {
-//        isRecovering = true;
-//    }
-//
-//    public int getId() {
-//        return id;
-//    }
-//
-//    public void setId(int id) {
-//        this.id = id;
-//    }
-//
-//    public int getX() {
-//        return x;
-//    }
-//
-//    public void setX(int x) {
-//        this.x = x;
-//    }
-//
-//    public int getY() {
-//        return y;
-//    }
-//
-//    public void setY(int y) {
-//        this.y = y;
-//    }
-//
-//    public boolean isHasGoods() {
-//        return hasGoods;
-//    }
-//
-//    public void setHasGoods(boolean hasGoods) {
-//        this.hasGoods = hasGoods;
-//    }
-//
-//
-//    public void setRecovering(boolean recovering) {
-//        isRecovering = recovering;
-//    }
-//
-//    public Goods getGoods() {
-//        return goods;
-//    }
-//
-//    public void setGoods(Goods goods) {
-//        this.goods = goods;
-//    }
+    public Pos getPos() {
+        return pos;
+    }
+    public Goods getGoods() {
+        return goods;
+    }
+    public int getId() {
+        return id;
+    }
+    public int getDirection() {
+        return direction;
+    }
+    public int getAction() {
+        return action;
+    }
+    public Pos getTargetPos() {
+        return targetPos;
+    }
+    public boolean isHasGoods() {
+        return hasGoods;
+    }
+    public int getState() {
+        return state;
+    }
+    public void setDirection(int direction) {
+        this.direction = direction;
+        setAction(0);
+    }
+    private void setAction(int action) {
+        this.action = action;
+    }
+    public void pickUpGoods(Goods goods) {
+        setAction(1);
+    }
+    public void putDownGoods() {
+        setAction(2);
+    }
 }

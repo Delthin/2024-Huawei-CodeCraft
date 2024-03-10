@@ -14,34 +14,30 @@ public class Goods {
      * 生成时的帧数
      */
     private int summonFrame;
+    private boolean isAssigned = false;
     public Goods(int x, int y, int value, int summonFrame) {
         this.pos = new Pos(x, y);
         this.value = value;
         this.summonFrame = summonFrame;
     }
 
-//    public int getX() {
-//        return x;
-//    }
-//
-//    public void setX(int x) {
-//        this.x = x;
-//    }
-//
-//    public int getY() {
-//        return y;
-//    }
-//
-//    public void setY(int y) {
-//        this.y = y;
-//    }
-//
-//    public int getValue() {
-//        return value;
-//    }
-//
-//    public void setValue(int value) {
-//        this.value = value;
-//    }
+    public Pos getPos() {
+        return pos;
+    }
+    public int getValue() {
+        return value;
+    }
+    public int getSummonFrame() {
+        return summonFrame;
+    }
+    public boolean isAssigned() {
+        return isAssigned;
+    }
+    public void setAssigned(boolean assigned) {
+        isAssigned = assigned;
+    }
+    public boolean expired(int frameNumber) {
+        return frameNumber - summonFrame > Cons.EXPIRE_TIME;
+    }
 }
 

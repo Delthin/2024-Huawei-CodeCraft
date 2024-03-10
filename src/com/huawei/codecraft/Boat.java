@@ -8,21 +8,31 @@ package com.huawei.codecraft;
 public class Boat {
     public static int capacity;
 
+    private int goodsSize = 0;
     private int id;
 
     /**
-     * 0:移动中，1:等待中，2:泊位外等待，
+     * 0:移动中，1:等待中，2:泊位外等待
+     * 此属性从输入获取
      */
-    private int status;
+    private int state;
     /**
      * -1:前往虚拟点，
+     * 此属性从输入获取
      */
     private int targetBerthId;
-
-    public Boat(int id) {
+    /**
+     * 0:等待，1；移动（ship），2；驶向虚拟点（go）
+     */
+    private int action;
+    public Boat(int id){
         this.id = id;
-        this.status = 1;
-        this.targetBerthId = -1;
+    }
+
+    public Boat(int id, int state, int targetBerthId) {
+        this.id = id;
+        this.state = state;
+        this.targetBerthId = targetBerthId;
     }
 
     public static int getCapacity() {
@@ -33,55 +43,49 @@ public class Boat {
         capacity = capa;
     }
 
-//    public void moveTo(int berthId) {
-//        this.targetBerthId = berthId;
-//        this.status = 1;
-//    }
-//
-//    public void dock() {
-//        this.status = 2;
-//    }
-//
-//    public void undock() {
-//        this.status = 1;
-//    }
-//
-//    public void load(Goods goods) {
-//        this.capacity -= goods.getValue();
-//    }
-//
-//    public void setWaitingState() {
-//        this.status = 0;
-//    }
-//
-//    public boolean isAvailable() {
-//        return this.status == 0;
-//    }
-//
-//    public int getId() {
-//        return id;
-//    }
-//
-//    public void setId(int id) {
-//        this.id = id;
-//    }
-//
-//
-//    public int getStatus() {
-//        return status;
-//    }
-//
-//    public void setStatus(int status) {
-//        this.status = status;
-//    }
-//
-//    public int getTargetBerthId() {
-//        return targetBerthId;
-//    }
-//
-//    public void setTargetBerthId(int targetBerthId) {
-//        this.targetBerthId = targetBerthId;
-//    }
+    public int getId() {
+        return id;
+    }
+
+    public int getState() {
+        return state;
+    }
+
+    public int getTargetBerthId() {
+        return targetBerthId;
+    }
+
+    public int getAction() {
+        return action;
+    }
+
+    public void setState(int state) {
+        this.state = state;
+    }
+    public void setAction(int action) {
+        this.action = action;
+    }
+    public void shipTo(int targetBerthId) {
+        this.targetBerthId = targetBerthId;
+        this.action = 1;
+    }
+    public void go() {
+        this.action = 2;
+    }
+    public void waitting() {
+        this.action = 0;
+    }
+    public void load(){
+        this.goodsSize += 1;
+    }
+    public int getVacancy() {
+        return capacity - goodsSize;
+    }
+
+    public void setTargetBerthId(int targetBerthId) {
+        this.targetBerthId = targetBerthId;
+    }
+
 }
 
 

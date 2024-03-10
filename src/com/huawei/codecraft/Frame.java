@@ -1,5 +1,8 @@
 package com.huawei.codecraft;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 /**
  * Frame
  * 表示一帧的状态,包含帧序号、货物列表、机器人列表、船只列表等信息。
@@ -8,16 +11,20 @@ package com.huawei.codecraft;
  * addNewGoods(Goods goods)方法:添加新生成的货物
  * getRobots()方法:获取机器人列表
  * getBoats()方法:获取船只列表
+ * getGoods()方法:获取货物列表
+ * getMap()方法:获取地图
+ * updateRobots(Robot[] robots)方法:更新机器人列表
+ * updateBoats(Boat[] boats)方法:更新船只列表
+ * updateMap()方法:更新地图
  */
 
 public class Frame {
-    //todo: 添加必要的当前帧信息和获取方法
     private Map map;
     private int frameNumber;
     private int money;
-    private Goods[] Goods;
+    public static ArrayList<Goods> goods;
     private Robot[] robots;
-    private Boat[] boats;
+    private static Boat[] boats;
 
     public Frame(int frameNumber, int money) {
         this.frameNumber = frameNumber;
@@ -25,10 +32,33 @@ public class Frame {
         map = Map.duplicateMap(Main.map);
     }
 
-    public void addNewGoods(Goods goods) {
-
+    public void updateGoods (Goods[] goods) {
+        Frame.goods.addAll(Arrays.asList(goods));
+        for (int i = 0; i < Frame.goods.size(); i++) {
+            if (Frame.goods.get(i).expired(frameNumber)) {
+                Frame.goods.remove(i);
+            }
+        }
     }
-
+    public void updateRobots (Robot[] robots) {
+        this.robots = robots;
+    }
+    public void updateBoats (Boat[] boats) {
+        for (int i = 0; i < boats.length; i++) {
+            Frame.boats[i].setState(boats[i].getState());
+            Frame.boats[i].setTargetBerthId(boats[i].getTargetBerthId());
+        }
+    }
+    public void updateMap () {
+        for (int i = 0; i < Cons.MAX_ROBOT; i++) {
+            if (robots[i] != null) {
+                map.setRobot(robots[i].getPos());
+            }
+        }
+        for (int i = 0; i < goods.size(); i++) {
+            map.setGoods(goods.get(i).getPos());
+        }
+    }
     public Robot[] getRobots() {
         return robots;
     }
@@ -37,8 +67,12 @@ public class Frame {
         return boats;
     }
 
-    public Goods[] getGoods() {return Goods;
-    }
+    /**
+     * 获取货物列表,使用时需要获取数组长度（变长）
+     * @return
+     */
+    public Goods[] getGoods() {return goods.toArray(new Goods[0]);}
+    public Map getMap() {return map;}
 }
 
 

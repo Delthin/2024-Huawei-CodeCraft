@@ -14,11 +14,9 @@ public class BoatStrategy {
      * @param frame
      */
     public static void process(Frame frame) {
-        assignTarget(frame);
+        AssignTargetBoat assignTarget = new AssignTargetBoat.greedyAssignTarget();
+        assignTarget.assign(frame);
         decideInstruction(frame);
-    }
-    private static void assignTarget(Frame frame) {
-
     }
     /**
      * 争取进入复赛用到这个方法

@@ -16,24 +16,11 @@ public class RobotStrategy {
      * @param frame
      */
     public static void process(Frame frame) {
-        assignTarget(frame);
-        planPath(frame);
+        AssignTarget assignTarget = new AssignTarget.greedyAssignTarget();
+        PlanPath planPath = new PlanPath.greedyPlanPath();
+        assignTarget.assign(frame);
+        planPath.plan(frame);
         decideInstruction(frame);
-    }
-    /**
-     * 分配机器人目标
-     * a.如果机器人有货物，将货物送到目的地
-     * b.如果机器人没有货物，选择最近的货物(暂定)
-     * @param frame
-     */
-    private static void assignTarget(Frame frame) {
-
-    }
-    /**
-     * 为每个机器人规划路径，可能包含碰撞处理（CBS基于冲突的搜索算法）
-     */
-    private static void planPath(Frame frame) {
-
     }
     /**
      * 决定机器人指令并且写入Robot类

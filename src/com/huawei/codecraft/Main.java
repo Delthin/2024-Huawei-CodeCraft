@@ -47,19 +47,6 @@ public class Main{
         System.out.flush();
     }
     /**
-     * 读取一帧的输入数据,返回Frame对象
-     * @return Frame
-     */
-    private Frame parseFrameData(){
-        Scanner scanf = new Scanner(System.in);
-        int id = scanf.nextInt();
-        int money = scanf.nextInt();
-        Frame frame = new Frame(id, money);
-        // todo: 读取其他信息并添加到frame中
-        //目前打算每一帧使用一个地图，如果耗时长再说
-        return frame;
-    }
-    /**
      * 处理一帧的数据
      * @param frame
      */

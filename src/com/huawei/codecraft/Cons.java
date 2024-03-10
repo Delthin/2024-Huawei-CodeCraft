@@ -7,13 +7,13 @@ package com.huawei.codecraft;
 public class Cons {
     public static final int MAP_SIZE = 200;
     public static final int MAX_FRAME = 15000;
-//    public static final int MAX_GOODS = 100;
     public static final int MAX_BERTH = 10;
     public static final int MAX_BOAT = 5;
     public static final int MAX_ROBOT = 10;
     public static final int BERTH_WIDTH = 4;
     public static final int BOAT_WIDTH = 2;
     public static final int BOAT_HEIGHT = 4;
+    public static final int EXPIRE_TIME = 1000;
 //    public static final int MAX_GOODS_WEIGHT = 100;
 //    public static final int MAX_GOODS_VALUE = 100;
 //    public static final int MAX_GOODS_VOLUME = 100;
