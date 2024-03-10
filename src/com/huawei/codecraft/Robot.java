@@ -6,6 +6,7 @@ package com.huawei.codecraft;
  */
 
 public class Robot {
+    private Goods targetGood;
     private int id;
     private Pos pos;
     private boolean hasGoods;
@@ -34,6 +35,7 @@ public class Robot {
         this.id = id;
         this.pos = new Pos(x, y);
         this.hasGoods = hasGoods == 1;
+        this.targetGood = null;
         this.state = state;
     }
 
@@ -42,6 +44,9 @@ public class Robot {
     }
     public Goods getGoods() {
         return goods;
+    }
+    public void assignTarget(Goods good) {
+        this.targetGood=good;
     }
     public int getId() {
         return id;
@@ -57,6 +62,9 @@ public class Robot {
     }
     public boolean isHasGoods() {
         return hasGoods;
+    }
+    public Goods getTarget() {
+        return targetGood;
     }
     public int getState() {
         return state;

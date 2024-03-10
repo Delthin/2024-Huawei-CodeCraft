@@ -32,6 +32,32 @@ public class RobotStrategy {
      * @param frame
      */
     private static void decideInstruction(Frame frame) {
+        for (Robot robot : frame.getRobots()) {
+            Pos currentPosition = robot.getPos();
+            Goods currentGoods = robot.getGoods();//机器人当前手上的物品
+            Goods target =robot.getTarget();//目标物品
+            Pos goodsPos= target.getPos();
+            Map map=frame.getMap();
 
+//            if (currentGoods == null && currentPosition.hasGoods()) {
+//                robot.pickUpGoods(currentPosition.getGoods());
+
+            if (currentGoods == null && map.isGoods(currentPosition)) {
+                    // 当前处在货物上且空闲，捡起货物
+                    robot.pickUpGoods(target);// todo:如何得到此地的goods对象
+            } else if (currentGoods != null && map.isBerth(currentPosition)) {
+                // 当前处在停泊点上且携带货物，放下货物
+                robot.putDownGoods();
+            } else {
+                // todo:移动到下一个位置
+//                Pos nextPosition = getNextPosition(robot);
+//                robot.move(nextPosition);
+            }
+
+            // todo:可能停在原地规避碰撞
+//            if (shouldStayToAvoidCollision(robot)) {
+//                robot.stay();
+//            }
+        }
     }
 }
