@@ -14,25 +14,32 @@ public class OutputFormatter {
      * 根据当前帧信息，输出机器人与船只指令
      */
     public static void formatOutput(Frame frame) {
-
+        Robot[] robots = frame.getRobots();
+        for (Robot robot : robots) {
+            int act = robot.getAction();
+            if (act == 0) {
+                if (robot.getDirection() == -1) {
+                    continue;
+                } else {
+                    System.out.println("move " + robot.getId() + " " + robot.getDirection());
+                }
+            } else if (act == 1) {
+                System.out.println("get " + robot.getId());
+            } else if (act == 2) {
+                System.out.println("pull " + robot.getId());
+            }
+        }
+        Boat[] boats = frame.getBoats();
+        for (Boat boat : boats) {
+            int act = boat.getAction();
+            if (act == 0) {
+                continue;
+            } else if (act == 1) {
+                System.out.println("ship " + boat.getId() + " " + boat.getTargetBerthId());
+            } else if (act == 2) {
+                System.out.println("go " + boat.getId());
+            }
+        }
+        System.out.println("OK");
     }
-//    public static String formatMoveRobot(int robotId, int direction) {
-//        return null;
-//    }
-//
-//    public static String formatPickUpGoods(int robotId) {
-//        return null;
-//    }
-//
-//    public static String formatPutDownGoods(int robotId) {
-//        return null;
-//    }
-//
-//    public static String formatMoveBoat(int shipId, int berthId) {
-//        return null;
-//    }
-//
-//    public static String formatSailBoat(int BoatId) {
-//        return null;
-//    }
 }

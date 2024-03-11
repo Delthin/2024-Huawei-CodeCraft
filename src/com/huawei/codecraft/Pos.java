@@ -43,7 +43,7 @@ public class Pos {
     }
 
     public int distance(Pos pos) {
-        return Math.abs(x - pos.x) + Math.abs(y - pos.y);
+        return Math.abs(x - pos.X()) + Math.abs(y - pos.Y());
     }
 
     public Pos clone() {
