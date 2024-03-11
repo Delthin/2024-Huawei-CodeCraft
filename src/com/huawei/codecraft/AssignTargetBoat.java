@@ -1,6 +1,5 @@
 package com.huawei.codecraft;
 
-import com.sun.jndi.ldap.Ber;
 
 /**
  *
