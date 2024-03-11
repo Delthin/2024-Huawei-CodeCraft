@@ -40,9 +40,14 @@ public class Map {
         }
         return dst;
     }
-
+    public char[][] getMapData(){
+        return this.mapData;
+    }
     public boolean isObstacle(Pos pos) {
         return mapData[pos.X()][pos.Y()] == '#' || mapData[pos.X()][pos.Y()] == '*';
+    }
+    public boolean isObstacle(int x,int y) {
+        return mapData[x][y] == '#' || mapData[x][y] == '*';
     }
 
     public boolean isRobot(Pos pos) {
