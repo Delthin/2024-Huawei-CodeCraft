@@ -14,12 +14,20 @@ public interface AssignTarget {
         public void assign(Frame frame) {
             Robot[] robots = frame.getRobots(); // 获取机器人列表
             Goods[] goodsList = frame.getGoods(); // 获取货物列表
+            Berth[] berths=frame.getBerth();
 
             for (Robot robot : robots) {
-                if (!robot.isHasGoods() && robot.getTarget()!=null) {
+                if (robot.getState()==0)continue;
+                if (!robot.isHasGoods() && robot.getTargetGoods()!=null) {
                     Goods closestGoods = findClosestGoods(robot, goodsList);
                     if (closestGoods != null) {
-                        assignTarget(robot, closestGoods);
+                        robot.assignTargetGoods(closestGoods);
+                        closestGoods.setAssigned(true);
+                    }
+                } else if (robot.isHasGoods()) {
+                    Berth closestBerth = findClosestBerth(robot, berths);
+                    if (closestBerth != null) {
+                        robot.assignTargetBerth(closestBerth);
                     }
                 }
             }
@@ -37,16 +45,25 @@ public interface AssignTarget {
                     }
                 }
             }
-
             return closestGoods;
         }
-        private void assignTarget(Robot robot, Goods goods) {
-            // 将机器人分配给最近的货物
-            // 实现具体的分配逻辑
-            robot.assignTarget(goods);
-            goods.setAssigned(true);
-        }
 
+
+
+        private Berth findClosestBerth(Robot robot, Berth[] berths) {
+            Berth nearestPos = null;
+            double minDistance = Double.MAX_VALUE;
+
+            for (Berth berth : berths) {
+                double distance = robot.getPos().distance(berth.getPos());
+                if (distance < minDistance) {
+                    minDistance = distance;
+                    nearestPos = berth;
+                }
+            }
+
+            return nearestPos;
+        }
     }
 }
 

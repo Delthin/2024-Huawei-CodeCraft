@@ -25,6 +25,7 @@ public class Frame {
     public static ArrayList<Goods> goods;
     private Robot[] robots;
     private static Boat[] boats;
+    private static Berth[] berths;
 
     public Frame(int frameNumber, int money) {
         this.frameNumber = frameNumber;
@@ -66,6 +67,9 @@ public class Frame {
     public Boat[] getBoats() {
         return boats;
     }
+    public Berth[] getBerth() {
+        return berths;
+    }//todo:如何获得港口list
 
     /**
      * 获取货物列表,使用时需要获取数组长度（变长）

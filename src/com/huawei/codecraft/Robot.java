@@ -6,7 +6,7 @@ package com.huawei.codecraft;
  */
 
 public class Robot {
-    private Goods targetGood;
+    private Goods targetGoods;
     private int id;
     private Pos pos;
     private boolean hasGoods;
@@ -30,12 +30,13 @@ public class Robot {
      */
     private int action;
     private Pos targetPos;
+    private Pos nextPos;
 
     public Robot(int id, int hasGoods, int x, int y, int state) {
         this.id = id;
         this.pos = new Pos(x, y);
         this.hasGoods = hasGoods == 1;
-        this.targetGood = null;
+        this.targetGoods = null;
         this.state = state;
     }
 
@@ -45,8 +46,12 @@ public class Robot {
     public Goods getGoods() {
         return goods;
     }
-    public void assignTarget(Goods good) {
-        this.targetGood=good;
+    public void assignTargetGoods(Goods goods) {
+        this.targetGoods=goods;
+        this.targetPos=goods.getPos();
+    }
+    public void assignTargetBerth(Berth berth) {
+        this.targetPos=berth.getPos();
     }
     public int getId() {
         return id;
@@ -63,8 +68,8 @@ public class Robot {
     public boolean isHasGoods() {
         return hasGoods;
     }
-    public Goods getTarget() {
-        return targetGood;
+    public Goods getTargetGoods() {
+        return targetGoods;
     }
     public int getState() {
         return state;
@@ -73,6 +78,13 @@ public class Robot {
         this.direction = direction;
         setAction(0);
     }
+    public void setPath(Pos nextPos){
+        this.nextPos=nextPos;
+    }
+    public Pos getPath(){
+        return this.nextPos;
+    }
+
     private void setAction(int action) {
         this.action = action;
     }

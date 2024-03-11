@@ -33,31 +33,46 @@ public class RobotStrategy {
      */
     private static void decideInstruction(Frame frame) {
         for (Robot robot : frame.getRobots()) {
-            Pos currentPosition = robot.getPos();
+            if (robot.getState()==0)continue;
+
+            Pos currentPos = robot.getPos();
+            Pos nextPos = robot.getPath();
+            int direction = getMovementDirection(currentPos, nextPos);
+            robot.setDirection(direction);
+
+
             Goods currentGoods = robot.getGoods();//机器人当前手上的物品
-            Goods target =robot.getTarget();//目标物品
-            Pos goodsPos= target.getPos();
-            Map map=frame.getMap();
+            Goods target = robot.getTargetGoods();//目标物品
+            Map map = frame.getMap();
 
-//            if (currentGoods == null && currentPosition.hasGoods()) {
-//                robot.pickUpGoods(currentPosition.getGoods());
 
-            if (currentGoods == null && map.isGoods(currentPosition)) {
-                    // 当前处在货物上且空闲，捡起货物
-                    robot.pickUpGoods(target);// todo:如何得到此地的goods对象
-            } else if (currentGoods != null && map.isBerth(currentPosition)) {
+            if (currentGoods == null && map.isGoods(currentPos)) {
+                // 当前处在货物上且空闲，捡起货物
+                robot.pickUpGoods(target);// todo:如何得到此地的goods对象
+            } else if (currentGoods != null && map.isBerth(currentPos)) {
                 // 当前处在停泊点上且携带货物，放下货物
                 robot.putDownGoods();
-            } else {
-                // todo:移动到下一个位置
-//                Pos nextPosition = getNextPosition(robot);
-//                robot.move(nextPosition);
             }
 
-            // todo:可能停在原地规避碰撞
-//            if (shouldStayToAvoidCollision(robot)) {
-//                robot.stay();
-//            }
+        }
+
+    }
+    private static int getMovementDirection(Pos currentPos, Pos nextPos) {
+        int currentX = currentPos.X();
+        int currentY = currentPos.Y();
+        int nextX = nextPos.X();
+        int nextY = nextPos.Y();
+
+        if (currentX < nextX) {
+            return 0; // 右移
+        } else if (currentX > nextX) {
+            return 1; // 左移
+        } else if (currentY < nextY) {
+            return 2; // 上移
+        } else if (currentY > nextY) {
+            return 3; // 下移
+        } else {
+            return -1; // 停止
         }
     }
 }
