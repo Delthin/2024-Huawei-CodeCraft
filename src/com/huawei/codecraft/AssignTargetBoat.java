@@ -31,7 +31,7 @@ public interface AssignTargetBoat {
                         //先把下面的移过来，后面再讨论这种state属于哪个
                         int currentBerthId=boat.getTargetBerthId();
                         Berth currentBerth=getBerth(currentBerthId,berths);
-                        while(boat.getVacancy()>0){
+                        if(boat.getVacancy()>0){
                             for(Goods goods:goodsList){
                                 if(!goods.isAssigned()&&isInsideBerth(currentBerth,goods)){
                                     //找到未被分配的货物

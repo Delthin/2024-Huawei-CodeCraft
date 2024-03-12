@@ -16,16 +16,17 @@ public class OutputFormatter {
     public static void formatOutput(Frame frame) {
         Robot[] robots = frame.getRobots();
         for (Robot robot : robots) {
-            int act = robot.getAction();
-            if (act == 0) {
+            int[] act = robot.getAction();
+            if (act[0] == 0) {
                 if (robot.getDirection() == -1) {
                     continue;
                 } else {
                     System.out.println("move " + robot.getId() + " " + robot.getDirection());
                 }
-            } else if (act == 1) {
+            }
+            if (act[1] == 1) {
                 System.out.println("get " + robot.getId());
-            } else if (act == 2) {
+            } else if (act[1] == 2) {
                 System.out.println("pull " + robot.getId());
             }
         }
