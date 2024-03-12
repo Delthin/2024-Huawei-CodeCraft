@@ -31,8 +31,9 @@ public class Frame {
         }
     }
     public static Berth[] berths = Main.berths;
-    public Frame(int frameNumber){
+    public Frame(int frameNumber, Map map){
         this.frameNumber = frameNumber;
+        this.map = map;
     }
     public Frame(int frameNumber, int money) {
         this.frameNumber = frameNumber;

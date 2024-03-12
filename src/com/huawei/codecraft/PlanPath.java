@@ -7,10 +7,12 @@ public interface PlanPath {
      * 为每个机器人规划路径，可能包含碰撞处理（CBS基于冲突的搜索算法）
      */
     void plan(Frame frame);
+
     public class greedyPlanPath implements PlanPath {
         private static Map map = null;
 
         private static final int[][] DIRECTIONS = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+
         @Override
         public void plan(Frame frame) {
             map = frame.getMap();
@@ -18,17 +20,17 @@ public interface PlanPath {
             Goods[] goods = frame.getGoods();
             List<Pos> initialPositions = new ArrayList<>();
             for (Robot robot : robots) {
-                 initialPositions.add(robot.getPos() );
+                initialPositions.add(robot.getPos());
             }
             List<Pos> goalPositions = new ArrayList<>();
             for (Goods good : goods) {
-                goalPositions.add(good.getPos() );
+                goalPositions.add(good.getPos());
             }
             List<List<Pos>> paths = runCBSAlgorithm(initialPositions, goalPositions);
             for (int i = 0; i < Cons.MAX_ROBOT; i++) {
 
                 List<Pos> path = paths.get(i);
-                Pos nextpos = new Pos(path.get(1).X(),path.get(1).Y());
+                Pos nextpos = new Pos(path.get(1).X(), path.get(1).Y());
                 robots[i].setPath(nextpos);
 
             }
@@ -73,11 +75,11 @@ public interface PlanPath {
             // 初始化路径
             List<List<Pos>> paths = new ArrayList<>();
             for (int i = 0; i < Cons.MAX_ROBOT; i++) {
-                int x1=initialPositions.get(i).X();
-                int y1=initialPositions.get(i).Y();
-                int x2=goalPositions.get(i).X();
-                int y2=goalPositions.get(i).Y();
-                List<Pos> path = findPath(x1,y1,x2,y2);
+                int x1 = initialPositions.get(i).X();
+                int y1 = initialPositions.get(i).Y();
+                int x2 = goalPositions.get(i).X();
+                int y2 = goalPositions.get(i).Y();
+                List<Pos> path = findPath(x1, y1, x2, y2);
                 paths.add(path);
             }
 
@@ -87,7 +89,7 @@ public interface PlanPath {
                 conflictDetected = false;
                 Set<Integer> conflictedRobots = new HashSet<>();
                 for (int i = 0; i < Cons.MAX_ROBOT; i++) {
-                    if (conflictedRobots.contains(i) ) {
+                    if (conflictedRobots.contains(i)) {
                         continue;
                     }
 
@@ -166,10 +168,10 @@ public interface PlanPath {
                 int newX = x + direction[0];
                 int newY = y + direction[1];
 
-                if (isValidPosition(newX, newY,  visited)) {
+                if (isValidPosition(newX, newY, visited)) {
                     visited[newX][newY] = true;
                     path.add(new Pos(newX, newY));
-                    replanPathDFS(newX, newY,  goal, visited, path);
+                    replanPathDFS(newX, newY, goal, visited, path);
 
                     if (path.get(path.size() - 1).X() == goal.X() && path.get(path.size() - 1).Y() == goal.Y()) {
                         return;
@@ -182,11 +184,13 @@ public interface PlanPath {
 
         public static boolean isValidPosition(int x, int y, boolean[][] visited) {
             // 检查位置是否在地图范围内、不在障碍物上且未访问过
-            return x >= 0 && x < Cons.MAP_SIZE && y >= 0 && y < Cons.MAP_SIZE && !map.isObstacle(x,y) && !visited[x][y];
+            return x >= 0 && x < Cons.MAP_SIZE && y >= 0 && y < Cons.MAP_SIZE && !map.isObstacle(x, y) && !visited[x][y];
         }
+
         public static boolean isValidPosition(int x, int y) {
-            return x >= 0 && x < Cons.MAP_SIZE && y >= 0 && y < Cons.MAP_SIZE && !map.isObstacle(x,y) ;
+            return x >= 0 && x < Cons.MAP_SIZE && y >= 0 && y < Cons.MAP_SIZE && !map.isObstacle(x, y);
         }
+
         public static List<Pos> findPath(int startX, int startY, int targetX, int targetY) {
 
             if (!isValidPosition(startX, startY) || !isValidPosition(targetX, targetY)) {
@@ -219,7 +223,7 @@ public interface PlanPath {
                     int nextX = current.X() + direction[0];
                     int nextY = current.Y() + direction[1];
 
-                    if (isValidPosition(nextX, nextY) && !map.isObstacle(nextX,nextY)) {
+                    if (isValidPosition(nextX, nextY) && !map.isObstacle(nextX, nextY)) {
                         Pos neighbor = new Pos(nextX, nextY);
                         neighbor.g = current.g + 1;
                         neighbor.h = heuristic(nextX, nextY, targetX, targetY);
@@ -275,5 +279,109 @@ public interface PlanPath {
         }
     }
 
+    public class aStarPlanPath implements PlanPath {
+        static final int[] dx = {-1, 0, 1, 0};
+        static final int[] dy = {0, 1, 0, -1};
+        /**
+         * 根据目标货物位置直接寻找路径，不考虑碰撞处理
+         *
+         * @param frame
+         */
+        @Override
+        public void plan(Frame frame) {
 
+            char[][] mapData = frame.getMap().getMapData();
+            for (Robot robot : frame.getRobots()) {
+                if (robot.getState() == 0) {
+                    continue;
+                }
+                Pos start = robot.getPos();
+                if (robot.getTargetGoods()==null)continue;
+                Pos goal = robot.getTargetGoods().getPos();
+                Pos nextPos = findNextStep(mapData, start, goal);
+                robot.setPath(nextPos);
+            }
+
+        }
+        public Pos findNextStep(char[][] mapData, Pos start, Pos goal) {
+            int m = mapData.length, n = mapData[0].length;
+            PriorityQueue<Node> pq = new PriorityQueue<>();
+            boolean[][] visited = new boolean[m][n];
+            pq.offer(new Node(start, 0, manhattanDistance(start, goal), null));
+
+            while (!pq.isEmpty()) {
+                Node cur = pq.poll();
+                if (mapData[cur.pos.X()][cur.pos.Y()] == '#' || mapData[cur.pos.X()][cur.pos.Y()] == '*') {
+                    continue; // 如果当前位置是障碍或海洋,则跳过
+                }
+                visited[cur.pos.X()][cur.pos.Y()] = true;
+
+                if (cur.parent != null) {
+                    return cur.pos;
+                }
+
+                for (int i = 0; i < 4; i++) {
+                    int nx = cur.pos.X() + dx[i], ny = cur.pos.Y() + dy[i];
+                    if (nx >= 0 && nx < m && ny >= 0 && ny < n && !visited[nx][ny] && mapData[nx][ny] != '#' && mapData[nx][ny] != '*') {
+                        Pos next = new Pos(nx, ny);
+                        pq.offer(new Node(next, cur.g + 1, manhattanDistance(next, goal), cur));
+                    }
+                }
+            }
+
+            return null;
+        }
+        public Pos findPath(char[][] mapData, Pos start, Pos goal) {
+            int m = mapData.length, n = mapData[0].length;
+            PriorityQueue<Node> pq = new PriorityQueue<>();
+            boolean[][] visited = new boolean[m][n];
+            pq.offer(new Node(start, 0, manhattanDistance(start, goal), null));
+
+            while (!pq.isEmpty()) {
+                Node cur = pq.poll();
+                if (cur.pos.equals(goal)) {
+                    return cur.parent == null ? cur.pos : cur.parent.pos;
+                }
+
+                visited[cur.pos.X()][cur.pos.Y()] = true;
+
+                for (int i = 0; i < 4; i++) {
+                    int nx = cur.pos.X() + dx[i], ny = cur.pos.Y() + dy[i];
+                    if (nx >= 0 && nx < m && ny >= 0 && ny < n && !visited[nx][ny] && mapData[nx][ny] != '#' && mapData[nx][ny] != '*') {
+                        Pos next = new Pos(nx, ny);
+                        pq.offer(new Node(next, cur.g + 1, manhattanDistance(next, goal), cur));
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        private int manhattanDistance(Pos a, Pos b) {
+            return Math.abs(a.X() - b.X()) + Math.abs(a.Y() - b.Y());
+        }
+
+        class Node implements Comparable<Node> {
+            Pos pos;
+            int g, h;
+            Node parent;
+
+            Node(Pos pos, int g, int h, Node parent) {
+                this.pos = pos;
+                this.g = g;
+                this.h = h;
+                this.parent = parent;
+            }
+
+            public int f() {
+                return g + h;
+            }
+
+            @Override
+            public int compareTo(Node other) {
+                return Integer.compare(this.f(), other.f());
+            }
+        }
+
+    }
 }

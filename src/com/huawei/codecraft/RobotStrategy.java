@@ -17,7 +17,7 @@ public class RobotStrategy {
      */
     public static void process(Frame frame) {
         AssignTarget assignTarget = new AssignTarget.greedyAssignTarget();
-        PlanPath planPath = new PlanPath.greedyPlanPath();
+        PlanPath planPath = new PlanPath.aStarPlanPath();
         assignTarget.assign(frame);
         planPath.plan(frame);
         decideInstruction(frame);
@@ -60,6 +60,9 @@ public class RobotStrategy {
     private static int getMovementDirection(Pos currentPos, Pos nextPos) {
         int currentX = currentPos.X();
         int currentY = currentPos.Y();
+        if (nextPos == null) {
+            return -1; // 停止
+        }
         int nextX = nextPos.X();
         int nextY = nextPos.Y();
 

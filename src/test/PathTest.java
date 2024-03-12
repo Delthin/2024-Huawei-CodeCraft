@@ -6,14 +6,16 @@ import org.junit.jupiter.api.Test;
 
 public class PathTest {
     public static Frame frameInit(){
-        Frame frame = new Frame(1);
-        Robot[] robots = new Robot[Cons.MAX_ROBOT];
-        for (int i = 0; i < Cons.MAX_ROBOT; i++) {
-            robots[i] = new Robot(i,0,i,0,1);
-        }
+        Map map = MapUtils.mapInit();
+        Frame frame = new Frame(1, map);
         Goods[] goods = new Goods[5];
         for (int i = 0; i < 5; i++) {
             goods[i] = new Goods(i, 5, 100, 1);
+        }
+        Robot[] robots = new Robot[Cons.MAX_ROBOT];
+        for (int i = 0; i < Cons.MAX_ROBOT; i++) {
+            robots[i] = new Robot(i,0,i,0,1);
+            robots[i].assignTargetGoods(goods[i]);
         }
         frame.updateRobots(robots);
         frame.updateGoods(goods);
@@ -34,7 +36,7 @@ public class PathTest {
     @Test
     public void testNextPos(){
         Frame frame = frameInit();
-        PlanPath planPath = new PlanPath.greedyPlanPath();
+        PlanPath planPath = new PlanPath.aStarPlanPath();
         planPath.plan(frame);
         Robot[] robots = frame.getRobots();
         printPosOfRobotsAndGoods(frame);
