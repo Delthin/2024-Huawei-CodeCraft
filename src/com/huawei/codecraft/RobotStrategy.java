@@ -49,7 +49,7 @@ public class RobotStrategy {
             if (currentGoods == null && map.isGoods(currentPos)) {
                 // 当前处在货物上且空闲，捡起货物
                 robot.pickUpGoods(target);// todo:如何得到此地的goods对象
-            } else if (currentGoods != null && map.isBerth(currentPos)) {
+            } else if (robot.isHasGoods() && map.isBerth(currentPos)) {
                 // 当前处在停泊点上且携带货物，放下货物
                 robot.putDownGoods();
             }
