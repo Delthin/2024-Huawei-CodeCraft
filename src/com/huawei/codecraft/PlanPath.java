@@ -309,27 +309,49 @@ public interface PlanPath {
             boolean[][] visited = new boolean[m][n];
             pq.offer(new Node(start, 0, manhattanDistance(start, goal), null));
 
+            Node endNode = null;
             while (!pq.isEmpty()) {
                 Node cur = pq.poll();
                 if (mapData[cur.pos.X()][cur.pos.Y()] == '#' || mapData[cur.pos.X()][cur.pos.Y()] == '*') {
-                    continue; // 如果当前位置是障碍或海洋,则跳过
+                    continue;
                 }
                 visited[cur.pos.X()][cur.pos.Y()] = true;
 
-                if (cur.parent != null) {
-                    return cur.pos;
+                if (cur.pos.equals(goal)) {
+                    endNode = cur;
+                    break;
                 }
 
                 for (int i = 0; i < 4; i++) {
                     int nx = cur.pos.X() + dx[i], ny = cur.pos.Y() + dy[i];
-                    if (nx >= 0 && nx < m && ny >= 0 && ny < n && !visited[nx][ny] && mapData[nx][ny] != '#' && mapData[nx][ny] != '*') {
+                    if (nx < 0 || nx >= m || ny < 0 || ny >= n) {
+                        continue;
+                    }
+                    if (!visited[nx][ny] && mapData[nx][ny] != '#' && mapData[nx][ny] != '*') {
                         Pos next = new Pos(nx, ny);
                         pq.offer(new Node(next, cur.g + 1, manhattanDistance(next, goal), cur));
                     }
                 }
             }
 
-            return null;
+            if (endNode == null) {
+                return null;
+            } else {
+                List<Pos> path = printPath(endNode);
+                // 返回路径的第一步,即从起点出发时的第一步坐标
+                return path.get(1);
+            }
+        }
+        private List printPath(Node end) {
+            List<Pos> path = new ArrayList<>();
+            Node cur = end;
+            while (cur != null) {
+                path.add(cur.pos);
+                cur = cur.parent;
+            }
+            Collections.reverse(path);
+//            System.out.println(path);
+            return path;
         }
         public Pos findPath(char[][] mapData, Pos start, Pos goal) {
             int m = mapData.length, n = mapData[0].length;

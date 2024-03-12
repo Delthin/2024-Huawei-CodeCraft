@@ -23,7 +23,10 @@ public class Pos {
         this.x = pos.x;
         this.y = pos.y;
     }
-
+    @Override
+    public String toString() {
+        return "(" + x + "," + y + ")";
+    }
     public int X() {
         return x;
     }
