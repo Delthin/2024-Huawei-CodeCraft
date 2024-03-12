@@ -7,9 +7,9 @@ package com.huawei.codecraft;
 public class Cons {
     public static final int MAP_SIZE = 200;
     public static final int MAX_FRAME = 15000;
-    public static final int MAX_BERTH = 1;
-    public static final int MAX_BOAT = 1;
-    public static final int MAX_ROBOT = 1;
+    public static final int MAX_BERTH = 10;
+    public static final int MAX_BOAT = 5;
+    public static final int MAX_ROBOT = 10;
     public static final int BERTH_WIDTH = 4;
     public static final int BOAT_WIDTH = 2;
     public static final int BOAT_HEIGHT = 4;
