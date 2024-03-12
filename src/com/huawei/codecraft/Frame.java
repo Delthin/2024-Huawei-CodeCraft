@@ -85,6 +85,9 @@ public class Frame {
      */
     public Goods[] getGoods() {return goods.toArray(new Goods[0]);}
     public Map getMap() {return map;}
+    public int getFrameNumber(){
+        return this.frameNumber;
+    }
 }
 
 

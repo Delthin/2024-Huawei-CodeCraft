@@ -1,5 +1,6 @@
 package com.huawei.codecraft;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -33,7 +34,12 @@ public class Robot {
     private int action;
     private Pos targetPos;
     private Pos nextPos;
-    private List path;
+    public static List[] paths = new ArrayList[Cons.MAX_ROBOT];
+    static {
+        for (int i = 0; i < paths.length; i++) {
+            paths[i] = new ArrayList();
+        }
+    }
 
     public Robot(int id){
         this.id=id;
@@ -87,22 +93,27 @@ public class Robot {
     public void setPath(Pos nextPos){
         this.nextPos=nextPos;
     }
-    public void setPathList(List path){
-        this.path=path;
+    public static void setPathList(int id, List path){
+        if (path != null && path.size() > 0){
+        paths[id]=path;}
     }
     public Pos getPath(){
         return this.nextPos;
     }
     public List getPathList(){
-        return this.path;
+        return paths[this.id];
+    }
+    public boolean hasPath(){
+        return paths[this.id].size()>0;
     }
     public void stepOnce(){
-        if(this.path==null||this.path.size()==0){
+        if(paths[this.id]==null||paths[this.id].size()==0){
             this.nextPos=null;
-        }else if(this.path.size()>0){
-            this.nextPos=(Pos)this.path.get(0);
-            this.path.remove(0);
+        }else if(paths[this.id].size()>0){
+            this.nextPos=(Pos)paths[this.id].get(0);
+            this.paths[this.id].remove(0);
         }
+
     }
     private void setAction(int action) {
         this.action = action;

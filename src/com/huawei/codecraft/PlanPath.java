@@ -282,6 +282,7 @@ public interface PlanPath {
     public class aStarPlanPath implements PlanPath {
         static final int[] dx = {-1, 0, 1, 0};
         static final int[] dy = {0, 1, 0, -1};
+
         /**
          * 根据目标货物位置直接寻找路径，不考虑碰撞处理
          *
@@ -297,16 +298,26 @@ public interface PlanPath {
                 }
                 Pos start = robot.getPos();
                 Pos goal = robot.getTargetPos();
-                if (goal == null){
-                    continue;
+                if (robot.getPathList() != null && !robot.getPathList().isEmpty()) {
+                    robot.stepOnce();
                 }
-                if (robot.getPathList()==null){
-                robot.setPathList(findPath(mapData, start, goal));
+                //更新路径的情况，分配到港口、分配的货物消失、
+                else {
+                    if (goal == null) {
+                        continue;
+                    }
+                    List path = findPath(mapData, start, goal);
+                    if (path != null) {
+                        robot.setPathList(robot.getId(), path);
+                        robot.stepOnce();
+                    }
+
                 }
-                robot.stepOnce();
+
             }
 
         }
+
         public List findPath(char[][] mapData, Pos start, Pos goal) {
             int m = mapData.length, n = mapData[0].length;
             PriorityQueue<Node> pq = new PriorityQueue<>();
@@ -341,10 +352,14 @@ public interface PlanPath {
             if (endNode == null) {
                 return null;
             } else {
-                return getPath(endNode);
-                // 返回路径的第一步,即从起点出发时的第一步坐标
+                List path = getPath(endNode);
+                if (path.get(0).equals(start)) {
+                    path.remove(0);
+                }
+                return path;
             }
         }
+
         private List getPath(Node end) {
             List<Pos> path = new ArrayList<>();
             Node cur = end;
@@ -353,9 +368,9 @@ public interface PlanPath {
                 cur = cur.parent;
             }
             Collections.reverse(path);
-            path.remove(0);
             return path;
         }
+
         private int manhattanDistance(Pos a, Pos b) {
             return Math.abs(a.X() - b.X()) + Math.abs(a.Y() - b.Y());
         }
@@ -373,7 +388,7 @@ public interface PlanPath {
             }
 
             public int f() {
-                return g + h;
+                return g + 5 * h;
             }
 
             @Override

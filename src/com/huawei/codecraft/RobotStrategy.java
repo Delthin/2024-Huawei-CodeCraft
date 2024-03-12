@@ -65,17 +65,17 @@ public class RobotStrategy {
         }
         int nextX = nextPos.X();
         int nextY = nextPos.Y();
-
-        if (currentX < nextX) {
-            return 0; // 右移
-        } else if (currentX > nextX) {
-            return 1; // 左移
-        } else if (currentY < nextY) {
-            return 2; // 上移
-        } else if (currentY > nextY) {
-            return 3; // 下移
-        } else {
-            return -1; // 停止
+        if(currentX < nextX){
+            return 3;
+        }else if (currentX > nextX){
+            return 2;}
+        else if (currentY < nextY){
+            return 0;}
+        else if (currentY > nextY){
+            return 1;}
+        else{
+            return -1;
         }
+
     }
 }

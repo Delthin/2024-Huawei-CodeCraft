@@ -72,7 +72,7 @@ public class PathTest {
         }
         Robot[] robots = new Robot[Cons.MAX_ROBOT];
         for (int i = 0; i < Cons.MAX_ROBOT; i++) {
-            robots[i] = new Robot(i,0,i,2,1);
+            robots[i] = new Robot(i,0,i,20,1);
             robots[i].assignTargetGoods(goods[i]);
         }
         frame.updateRobots(robots);
@@ -88,9 +88,19 @@ public class PathTest {
         printPosOfRobotsAndGoods(frame);
         for (Robot robot : robots) {
             if (robot.getState()==0)continue;
+            System.out.print("Robot "+robot.getId()+" path is " + robot.getPathList());
+            while(!robot.getPathList().isEmpty()){
+                System.out.print("Step once, next pos is "+robot.getPath());
+                robot.stepOnce();
+                System.out.println();
+            }
+            System.out.println("Robot "+robot.getId()+" path is " + robot.getPathList());
             Pos currentPos = robot.getPos();
             Pos nextPos = robot.getPath();
-            Assert.assertEquals(2, nextPos.Y());
+            Assert.assertEquals(19, nextPos.Y());
         }
+    }
+    public void testMap1(){
+
     }
 }

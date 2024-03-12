@@ -14,7 +14,7 @@ public class Cons {
     public static final int BOAT_WIDTH = 2;
     public static final int BOAT_HEIGHT = 4;
     public static final int EXPIRE_TIME = 1000;
-    public static final int PRIORITY_QUEUE_SIZE = 10000;
+    public static final int PRIORITY_QUEUE_SIZE = 3000;
 //    public static final int MAX_GOODS_WEIGHT = 100;
 //    public static final int MAX_GOODS_VALUE = 100;
 //    public static final int MAX_GOODS_VOLUME = 100;

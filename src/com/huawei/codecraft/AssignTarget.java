@@ -15,22 +15,40 @@ public interface AssignTarget {
             Robot[] robots = frame.getRobots(); // 获取机器人列表
             Goods[] goodsList = frame.getGoods(); // 获取货物列表
             Berth[] berths=frame.getBerth();
-
-            for (Robot robot : robots) {
-                if (robot.getState()==0)continue;
-                if (!robot.isHasGoods() && robot.getTargetGoods()==null) {
+            for (Robot robot :robots) {
+                if (robot.getState() == 0) continue;
+                if (robot.isHasGoods()) {
+                    Berth closestBerth = findClosestBerth(robot, berths);
+                    if (closestBerth != null) {
+                        robot.assignTargetBerth(closestBerth);
+                    }
+                } else {
+                    if(robot.hasPath()){
+                        continue;
+                    }
                     Goods closestGoods = findClosestGoods(robot, goodsList);
                     if (closestGoods != null) {
                         robot.assignTargetGoods(closestGoods);
                         closestGoods.setAssigned(true);
                     }
-                } else if (robot.isHasGoods()) {
-                    Berth closestBerth = findClosestBerth(robot, berths);
-                    if (closestBerth != null) {
-                        robot.assignTargetBerth(closestBerth);
-                    }
                 }
             }
+            
+//            for (Robot robot : robots) {
+//                if (robot.getState()==0)continue;
+//                if (!robot.isHasGoods() && (robot.getTargetGoods()==null || robot.getTargetGoods().expired(frame.getFrameNumber()))) {
+//                    Goods closestGoods = findClosestGoods(robot, goodsList);
+//                    if (closestGoods != null) {
+//                        robot.assignTargetGoods(closestGoods);
+//                        closestGoods.setAssigned(true);
+//                    }
+//                } else if (robot.isHasGoods()) {
+//                    Berth closestBerth = findClosestBerth(robot, berths);
+//                    if (closestBerth != null) {
+//                        robot.assignTargetBerth(closestBerth);
+//                    }
+//                }
+//            }
         }
         private Goods findClosestGoods(Robot robot, Goods[] goodsList) {
             Goods closestGoods = null;
