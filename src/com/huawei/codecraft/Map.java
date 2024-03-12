@@ -73,4 +73,8 @@ public class Map {
     public void setGoods(Pos pos) {
         mapData[pos.X()][pos.Y()] = 'G';
     }
+
+    public void setMapData(char[][] mapData) {
+        this.mapData = mapData;
+    }
 }

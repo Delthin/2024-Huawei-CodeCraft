@@ -32,6 +32,9 @@ public class Robot {
     private Pos targetPos;
     private Pos nextPos;
 
+    public Robot(int id){
+        this.id=id;
+    }
     public Robot(int id, int hasGoods, int x, int y, int state) {
         this.id = id;
         this.pos = new Pos(x, y);
