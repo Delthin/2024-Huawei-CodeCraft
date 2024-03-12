@@ -5,7 +5,7 @@ import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 
 public class PathTest {
-    public Frame frameInit(){
+    public static Frame frameInit(){
         Frame frame = new Frame(1);
         Robot[] robots = new Robot[Cons.MAX_ROBOT];
         for (int i = 0; i < Cons.MAX_ROBOT; i++) {
@@ -19,12 +19,25 @@ public class PathTest {
         frame.updateGoods(goods);
         return frame;
     }
+    public static void printPosOfRobotsAndGoods(Frame frame){
+        Robot[] robots = frame.getRobots();
+        Goods[] goods = frame.getGoods();
+        for (Robot robot : robots) {
+            int id = robot.getId();
+            System.out.println("Robot "+id+" is at "+robot.getPos().X()+","+robot.getPos().Y());
+        }
+        for (Goods good : goods) {
+            int value = good.getValue();
+            System.out.println("Goods "+value+" is at "+good.getPos().X()+","+good.getPos().Y());
+        }
+    }
     @Test
     public void testNextPos(){
         Frame frame = frameInit();
         PlanPath planPath = new PlanPath.greedyPlanPath();
         planPath.plan(frame);
         Robot[] robots = frame.getRobots();
+        printPosOfRobotsAndGoods(frame);
         for (Robot robot : robots) {
             if (robot.getState()==0)continue;
             Pos currentPos = robot.getPos();
