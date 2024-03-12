@@ -24,11 +24,22 @@ public interface AssignTargetBoat {
                     }
                     //此时船只在港口等待,(是否是只要船只已满，就变成状态0了？无需在此处讨论是否已满？)
                     if(boat.getVacancy()==0){
+                        boat.setState(0);
                         boat.setAction(2);//如果此时船只剩余空间为零，将状态设为0
                     }else{//如果还有空间
                         //todo:进行装货物操作
                         //先把下面的移过来，后面再讨论这种state属于哪个
-
+                        int currentBerthId=boat.getTargetBerthId();
+                        Berth currentBerth=getBerth(currentBerthId,berths);
+                        while(boat.getVacancy()>0){
+                            for(Goods goods:goodsList){
+                                if(!goods.isAssigned()&&isInsideBerth(currentBerth,goods)){
+                                    //找到未被分配的货物
+                                    boat.load();
+                                    goods.setAssigned(true);
+                                }
+                            }
+                        }
                     }
 
                 }
@@ -42,6 +53,17 @@ public interface AssignTargetBoat {
 
                 }
             }
+        }
+        public boolean isInsideBerth(Berth berth,Goods goods){
+            return (goods.getPos().X() == berth.getPos().X() || goods.getPos().X() == berth.getPos().X() + 1 || goods.getPos().X() == berth.getPos().X() + 2 || goods.getPos().X() == berth.getPos().X() + 3) && (goods.getPos().Y() == berth.getPos().Y() || goods.getPos().Y() == berth.getPos().Y() + 1 || goods.getPos().Y() == berth.getPos().Y() + 2 || goods.getPos().Y() == berth.getPos().Y() + 3);
+        }
+        public Berth getBerth(int currentBerthId,Berth[] berths){
+            for(Berth berth:berths){
+                if(berth.getId()==currentBerthId){
+                    return berth;
+                }
+            }
+            return null;
         }
         public Berth findBestBerth(Berth[] berths,Boat[] boats){
             //找到最优泊位：前提为空，取效率最大的
@@ -75,3 +97,4 @@ public interface AssignTargetBoat {
         }
     }
 }
+
