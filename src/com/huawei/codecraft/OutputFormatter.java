@@ -41,5 +41,6 @@ public class OutputFormatter {
             }
         }
         System.out.println("OK");
+        System.out.flush();
     }
 }

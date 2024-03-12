@@ -27,7 +27,7 @@ public class Frame {
     private static Boat[] boats = new Boat[Cons.MAX_BOAT];
     static {
         for (int i = 0; i < boats.length; i++) {
-            boats[i] = new Boat(); // 显式初始化
+            boats[i] = new Boat(i); // 显式初始化
         }
     }
     public static Berth[] berths = Main.berths;
