@@ -14,7 +14,9 @@ public interface AssignTargetBoat {
             Berth[] berths= Main.berths;
 
             for(Boat boat:boats){
-                if(boat.getState()==0)continue;;//此时船只处于移动中，相当于消失
+                if(boat.getState()==0){
+                    boat.setAction(0);
+                    continue;}//此时船只处于移动中，相当于消失
                 if(boat.getState()==1){
                     //初始化船只状态为state=1，TargetBerthId=-1
                     if(boat.getTargetBerthId() == -1){
