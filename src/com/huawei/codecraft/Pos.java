@@ -9,6 +9,10 @@ package com.huawei.codecraft;
 public class Pos {
     private int x;
     private int y;
+    public int g;
+    public int h;
+    public int f;
+    public Pos parent;
 
     public Pos(int x, int y) {
         this.x = x;
