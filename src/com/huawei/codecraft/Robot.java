@@ -1,5 +1,7 @@
 package com.huawei.codecraft;
 
+import java.util.List;
+
 /**
  * Robot
  * 表示机器人对象,包含机器人ID、坐标、状态(是否携带货物、是否恢复中)、携带的货物(可选)、移动方向、产生行为（移动、拾取、卸货）、目标位置
@@ -31,6 +33,7 @@ public class Robot {
     private int action;
     private Pos targetPos;
     private Pos nextPos;
+    private List path;
 
     public Robot(int id){
         this.id=id;
@@ -84,10 +87,23 @@ public class Robot {
     public void setPath(Pos nextPos){
         this.nextPos=nextPos;
     }
+    public void setPathList(List path){
+        this.path=path;
+    }
     public Pos getPath(){
         return this.nextPos;
     }
-
+    public List getPathList(){
+        return this.path;
+    }
+    public void stepOnce(){
+        if(this.path==null||this.path.size()==0){
+            this.nextPos=null;
+        }else if(this.path.size()>0){
+            this.nextPos=(Pos)this.path.get(0);
+            this.path.remove(0);
+        }
+    }
     private void setAction(int action) {
         this.action = action;
     }

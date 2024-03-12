@@ -2,7 +2,7 @@ package test;
 
 import com.huawei.codecraft.*;
 import org.junit.Assert;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 public class PathTest {
     public static Frame frameSimpleInit(){
@@ -27,12 +27,16 @@ public class PathTest {
         for (Robot robot : robots) {
             int id = robot.getId();
             System.out.println("Robot "+id+" is at "+robot.getPos().X()+","+robot.getPos().Y());
+            printPath(robot);
             System.out.println("next pos is "+robot.getPath().X()+","+robot.getPath().Y());
         }
         for (Goods good : goods) {
             int value = good.getValue();
             System.out.println("Goods "+value+" is at "+good.getPos().X()+","+good.getPos().Y());
         }
+    }
+    public static void printPath(Robot robot){
+        System.out.println("Robot "+robot.getId()+" path is " + robot.getPathList());
     }
     @Test
     public void testNextPos(){
