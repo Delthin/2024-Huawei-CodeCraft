@@ -38,6 +38,7 @@ public class Main{
         }
         // 读取船只容量
         Boat.setCapacity(scanf.nextInt());
+        scanf.nextLine();//去除最后一个int后的line
         // 读取OK
         String okk = scanf.nextLine();
         assert okk.equals("OK");
@@ -73,8 +74,7 @@ public class Main{
         mainInstance.init();
         for(int zhen = 1; zhen <= Cons.MAX_FRAME; zhen ++){
             // 读取每一帧的输入数据
-            Scanner scan = new Scanner(System.in);
-            Frame frame = InputParser.parseFrameData(scan);
+            Frame frame = InputParser.parseFrameData();
             mainInstance.processFrame(frame);
             // 根据当前Frame信息输出格式化
             OutputFormatter.formatOutput(frame);

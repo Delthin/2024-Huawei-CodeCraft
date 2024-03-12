@@ -18,7 +18,7 @@ public interface AssignTarget {
 
             for (Robot robot : robots) {
                 if (robot.getState()==0)continue;
-                if (!robot.isHasGoods() && robot.getTargetGoods()!=null) {
+                if (!robot.isHasGoods() && robot.getTargetGoods()==null) {
                     Goods closestGoods = findClosestGoods(robot, goodsList);
                     if (closestGoods != null) {
                         robot.assignTargetGoods(closestGoods);

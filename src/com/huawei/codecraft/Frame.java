@@ -22,10 +22,15 @@ public class Frame {
     private Map map;
     private int frameNumber;
     private int money;
-    public static ArrayList<Goods> goods;
-    private Robot[] robots;
-    private static Boat[] boats;
-    private static Berth[] berths;
+    public static ArrayList<Goods> goods = new ArrayList<>();
+    private Robot[] robots = new Robot[Cons.MAX_ROBOT];
+    private static Boat[] boats = new Boat[Cons.MAX_BOAT];
+    static {
+        for (int i = 0; i < boats.length; i++) {
+            boats[i] = new Boat(); // 显式初始化
+        }
+    }
+    public static Berth[] berths = Main.berths;
 
     public Frame(int frameNumber, int money) {
         this.frameNumber = frameNumber;

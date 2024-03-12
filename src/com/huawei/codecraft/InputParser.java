@@ -10,10 +10,11 @@ import java.util.Scanner;
  */
 public class InputParser {
 
-    public static Frame parseFrameData(Scanner scan) {
+    public static Frame parseFrameData() {
         /**
          *
          */
+        Scanner scan = new Scanner(System.in);
         int frameNumber = scan.nextInt();
         int money = scan.nextInt();
         int goodsNumber = scan.nextInt();
