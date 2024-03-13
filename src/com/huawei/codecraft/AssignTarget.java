@@ -17,13 +17,13 @@ public interface AssignTarget {
             Berth[] berths=frame.getBerth();
             for (Robot robot :robots) {
                 if (robot.getState() == 0) continue;
-                if (robot.isHasGoods()) {
+                if (robot.isHasGoods() && robot.targetBerth==null) {
                     Berth closestBerth = findClosestBerth(robot, berths);
                     if (closestBerth != null) {
                         robot.assignTargetBerth(closestBerth);
                     }
                 } else {
-                    if(robot.hasPath()){
+                    if(robot.hasPath() || robot.getTargetPos()!=null){
                         continue;
                     }
                     Goods closestGoods = findClosestGoods(robot, goodsList);
