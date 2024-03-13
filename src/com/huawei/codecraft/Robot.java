@@ -97,7 +97,7 @@ public class Robot {
         if (path != null && path.size() > 0){
         paths[id]=path;}
     }
-    public Pos getPath(){
+    public Pos getNextPos(){
         return this.nextPos;
     }
     public List getPathList(){

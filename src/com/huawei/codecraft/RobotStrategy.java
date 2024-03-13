@@ -36,7 +36,7 @@ public class RobotStrategy {
             if (robot.getState()==0)continue;
 
             Pos currentPos = robot.getPos();
-            Pos nextPos = robot.getPath();
+            Pos nextPos = robot.getNextPos();
             int direction = getMovementDirection(currentPos, nextPos);
             robot.setDirection(direction);
 
