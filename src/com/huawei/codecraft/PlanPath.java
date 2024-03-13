@@ -322,7 +322,11 @@ public interface PlanPath {
             int m = mapData.length, n = mapData[0].length;
             PriorityQueue<Node> pq = new PriorityQueue<>();
             boolean[][] visited = new boolean[m][n];
-            pq.offer(new Node(start, 0, manhattanDistance(start, goal), null));
+            Heuristic func = new Heuristic.Normal();
+            if(manhattanDistance(start, goal)>33){
+                func = new Heuristic.LongDistance();
+            }
+            pq.offer(new Node(start, 0, manhattanDistance(start, goal), null,func));
 
             Node endNode = null;
             while (!pq.isEmpty() && pq.size() < Cons.PRIORITY_QUEUE_SIZE) {//设置最大优先队列大小防止爆，后面可以考虑提高启发函数权重
@@ -344,7 +348,7 @@ public interface PlanPath {
                     }
                     if (!visited[nx][ny] && mapData[nx][ny] != '#' && mapData[nx][ny] != '*') {
                         Pos next = new Pos(nx, ny);
-                        pq.offer(new Node(next, cur.g + 1, manhattanDistance(next, goal), cur));
+                        pq.offer(new Node(next, cur.g + 1, manhattanDistance(next, goal), cur, func));
                     }
                 }
             }
@@ -380,15 +384,23 @@ public interface PlanPath {
             int g, h;
             Node parent;
 
+            Heuristic func = new Heuristic.Normal();
             Node(Pos pos, int g, int h, Node parent) {
                 this.pos = pos;
                 this.g = g;
                 this.h = h;
                 this.parent = parent;
             }
+            Node(Pos pos, int g, int h, Node parent, Heuristic func) {
+                this.pos = pos;
+                this.g = g;
+                this.h = h;
+                this.parent = parent;
+                this.func = func;
+            }
 
             public int f() {
-                return g + 5 * h;
+                return func.f(this);
             }
 
             @Override
