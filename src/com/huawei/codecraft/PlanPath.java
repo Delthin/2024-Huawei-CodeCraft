@@ -364,6 +364,7 @@ public interface PlanPath {
                 return path;
             }
         }
+        // 寻找可行的邻居节点
 
         private List getPath(Node end) {
             List<Pos> path = new ArrayList<>();
@@ -424,4 +425,194 @@ public interface PlanPath {
 
 
     }
+
+    public class BidirectionalAStar implements PlanPath  {
+
+        private static class Node {
+            int x;
+            int y;
+            int g;  // 从起点到当前节点的实际代价
+            int h;  // 从当前节点到终点的估计代价
+            Node parent;
+
+            Node(int x, int y) {
+                this.x = x;
+                this.y = y;
+                this.g = 0;
+                this.h = 0;
+                this.parent = null;
+            }
+
+            int getF() {
+                return g + h;
+            }
+        }
+
+        private static char[][] grid;  // 地图网格
+        private static int gridSizeX;  // 网格大小X
+        private static int gridSizeY;  // 网格大小Y
+
+        private static PriorityQueue<Node> openSetForward;  // 前向搜索的开放集合
+        private static PriorityQueue<Node> openSetBackward;  // 后向搜索的开放集合
+        //private static Set<Node> closedSetForward;  // 前向搜索的关闭集合
+        //private static Set<Node> closedSetBackward;  // 后向搜索的关闭集合
+        Robot[] robots;
+
+        @Override
+        public void plan(Frame frame) {
+
+            grid = frame.getMap().getMapData();
+            gridSizeX=Cons.MAP_SIZE;
+            gridSizeY=Cons.MAP_SIZE;
+
+            robots = frame.getRobots();
+            for (Robot robot : robots) {
+                if (robot.getState() == 0) {
+                    continue;
+                }
+                Pos start = robot.getPos();
+                Pos goal = robot.getTargetPos();
+
+                if (robot.getPathList() != null && !robot.getPathList().isEmpty()) {
+                    robot.stepOnce();
+                }
+                else {
+                    //更新路径的情况，分配到港口、分配的货物消失、
+                    if (goal == null) {
+                        continue;
+                    }
+                    Node startNode = new Node(start.X(), start.Y());
+                    Node endNode = new Node(goal.X(), goal.Y());
+
+                    // 执行双向A*搜索
+                    Node intersectionNode = bidirectionalAStar(startNode, endNode);
+
+                    // 输出最短路径
+                    List<Pos> path = reconstructPath(intersectionNode);
+                    if (path != null) {
+                        robot.setPathList(robot.getId(), path);
+                        robot.stepOnce();
+                    }
+
+                }
+
+            }
+
+        }
+
+
+
+        private static Node bidirectionalAStar(Node startNode, Node endNode) {
+            openSetForward = new PriorityQueue<>(Comparator.comparingInt(Node::getF));
+            openSetBackward = new PriorityQueue<>(Comparator.comparingInt(Node::getF));
+            //closedSetForward = new HashSet<>();
+            //closedSetBackward = new HashSet<>();
+            boolean[][] visitedStart = new boolean[gridSizeX][gridSizeY];
+            boolean[][] visitedBack = new boolean[gridSizeX][gridSizeY];
+            startNode.g = 0;
+            startNode.h = calculateHeuristic(startNode, endNode);
+            openSetForward.add(startNode);
+
+            endNode.g = 0;
+            endNode.h = calculateHeuristic(endNode, startNode);
+            openSetBackward.add(endNode);
+
+            while (!openSetForward.isEmpty() && !openSetBackward.isEmpty() && openSetForward.size()< Cons.PRIORITY_QUEUE_SIZE/2) {
+                Node currentForward = openSetForward.poll();
+                //closedSetForward.add(currentForward);
+                visitedStart[currentForward.x][currentForward.y]=true;
+
+
+                Node currentBackward = openSetBackward.poll();
+                //closedSetBackward.add(currentBackward);
+                visitedBack[currentBackward.x][currentBackward.y]=true;
+
+                if (visitedBack[currentForward.x][currentForward.y]) {
+                    return currentForward;  // 找到相交节点
+                }
+
+//                if (visitedStart[currentBackward.x][currentBackward.y]) {
+//                    return currentBackward;  // 找到相交节点
+//                }
+
+                exploreNeighbors(currentForward, openSetForward, visitedStart, endNode);
+                exploreNeighbors(currentBackward, openSetBackward, visitedBack, startNode);
+            }
+
+            return null;  // 没有找到路径
+        }
+
+        private static void exploreNeighbors(Node current, PriorityQueue<Node> openSet,boolean[][] visited, Node endNode) {
+            int[][] directions = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+
+            for (int[] direction : directions) {
+                int neighborX = current.x + direction[0];
+                int neighborY = current.y + direction[1];
+
+                if (isValidPosition(neighborX, neighborY)) {
+                    Node neighbor = new Node(neighborX, neighborY);
+                    neighbor.parent = current;
+                    neighbor.g = current.g + 1;
+                    neighbor.h = calculateHeuristic(neighbor, endNode);
+
+                    if (visited[neighborX][neighborY]) {
+                        continue;  // 已在关闭集合中，跳过
+                    }
+
+                    Node existingNode = findNodeInOpenSet(neighbor, openSet);
+                    if (existingNode == null) {
+                        openSet.add(neighbor);  // 添加到开放集合
+                    } else {
+                        if (neighbor.g < existingNode.g) {
+                            existingNode.parent = current;
+                            existingNode.g = neighbor.g;
+                        }
+                    }
+                }
+            }
+        }
+
+
+        private static Node findNodeInOpenSet(Node node, PriorityQueue<Node> openSet) {
+            for (Node n : openSet) {
+                if (n.x == node.x && n.y == node.y) {
+                    return n;
+                }
+            }
+            return null;
+        }
+
+        private static List<Pos> reconstructPath(Node intersectionNode) {
+            List<Pos> path = new ArrayList<>();
+            Node currentNode = intersectionNode;
+            //Pos cur = new Pos(currentNode.x,currentNode.y);
+            while (currentNode != null && currentNode.parent != null) {
+                path.add(new Pos(currentNode.x, currentNode.y));
+                currentNode = currentNode.parent;
+            }
+
+            // 反转路径，使其从起点到相交节点
+            Collections.reverse(path);
+//
+//            // 继续从相交节点回溯到终点
+//            currentNode = intersectionNode;
+//            while (currentNode != endNode) {
+//                currentNode = currentNode.parent;
+//                path.add(new Pos(currentNode.x, currentNode.y));
+//            }
+
+            return path;
+        }
+
+
+        private static int calculateHeuristic(Node node, Node targetNode) {
+            // 使用曼哈顿距离作为估计代价
+            return Math.abs(node.x - targetNode.x) + Math.abs(node.y - targetNode.y);
+        }
+
+        private static boolean isValidPosition(int x, int y) {
+            return x >= 0 && x < gridSizeX && y >= 0 && y < gridSizeY && grid[x][y] != 'R' && grid[x][y] != '#' && grid[x][y] != '*' ;
+        }
+    }
+
 }

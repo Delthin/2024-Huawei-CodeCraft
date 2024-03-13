@@ -17,7 +17,7 @@ public class RobotStrategy {
      */
     public static void process(Frame frame) {
         AssignTarget assignTarget = new AssignTarget.greedyAssignTarget();
-        PlanPath planPath = new PlanPath.aStarPlanPath();
+        PlanPath planPath = new PlanPath.BidirectionalAStar();
         assignTarget.assign(frame);
         planPath.plan(frame);
         decideInstruction(frame);

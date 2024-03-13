@@ -14,7 +14,7 @@ public interface AssignTarget {
         public void assign(Frame frame) {
             Robot[] robots = frame.getRobots(); // 获取机器人列表
             Goods[] goodsList = frame.getGoods(); // 获取货物列表
-            Berth[] berths= Main.berths;
+            Berth[] berths=frame.getBerth();
             for (Robot robot :robots) {
                 if (robot.getState() == 0) continue;
                 if (robot.isHasGoods()) {
