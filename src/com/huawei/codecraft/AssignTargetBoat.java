@@ -22,8 +22,13 @@ public interface AssignTargetBoat {
                     if(boat.getTargetBerthId() == -1){
                         boat.setState(2);
                     }
+                    //暂时先让船随机开走
+                    else if (frame.getFrameNumber() % 3 * berths[boat.getTargetBerthId()].getTransportTime() == 0){
+                        boat.setAction(2);
+                        continue;
+                    }
                     //此时船只在港口等待,(是否是只要船只已满，就变成状态0了？无需在此处讨论是否已满？)
-                    if(boat.getVacancy()==0){
+                    else if(boat.getVacancy()==0){
                         boat.setState(0);
                         boat.setAction(2);//如果此时船只剩余空间为零，将状态设为0
                     }else{//如果还有空间
