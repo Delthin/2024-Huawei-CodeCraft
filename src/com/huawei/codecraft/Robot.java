@@ -41,6 +41,8 @@ public class Robot {
         }
     }
 
+    public Berth targetBerth;
+
     public Robot(int id){
         this.id=id;
     }
@@ -59,11 +61,13 @@ public class Robot {
         return goods;
     }
     public void assignTargetGoods(Goods goods) {
+        this.targetBerth=null;
         this.targetGoods=goods;
         this.targetPos=goods.getPos();
     }
     public void assignTargetBerth(Berth berth) {
         this.targetPos=berth.getPos();
+        this.targetBerth = berth;
     }
     public int getId() {
         return id;
