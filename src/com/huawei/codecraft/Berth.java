@@ -1,5 +1,8 @@
 package com.huawei.codecraft;
 
+import java.util.LinkedList;
+import java.util.Queue;
+
 /**
  * Berth
  * 表示港口对象,包含港口坐标、效率、船只到达虚拟点的时间等信息。
@@ -16,7 +19,7 @@ public class Berth {
     private Pos pos;
     private int transportTime;
     private int loadingSpeed;
-
+    private Queue<Boat> waitingBoats=new LinkedList<Boat>();//维护一个等待队列
     public Berth(int id, int x, int y, int transportTime, int loadingSpeed) {
         this.id = id;
         this.pos = new Pos(x, y);
@@ -38,5 +41,17 @@ public class Berth {
 
     public int getLoadingSpeed() {
         return loadingSpeed;
+    }
+    public void offerWaitingBoats(Boat boat){
+        waitingBoats.offer(boat);//实现队尾添加元素
+    }
+    public Boat deleteFirstWaitingBoat(){
+        return waitingBoats.poll();//删除并返回队列的第一个元素
+    }
+    public Boat getFirstWaitingBoat(){
+        return waitingBoats.peek();//返回队列的第一个元素
+    }
+    public int waitingLength(){
+        return waitingBoats.size();
     }
 }
