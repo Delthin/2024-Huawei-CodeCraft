@@ -57,14 +57,23 @@ public class Frame {
             Frame.boats[i].setState(boats[i].getState());
             Frame.boats[i].setTargetBerthId(boats[i].getTargetBerthId());
 
+<<<<<<< HEAD
             //todo:对于状态2的船只，依次加入对应港口的等待序列
             if(boats[i].getState()==2){
                 //如果状态为2，即等待进入港口状态，将其加入对应港口的等待序列
                 Berth targetBerth=getBerthFromId(boats[i].getTargetBerthId());
                 targetBerth.offerWaitingBoats(boats[i]);
+=======
+            //todo:对于状态2的船只 依次加入对应港口的等待序列
+            if(Frame.boats[i].getState()==2){
+                //如果本船state为2，即等待进入港口状态，将其加入targetBerth的等待序列
+                Berth targetBerth=getBerth(Frame.boats[i].getTargetBerthId());
+                targetBerth.offerWaitingBoats(Frame.boats[i]);
+>>>>>>> 0e9b26d4caec1ef2a5a11a8e745575a3dff30d48
             }
         }
     }
+
     public void updateMap () {
         for (int i = 0; i < Cons.MAX_ROBOT; i++) {
             if (robots[i] != null) {
@@ -85,7 +94,11 @@ public class Frame {
     public Berth[] getBerth() {
         return berths;
     }//todo:如何获得港口list
+<<<<<<< HEAD
     public Berth getBerthFromId(int currentBerthId){
+=======
+    public Berth getBerth(int currentBerthId){
+>>>>>>> 0e9b26d4caec1ef2a5a11a8e745575a3dff30d48
         for(Berth berth:berths){
             if(berth.getId()==currentBerthId){
                 return berth;
