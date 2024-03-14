@@ -72,19 +72,21 @@ public class PathTest {
         }
         Robot[] robots = new Robot[Cons.MAX_ROBOT];
         for (int i = 0; i < Cons.MAX_ROBOT; i++) {
-            robots[i] = new Robot(i,0,i,20,1);
+            robots[i] = new Robot(i,0,i,2,1);
             robots[i].assignTargetGoods(goods[i]);
         }
         frame.updateRobots(robots);
         frame.updateGoods(goods);
+        frame.updateMap();
         return frame;
     }
     @Test
     public void testObstacle(){
         Frame frame = frameObstacleInit();
-        PlanPath planPath = new PlanPath.aStarPlanPath();
+        PlanPath planPath = new PlanPath.BidirectionalAStar();
         planPath.plan(frame);
         Robot[] robots = frame.getRobots();
+        MapUtils.mapPrint(frame.getMap());
         printPosOfRobotsAndGoods(frame);
         for (Robot robot : robots) {
             if (robot.getState()==0)continue;

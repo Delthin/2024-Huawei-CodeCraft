@@ -332,7 +332,7 @@ public interface PlanPath {
             Node endNode = null;
             while (!pq.isEmpty() && pq.size() < Cons.PRIORITY_QUEUE_SIZE) {//设置最大优先队列大小防止爆，后面可以考虑提高启发函数权重
                 Node cur = pq.poll();
-                if (mapData[cur.pos.X()][cur.pos.Y()] == '#' || mapData[cur.pos.X()][cur.pos.Y()] == '*') {
+                if (mapData[cur.pos.X()][cur.pos.Y()] == '#' || mapData[cur.pos.X()][cur.pos.Y()] == '*'){
                     continue;
                 }
                 visited[cur.pos.X()][cur.pos.Y()] = true;
