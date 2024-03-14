@@ -6,6 +6,7 @@ package com.huawei.codecraft;
 
 import java.util.Random;
 import java.util.Scanner;
+import java.util.logging.Logger;
 
 /**
  * Main
@@ -78,6 +79,7 @@ public class Main{
             mainInstance.processFrame(frame);
             // 根据当前Frame信息输出格式化
             OutputFormatter.formatOutput(frame);
+
         }
     }
 }

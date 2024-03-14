@@ -31,7 +31,7 @@ public class Robot {
      * 0:移动（move）,1:拾取（get）,2:卸货（pull）
      * 此属性用于输出处理
      */
-    private int action;
+    private int[] action=new int[2];
     private Pos targetPos;
     private Pos nextPos;
     public static List[] paths = new ArrayList[Cons.MAX_ROBOT];
@@ -40,6 +40,8 @@ public class Robot {
             paths[i] = new ArrayList();
         }
     }
+
+    public Berth targetBerth;
 
     public Robot(int id){
         this.id=id;
@@ -59,11 +61,13 @@ public class Robot {
         return goods;
     }
     public void assignTargetGoods(Goods goods) {
+        this.targetBerth=null;
         this.targetGoods=goods;
         this.targetPos=goods.getPos();
     }
     public void assignTargetBerth(Berth berth) {
         this.targetPos=berth.getPos();
+        this.targetBerth = berth;
     }
     public int getId() {
         return id;
@@ -71,7 +75,7 @@ public class Robot {
     public int getDirection() {
         return direction;
     }
-    public int getAction() {
+    public int[] getAction() {
         return action;
     }
     public Pos getTargetPos() {
@@ -97,7 +101,7 @@ public class Robot {
         if (path != null && path.size() > 0){
         paths[id]=path;}
     }
-    public Pos getPath(){
+    public Pos getNextPos(){
         return this.nextPos;
     }
     public List getPathList(){
@@ -116,12 +120,13 @@ public class Robot {
 
     }
     private void setAction(int action) {
-        this.action = action;
+        this.action[0] = action;
+        this.action[1] = 0;
     }
     public void pickUpGoods(Goods goods) {
-        setAction(1);
+        this.action[1] = 1;
     }
     public void putDownGoods() {
-        setAction(2);
+        this.action[1] = 2;
     }
 }

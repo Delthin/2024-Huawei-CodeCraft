@@ -17,7 +17,7 @@ public class RobotStrategy {
      */
     public static void process(Frame frame) {
         AssignTarget assignTarget = new AssignTarget.greedyAssignTarget();
-        PlanPath planPath = new PlanPath.aStarPlanPath();
+        PlanPath planPath = new PlanPath.BidirectionalAStar();
         assignTarget.assign(frame);
         planPath.plan(frame);
         decideInstruction(frame);
@@ -36,7 +36,7 @@ public class RobotStrategy {
             if (robot.getState()==0)continue;
 
             Pos currentPos = robot.getPos();
-            Pos nextPos = robot.getPath();
+            Pos nextPos = robot.getNextPos();
             int direction = getMovementDirection(currentPos, nextPos);
             robot.setDirection(direction);
 
@@ -46,10 +46,10 @@ public class RobotStrategy {
             Map map = frame.getMap();
 
 
-            if (currentGoods == null && map.isGoods(currentPos)) {
+            if (currentGoods == null &&nextPos!=null && map.isGoods(nextPos)) {
                 // 当前处在货物上且空闲，捡起货物
                 robot.pickUpGoods(target);// todo:如何得到此地的goods对象
-            } else if (robot.isHasGoods() && map.isBerth(currentPos)) {
+            } else if (robot.isHasGoods() && nextPos!=null && map.isBerth(nextPos)) {
                 // 当前处在停泊点上且携带货物，放下货物
                 robot.putDownGoods();
             }

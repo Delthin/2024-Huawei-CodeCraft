@@ -28,7 +28,7 @@ public class PathTest {
             int id = robot.getId();
             System.out.println("Robot "+id+" is at "+robot.getPos().X()+","+robot.getPos().Y());
             printPath(robot);
-            System.out.println("next pos is "+robot.getPath().X()+","+robot.getPath().Y());
+            System.out.println("next pos is "+robot.getNextPos().X()+","+robot.getNextPos().Y());
         }
         for (Goods good : goods) {
             int value = good.getValue();
@@ -48,7 +48,7 @@ public class PathTest {
         for (Robot robot : robots) {
             if (robot.getState()==0)continue;
             Pos currentPos = robot.getPos();
-            Pos nextPos = robot.getPath();
+            Pos nextPos = robot.getNextPos();
             Assert.assertEquals(nextPos.Y(), 4);
         }
 
@@ -90,13 +90,13 @@ public class PathTest {
             if (robot.getState()==0)continue;
             System.out.print("Robot "+robot.getId()+" path is " + robot.getPathList());
             while(!robot.getPathList().isEmpty()){
-                System.out.print("Step once, next pos is "+robot.getPath());
+                System.out.print("Step once, next pos is "+robot.getNextPos());
                 robot.stepOnce();
                 System.out.println();
             }
             System.out.println("Robot "+robot.getId()+" path is " + robot.getPathList());
             Pos currentPos = robot.getPos();
-            Pos nextPos = robot.getPath();
+            Pos nextPos = robot.getNextPos();
             Assert.assertEquals(19, nextPos.Y());
         }
     }
