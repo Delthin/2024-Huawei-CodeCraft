@@ -54,6 +54,7 @@ public interface AssignTargetBoat {
                     if(targetBerth.getFirstWaitingBoat().getId()==boat.getId()){
                         //如果目标港口等待序列的第一只船就是本船，进入港口
                         boat.setState(1);
+                        boat.setAction(1);
                     }else{
                         //如果第一只不是本船，找到最优的港口 ship过去
                         Berth bestBerth=findBestBerth(berths,boats);
