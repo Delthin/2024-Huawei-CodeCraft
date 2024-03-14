@@ -1,4 +1,6 @@
 package com.huawei.codecraft;
+import com.sun.jndi.ldap.Ber;
+
 import java.util.ArrayList;
 
 /**
@@ -49,11 +51,29 @@ public interface AssignTargetBoat {
 
                 }
                 if(boat.getState()==2){//此时船只在泊位外等待进入一个泊位
-                    //todo:判断进入哪一个港口
-                    Berth bestBerth=findBestBerth(berths,boats);
-                    if(bestBerth!=null){
-                        boat.setTargetBerthId(bestBerth.getId());
-                        boat.setAction(1);
+                    //todo:1.是否进入港口 2.选择哪个港口
+                    Berth targetBerth=getBerth(boat.getTargetBerthId(), berths);
+
+                    if(targetBerth!=null){
+                        if(isEmptyBerth(targetBerth,boats)&&targetBerth.getFirstWaitingBoat()!=null&&targetBerth.getFirstWaitingBoat().getId()==boat.getId()){
+                            boat.setAction(1);
+                            targetBerth.deleteFirstWaitingBoat();
+                        }else{
+                            //如果不为空，驶向最优港口
+                            Berth bestBerth=findBestBerth(berths,boats);
+                            if(bestBerth!=null){
+                                boat.setTargetBerthId(bestBerth.getId());
+                                boat.setAction(1);
+                                bestBerth.offerWaitingBoats(boat);
+                            }
+                        }
+                    }else {//初始化状态
+                        Berth bestBerth=findBestBerth(berths,boats);
+                        if(bestBerth!=null){
+                            boat.setTargetBerthId(bestBerth.getId());
+                            boat.setAction(1);
+                            bestBerth.offerWaitingBoats(boat);
+                        }
                     }
 
                 }
@@ -69,6 +89,14 @@ public interface AssignTargetBoat {
                 }
             }
             return null;
+        }
+        public boolean isEmptyBerth(Berth berth,Boat[] boats){
+            for(Boat boat:boats){
+                if(boat.getTargetBerthId()==berth.getId()&&boat.getState()==1){
+                    return false;
+                }
+            }
+            return true;
         }
         public Berth findBestBerth(Berth[] berths,Boat[] boats){
             //找到最优泊位：前提为空，取效率最大的
@@ -102,4 +130,3 @@ public interface AssignTargetBoat {
         }
     }
 }
-
