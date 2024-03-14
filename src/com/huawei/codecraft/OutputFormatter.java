@@ -18,13 +18,11 @@ public class OutputFormatter {
         for (Robot robot : robots) {
             int[] act = robot.getAction();
             if (act[0] == 0) {
-                if (robot.getDirection() == -1) {
-                    continue;
-                } else {
+                if (robot.getDirection() != -1) {
                     System.out.println("move " + robot.getId() + " " + robot.getDirection());
                 }
             }
-            if (act[1] == 1) {
+            if (act[1] == 1 ) {
                 System.out.println("get " + robot.getId());
             } else if (act[1] == 2) {
                 System.out.println("pull " + robot.getId());

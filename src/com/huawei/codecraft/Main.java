@@ -4,6 +4,7 @@
 
 package com.huawei.codecraft;
 
+import java.util.HashSet;
 import java.util.Random;
 import java.util.Scanner;
 import java.util.logging.Logger;
@@ -17,6 +18,8 @@ import java.util.logging.Logger;
 public class Main{
     public static Map map;
     public static Berth[] berths = new Berth[Cons.MAX_BERTH];
+    public static HashSet[][] visited ;
+
     /**
      * 初始化
      */
@@ -28,6 +31,12 @@ public class Main{
             mapData[i] = scanf.nextLine();
         }
         map = new Map(mapData);
+        visited = new HashSet[Cons.MAP_SIZE][Cons.MAP_SIZE];
+        for(int i=0;i<Cons.MAP_SIZE;i++){
+            for(int j=0;j<Cons.MAP_SIZE;j++) {
+                visited[i][j] = new HashSet<>();
+            }
+        }
         // 读取港口数据
         for (int i = 0; i < Cons.MAX_BERTH; i++) {
             int id = scanf.nextInt();

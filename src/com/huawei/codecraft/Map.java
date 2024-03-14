@@ -1,5 +1,7 @@
 package com.huawei.codecraft;
 
+import java.util.HashSet;
+
 /**
  * Map
  * 表示地图对象,包含地图数据和障碍物信息。
@@ -19,6 +21,8 @@ public class Map {
 
     public Map() {
         this.mapData = new char[Cons.MAP_SIZE][Cons.MAP_SIZE];
+
+
     }
 
     public Map(String[] mapData) {

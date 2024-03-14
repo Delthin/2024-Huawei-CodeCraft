@@ -63,6 +63,7 @@ public interface AssignTarget {
                     }
                 }
             }
+            if(minDistance>Cons.MAX_DISTANCE)return null;
             return closestGoods;
         }
 

@@ -32,7 +32,7 @@ public class Robot {
      * 此属性用于输出处理
      */
     private int[] action=new int[2];
-    private Pos targetPos;
+    public Pos targetPos;
     private Pos nextPos;
     public static List[] paths = new ArrayList[Cons.MAX_ROBOT];
     static {
