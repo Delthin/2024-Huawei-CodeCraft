@@ -132,7 +132,7 @@ public interface AssignTargetBoat {
                             boat.setAction(2);
                         }
                         //装货
-                        if (frame.getFrameNumber() % (5 * Boat.getCapacity()) == 0) {
+                        if (frame.getFrameNumber() % (2 * berths[boat.getTargetBerthId()].getTransportTime()) == 0) {
                             boat.setAction(2);
                         }
                     }
