@@ -10,8 +10,10 @@ public interface AssignTarget {
      */
     void assign(Frame frame);
     public class greedyAssignTarget implements AssignTarget {
+        int frameNumber;
         @Override
         public void assign(Frame frame) {
+            frameNumber=frame.getFrameNumber();
             Robot[] robots = frame.getRobots(); // 获取机器人列表
             Goods[] goodsList = frame.getGoods(); // 获取货物列表
             Berth[] berths=frame.getBerth();
@@ -55,6 +57,7 @@ public interface AssignTarget {
             double minDistance = Double.MAX_VALUE;
 
             for (Goods goods : goodsList) {
+                if(goods.getValue() < 20)continue;
                 if (!goods.isAssigned()) {
                     double distance = robot.getPos().distance(goods.getPos());
                     if (distance < minDistance) {
@@ -63,7 +66,7 @@ public interface AssignTarget {
                     }
                 }
             }
-            if(minDistance>Cons.MAX_DISTANCE)return null;
+            if(frameNumber<=10 && minDistance>Cons.MAX_DISTANCE)return null;
             return closestGoods;
         }
 
