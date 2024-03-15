@@ -95,6 +95,15 @@ public class Map {
     public int getAreaId(Pos pos){
         return area[pos.X()][pos.Y()];
     }
+    public int getAreaId(Robot robot){
+        return area[robot.getPos().X()][robot.getPos().Y()];
+    }
+    public int getAreaId(Goods goods){
+        return area[goods.getPos().X()][goods.getPos().Y()];
+    }
+    public int getAreaId(Berth berth){
+        return area[berth.getPos().X()][berth.getPos().Y()];
+    }
     public void setAreaNum(int areaNum) {
         this.areaNum = areaNum;
     }

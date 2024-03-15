@@ -7,14 +7,23 @@ public class Block {
     Block(int id) {
         this.id = id;
     }
+
     public static Block[] blocks = new Block[Cons.BLOCK_WIDTH * Cons.BLOCK_WIDTH];
+    /**
+     * 每行id分配为（按y加1，按x加8）
+     * 0-7
+     * 8-15
+     * 16-23
+     * 24-31
+     * ……
+     */
     private int id;
+    List<Goods> goods = new ArrayList<>();//todo:后期可能占用空间过大
     List<List<Block>> neighbours = new ArrayList<>();
     List<List<Pos>> bordersLeft = new ArrayList<>();
     List<List<Pos>> bordersRight = new ArrayList<>();
     List<List<Pos>> bordersUp = new ArrayList<>();
     List<List<Pos>> bordersDown = new ArrayList<>();
-
     /**
      * 判断a和b是否在同一block
      * @param a
@@ -34,41 +43,43 @@ public class Block {
     public static boolean isConnected(Pos a) {
         Map map = Main.map;
         //先判断a的哪个方向是相邻block
-        if (a.X() % Cons.BLOCK_SIZE == 0) {
+        if (a.Y() % Cons.BLOCK_SIZE == 0) {
             //左边界
-            return Map.isValidXY(a.X() - 1, a.Y()) && !map.isObstacle(a.X() - 1, a.Y());
-        } else if (a.X() % Cons.BLOCK_SIZE == Cons.BLOCK_SIZE - 1) {
-            //右边界
-            return Map.isValidXY(a.X() + 1, a.Y()) && !map.isObstacle(a.X() + 1, a.Y());
-        } else if (a.Y() % Cons.BLOCK_SIZE == 0) {
-            //上边界
             return Map.isValidXY(a.X(), a.Y() - 1) && !map.isObstacle(a.X(), a.Y() - 1);
         } else if (a.Y() % Cons.BLOCK_SIZE == Cons.BLOCK_SIZE - 1) {
-            //下边界
+            //右边界
             return Map.isValidXY(a.X(), a.Y() + 1) && !map.isObstacle(a.X(), a.Y() + 1);
+        } else if (a.X() % Cons.BLOCK_SIZE == 0) {
+            //上边界
+            return Map.isValidXY(a.X() - 1, a.Y()) && !map.isObstacle(a.X() - 1, a.Y());
+        } else if (a.X() % Cons.BLOCK_SIZE == Cons.BLOCK_SIZE - 1) {
+            //下边界
+            return Map.isValidXY(a.X() + 1, a.Y()) && !map.isObstacle(a.X() + 1, a.Y());
         }
         else {
             return false;
+
         }
     }
     public static boolean isConnected(int x, int y) {
         Map map = Main.map;
         //先判断a的哪个方向是相邻block
-        if (x % Cons.BLOCK_SIZE == 0) {
+        if (y % Cons.BLOCK_SIZE == 0) {
             //左边界
-            return Map.isValidXY(x - 1, y) && !map.isObstacle(x - 1, y);
-        } else if (x % Cons.BLOCK_SIZE == Cons.BLOCK_SIZE - 1) {
-            //右边界
-            return Map.isValidXY(x + 1, y) && !map.isObstacle(x + 1, y);
-        } else if (y % Cons.BLOCK_SIZE == 0) {
-            //上边界
             return Map.isValidXY(x, y - 1) && !map.isObstacle(x, y - 1);
         } else if (y % Cons.BLOCK_SIZE == Cons.BLOCK_SIZE - 1) {
-            //下边界
+            //右边界
             return Map.isValidXY(x, y + 1) && !map.isObstacle(x, y + 1);
+        } else if (x % Cons.BLOCK_SIZE == 0) {
+            //上边界
+            return Map.isValidXY(x - 1, y) && !map.isObstacle(x - 1, y);
+        } else if (x % Cons.BLOCK_SIZE == Cons.BLOCK_SIZE - 1) {
+            //下边界
+            return Map.isValidXY(x + 1, y) && !map.isObstacle(x + 1, y);
         }
         else {
             return false;
+
         }
     }
 
@@ -88,17 +99,17 @@ public class Block {
      */
     public int getDirection(int blockIdFrom, int blockIdTo) {
         //0-1向右，1-0向左，0-8向下，8-0向上
-        if (blockIdFrom == blockIdTo + 1) {
+        if (blockIdFrom == blockIdTo - 1) {
             return Cons.DIRECTION_RIGHT;
-        } else if (blockIdFrom == blockIdTo - 1) {
+        } else if (blockIdFrom == blockIdTo + 1) {
             return Cons.DIRECTION_LEFT;
-        } else if (blockIdFrom == blockIdTo + Cons.BLOCK_WIDTH) {
-            return Cons.DIRECTION_DOWN;
         } else if (blockIdFrom == blockIdTo - Cons.BLOCK_WIDTH) {
+            return Cons.DIRECTION_DOWN;
+        } else if (blockIdFrom == blockIdTo + Cons.BLOCK_WIDTH) {
             return Cons.DIRECTION_UP;
         }
-        else{
-            return Cons.DIRECTION_STOP;
+        else {
+            return -1;
         }
     }
 
@@ -176,5 +187,23 @@ public class Block {
     }
     public void setBordersDown(List<List<Pos>> bordersDown) {
         this.bordersDown = bordersDown;
+    }
+    public void setGoods(List<Goods> goods) {
+        this.goods = goods;
+    }
+    public List<Goods> getGoods() {
+        return goods;
+    }
+    public void addGoods(Goods good) {
+        goods.add(good);
+    }
+    public void removeGoods(Goods good) {
+        goods.remove(good);
+    }
+    public void newGoods() {
+        goods = new ArrayList<>();
+    }
+    public static int getBlockId(Pos pos) {
+        return pos.X() / Cons.BLOCK_SIZE * Cons.BLOCK_WIDTH + pos.Y() / Cons.BLOCK_SIZE;
     }
 }

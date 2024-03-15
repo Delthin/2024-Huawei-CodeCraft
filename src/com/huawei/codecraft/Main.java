@@ -163,13 +163,13 @@ public class Main {
                 }
                 // 根据边界是否存在添加neighbours
                 for (int areaId = 0; areaId < Main.map.getAreaNum(); areaId++) {
-                    if (bordersRight.get(areaId).size() > 0) {
+                    if (!bordersRight.get(areaId).isEmpty()) {
                         neighbours.get(areaId).add(blocks[i * Cons.BLOCK_WIDTH + j + 1]);
-                    }if (bordersLeft.get(areaId).size() > 0) {
+                    }if (!bordersLeft.get(areaId).isEmpty()) {
                         neighbours.get(areaId).add(blocks[i * Cons.BLOCK_WIDTH + j - 1]);
-                    }if (bordersUp.get(areaId).size() > 0) {
+                    }if (!bordersUp.get(areaId).isEmpty()) {
                         neighbours.get(areaId).add(blocks[(i - 1) * Cons.BLOCK_WIDTH + j]);
-                    }if (bordersDown.get(areaId).size() > 0) {
+                    }if (!bordersDown.get(areaId).isEmpty()) {
                         neighbours.get(areaId).add(blocks[(i + 1) * Cons.BLOCK_WIDTH + j]);
                     }
                 }

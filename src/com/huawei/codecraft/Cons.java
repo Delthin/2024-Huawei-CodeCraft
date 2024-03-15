@@ -16,6 +16,7 @@ public class Cons {
     public static final int EXPIRE_TIME = 1000;
     public static final int PRIORITY_QUEUE_SIZE = 10000;
     public static final int BLOCK_WIDTH = 8;
+    public static final int BLOCK_HEIGHT = 8;
     public static final int BLOCK_SIZE = MAP_SIZE / BLOCK_WIDTH;
     public static final int DIRECTION_RIGHT = 0;
     public static final int DIRECTION_LEFT = 1;
