@@ -283,6 +283,7 @@ public interface PlanPath {
         static final int[] dx = {-1, 0, 1, 0};
         static final int[] dy = {0, 1, 0, -1};
         Robot[] robots;
+
         /**
          * 根据目标货物位置直接寻找路径，不考虑碰撞处理
          *
@@ -324,15 +325,15 @@ public interface PlanPath {
             PriorityQueue<Node> pq = new PriorityQueue<>();
             boolean[][] visited = new boolean[m][n];
             Heuristic func = new Heuristic.Normal();
-            if(manhattanDistance(start, goal)>33){
+            if (manhattanDistance(start, goal) > 33) {
                 func = new Heuristic.LongDistance();
             }
-            pq.offer(new Node(start, 0, manhattanDistance(start, goal), null,func));
+            pq.offer(new Node(start, 0, manhattanDistance(start, goal), null, func));
 
             Node endNode = null;
             while (!pq.isEmpty() && pq.size() < Cons.PRIORITY_QUEUE_SIZE) {//设置最大优先队列大小防止爆，后面可以考虑提高启发函数权重
                 Node cur = pq.poll();
-                if (mapData[cur.pos.X()][cur.pos.Y()] == '#' || mapData[cur.pos.X()][cur.pos.Y()] == '*'){
+                if (mapData[cur.pos.X()][cur.pos.Y()] == '#' || mapData[cur.pos.X()][cur.pos.Y()] == '*') {
                     continue;
                 }
                 visited[cur.pos.X()][cur.pos.Y()] = true;
@@ -347,7 +348,7 @@ public interface PlanPath {
                     if (nx < 0 || nx >= m || ny < 0 || ny >= n) {
                         continue;
                     }
-                    if (!visited[nx][ny] && mapData[nx][ny] != '#' && mapData[nx][ny] != '*' && mapData[nx][ny] != 'R' && !isCollidingWithOtherRobots(nx,ny,robot.getId())) {
+                    if (!visited[nx][ny] && mapData[nx][ny] != '#' && mapData[nx][ny] != '*' && mapData[nx][ny] != 'R' && !isCollidingWithOtherRobots(nx, ny, robot.getId())) {
                         Pos next = new Pos(nx, ny);
                         pq.offer(new Node(next, cur.g + 1, manhattanDistance(next, goal), cur, func));
                     }
@@ -380,11 +381,12 @@ public interface PlanPath {
         private int manhattanDistance(Pos a, Pos b) {
             return Math.abs(a.X() - b.X()) + Math.abs(a.Y() - b.Y());
         }
-        private boolean isCollidingWithOtherRobots(int x, int y, int id ) {
+
+        private boolean isCollidingWithOtherRobots(int x, int y, int id) {
             // 检查坐标是否与其他机器人冲突
             for (Robot robot : robots) {
-                if (robot.getId()==id || robot.getNextPos()==null) continue;
-                if ( robot.getNextPos().X() == x && robot.getNextPos().Y() == y ) {
+                if (robot.getId() == id || robot.getNextPos() == null) continue;
+                if (robot.getNextPos().X() == x && robot.getNextPos().Y() == y) {
                     return true;
                 }
             }
@@ -397,12 +399,14 @@ public interface PlanPath {
             Node parent;
 
             Heuristic func = new Heuristic.Normal();
+
             Node(Pos pos, int g, int h, Node parent) {
                 this.pos = pos;
                 this.g = g;
                 this.h = h;
                 this.parent = parent;
             }
+
             Node(Pos pos, int g, int h, Node parent, Heuristic func) {
                 this.pos = pos;
                 this.g = g;
@@ -426,7 +430,7 @@ public interface PlanPath {
 
     }
 
-    public class BidirectionalAStar implements PlanPath  {
+    public class BidirectionalAStar implements PlanPath {
 
         private static class Node {
             int x;
@@ -462,8 +466,8 @@ public interface PlanPath {
         public void plan(Frame frame) {
 
             grid = frame.getMap().getMapData();
-            gridSizeX=Cons.MAP_SIZE;
-            gridSizeY=Cons.MAP_SIZE;
+            gridSizeX = Cons.MAP_SIZE;
+            gridSizeY = Cons.MAP_SIZE;
 
             robots = frame.getRobots();
             for (Robot robot : robots) {
@@ -475,8 +479,7 @@ public interface PlanPath {
 
                 if (robot.getPathList() != null && !robot.getPathList().isEmpty()) {
                     robot.stepOnce();
-                }
-                else {
+                } else {
                     //更新路径的情况，分配到港口、分配的货物消失、
                     if (goal == null) {
                         continue;
@@ -504,7 +507,6 @@ public interface PlanPath {
         }
 
 
-
         private static Node[] bidirectionalAStar(Node startNode, Node endNode) {
             openSetForward = new PriorityQueue<>(Comparator.comparingInt(Node::getF));
             openSetBackward = new PriorityQueue<>(Comparator.comparingInt(Node::getF));
@@ -521,18 +523,18 @@ public interface PlanPath {
             endNode.h = calculateHeuristic(endNode, startNode);
             openSetBackward.add(endNode);
 
-            while (!openSetForward.isEmpty() && !openSetBackward.isEmpty() && openSetForward.size()< Cons.PRIORITY_QUEUE_SIZE/2) {
+            while (!openSetForward.isEmpty() && !openSetBackward.isEmpty() && openSetForward.size() < Cons.PRIORITY_QUEUE_SIZE / 2) {
                 Node currentForward = openSetForward.poll();
                 //closedSetForward.add(currentForward);
-                visitedStart[currentForward.x][currentForward.y]=true;
+                visitedStart[currentForward.x][currentForward.y] = true;
 
 
                 Node currentBackward = openSetBackward.poll();
                 //closedSetBackward.add(currentBackward);
-                visitedBack[currentBackward.x][currentBackward.y]=currentBackward;
+                visitedBack[currentBackward.x][currentBackward.y] = currentBackward;
 
-                if (visitedBack[currentForward.x][currentForward.y]!=null) {
-                    return new Node[]{currentForward,visitedBack[currentForward.x][currentForward.y]};  // 找到相交节点
+                if (visitedBack[currentForward.x][currentForward.y] != null) {
+                    return new Node[]{currentForward, visitedBack[currentForward.x][currentForward.y]};  // 找到相交节点
                 }
 
 //                if (visitedStart[currentBackward.x][currentBackward.y]) {
@@ -546,7 +548,7 @@ public interface PlanPath {
             return null;  // 没有找到路径
         }
 
-        private static void exploreNeighbors(Node current, PriorityQueue<Node> openSet,boolean[][] visited, Node endNode) {
+        private static void exploreNeighbors(Node current, PriorityQueue<Node> openSet, boolean[][] visited, Node endNode) {
             int[][] directions = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
 
             for (int[] direction : directions) {
@@ -576,7 +578,7 @@ public interface PlanPath {
             }
         }
 
-        private static void exploreNeighbors(Node current, PriorityQueue<Node> openSet,Node[][] visited, Node endNode) {
+        private static void exploreNeighbors(Node current, PriorityQueue<Node> openSet, Node[][] visited, Node endNode) {
             int[][] directions = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
 
             for (int[] direction : directions) {
@@ -589,7 +591,7 @@ public interface PlanPath {
                     neighbor.g = current.g + 1;
                     neighbor.h = calculateHeuristic(neighbor, endNode);
 
-                    if (visited[neighborX][neighborY]!=null) {
+                    if (visited[neighborX][neighborY] != null) {
                         continue;  // 已在关闭集合中，跳过
                     }
 
@@ -605,6 +607,7 @@ public interface PlanPath {
                 }
             }
         }
+
         private static Node findNodeInOpenSet(Node node, PriorityQueue<Node> openSet) {
             for (Node n : openSet) {
                 if (n.x == node.x && n.y == node.y) {
@@ -643,8 +646,24 @@ public interface PlanPath {
         }
 
         private static boolean isValidPosition(int x, int y) {
-            return x >= 0 && x < gridSizeX && y >= 0 && y < gridSizeY && grid[x][y] != 'R' && grid[x][y] != '#' && grid[x][y] != '*' ;
+            return x >= 0 && x < gridSizeX && y >= 0 && y < gridSizeY && grid[x][y] != 'R' && grid[x][y] != '#' && grid[x][y] != '*';
         }
     }
 
+    public class blockPlanPath implements PlanPath {
+
+        /**
+         * - 根据blocks路径，只在每个block内对borders的位置进行a*或直接bfs（最多25*25次操作，可以接受，应该不会跳帧？）
+         * - path不为空的机器人继续行进
+         * - 进入另一个block后重新规划路径，这里需要判断目标货物消失则重新分配目标
+         * - 在泊位放下后重新分配目标
+         * - 对于同一个block内的机器人考虑冲突，每一步（一个新的g）对同一个block的已存在的robotpath进行遍历，将同一时间经过的同一个位置避开
+         * @param frame
+         */
+        @Override
+        public void plan(Frame frame) {
+
+
+        }
+    }
 }
