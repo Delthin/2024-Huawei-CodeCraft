@@ -83,7 +83,7 @@ public class Main{
             }
         }
         mainInstance.init();
-        for(int zhen = 1; zhen <= Cons.MAX_FRAME; zhen ++){
+        for(int zhen = 1; zhen < Cons.MAX_FRAME; zhen ++){
             // 读取每一帧的输入数据
             Frame frame = InputParser.parseFrameData();
             mainInstance.processFrame(frame);

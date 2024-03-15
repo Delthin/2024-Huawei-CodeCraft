@@ -24,7 +24,7 @@ public class Boat {
     /**
      * 0:等待，1；移动（ship），2；驶向虚拟点（go）
      */
-    private int action;
+    private int action = 0;
     public Boat(){}
     public Boat(int id){
         this.id = id;
