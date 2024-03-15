@@ -750,6 +750,9 @@ public interface PlanPath {
                 if (mapData[cur.pos.X()][cur.pos.Y()] == '#' || mapData[cur.pos.X()][cur.pos.Y()] == '*') {
                     continue;
                 }
+                if (visited[cur.pos.X()][cur.pos.Y()]) {
+                    continue;
+                }
                 visited[cur.pos.X()][cur.pos.Y()] = true;
 
                 if (cur.pos.equals(goal)) {
