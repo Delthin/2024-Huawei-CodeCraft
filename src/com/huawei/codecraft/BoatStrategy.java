@@ -14,7 +14,7 @@ public class BoatStrategy {
      * @param frame
      */
     public static void process(Frame frame) {
-        AssignTargetBoat assignTarget = new AssignTargetBoat.greedyAssignTarget();
+        AssignTargetBoat assignTarget = new AssignTargetBoat.randomAssignTarget();
         assignTarget.assign(frame);
         decideInstruction(frame);
     }
