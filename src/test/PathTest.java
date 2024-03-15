@@ -30,7 +30,7 @@ public class PathTest {
             int id = robot.getId();
             System.out.println("Robot "+id+" is at "+robot.getPos().X()+","+robot.getPos().Y());
             printPath(robot);
-            System.out.println("next pos is "+robot.getNextPos().X()+","+robot.getNextPos().Y());
+            if(robot.getNextPos()!=null)System.out.println("next pos is "+robot.getNextPos().X()+","+robot.getNextPos().Y());
         }
         for (Goods good : goods) {
             int value = good.getValue();
@@ -90,7 +90,9 @@ public class PathTest {
         robots[0].assignTargetGoods(goods[0]);
         robots[1] = new Robot(1,0,3,2,1);
         robots[1].assignTargetGoods(goods[1]);
-        for (int i = 2; i < Cons.MAX_ROBOT; i++) {
+        robots[2] = new Robot(2,0,199,199,1);
+        robots[2].assignTargetGoods(goods[1]);
+        for (int i = 3; i < Cons.MAX_ROBOT; i++) {
             robots[i] = new Robot(i,0,i+100,4,1);
             robots[i].assignTargetGoods(goods[i]);
         }
@@ -107,7 +109,7 @@ public class PathTest {
                 Main.visited[i][j] = new HashSet<>();
             }
         }
-        PlanPath planPath = new PlanPath.CBSPlanPath0();
+        PlanPath planPath = new PlanPath.CBSPlanPath();
         planPath.plan(frame);
         Robot[] robots = frame.getRobots();
         printPosOfRobotsAndGoods(frame);

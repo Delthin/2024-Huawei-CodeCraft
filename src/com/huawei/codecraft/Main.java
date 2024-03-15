@@ -31,12 +31,7 @@ public class Main{
             mapData[i] = scanf.nextLine();
         }
         map = new Map(mapData);
-        visited = new HashSet[Cons.MAP_SIZE][Cons.MAP_SIZE];
-        for(int i=0;i<Cons.MAP_SIZE;i++){
-            for(int j=0;j<Cons.MAP_SIZE;j++) {
-                visited[i][j] = new HashSet<>();
-            }
-        }
+
         // 读取港口数据
         for (int i = 0; i < Cons.MAX_BERTH; i++) {
             int id = scanf.nextInt();
@@ -81,6 +76,12 @@ public class Main{
     }
     public static void main(String[] args){
         Main mainInstance = new Main();
+        visited = new HashSet[Cons.MAP_SIZE][Cons.MAP_SIZE];
+        for(int i=0;i<Cons.MAP_SIZE;i++){
+            for(int j=0;j<Cons.MAP_SIZE;j++) {
+                visited[i][j] = new HashSet<Integer>();
+            }
+        }
         mainInstance.init();
         for(int zhen = 1; zhen <= Cons.MAX_FRAME; zhen ++){
             // 读取每一帧的输入数据

@@ -33,7 +33,7 @@ public class Robot {
      */
     private int[] action=new int[2];
     public Pos targetPos;
-    private Pos nextPos;
+    public Pos nextPos;
     public static List[] paths = new ArrayList[Cons.MAX_ROBOT];
     static {
         for (int i = 0; i < paths.length; i++) {
