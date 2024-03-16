@@ -427,7 +427,7 @@ public interface PlanPath {
                         robot.setPathList(robot.getId(), path);
                         robot.stepOnce();
                     }else{
-                        robot.targetPos=null;
+                        robot.setTargetPos(null);
                     }
 
                 }
@@ -724,7 +724,7 @@ public interface PlanPath {
                         robot.setPathList(robot.getId(), path);
                         robot.stepOnce();
                     }else if(!robot.isHasGoods()){
-                        robot.targetPos=null;
+                        robot.setTargetPos(null);
 
                     }
 
@@ -766,6 +766,7 @@ public interface PlanPath {
                         continue;
                     }
                     if (!visited[nx][ny] && mapData[nx][ny] != '#' && mapData[nx][ny] != '*' && !visitedFrame[nx][ny].contains(frameNumber+cur.g+1) && !visitedFrame[nx][ny].contains(frameNumber+cur.g) && !isCollidingWithOtherRobots(nx, ny, robot.getId())) {
+
                         Pos next = new Pos(nx, ny);
                         pq.offer(new Node(next, cur.g + 1, manhattanDistance(next, goal), cur, func));
                     }
@@ -1068,4 +1069,206 @@ public interface PlanPath {
         }
     }
 
+    public class blockPlanPath implements PlanPath {
+
+        /**
+         * - 根据blocks路径，只在每个block内对borders的位置进行a*或直接bfs（最多25*25次操作，可以接受，应该不会跳帧？）
+         * - path不为空的机器人继续行进
+         * - 进入另一个block后重新规划路径，这里需要判断目标货物消失则重新分配目标
+         * - 在泊位放下后重新分配目标
+         * - 对于同一个block内的机器人考虑冲突，每一步（一个新的g）对同一个block的已存在的robotpath进行遍历，将同一时间经过的同一个位置避开
+         *
+         * @param frame
+         */
+        @Override
+        public void plan(Frame frame) {
+            Robot[] robots = frame.getRobots();
+            for (Robot robot : robots) {
+                // 恢复中
+                if (robot.getState() == 0) {
+                    continue;
+                }
+                if (robot.getTargetPos() == null) {
+                    continue;
+                }
+                //已有路径直接继续
+                if (robot.getPathList() != null && !robot.getPathList().isEmpty()) {
+                    robot.stepOnce();
+                } else {
+                    // 需要计算路径的情况
+                    Pos pos = robot.getPos();
+                    int thisBlockId = Block.getBlockId(pos);
+                    Block thisBlock = Block.blocks[thisBlockId];
+                    //目标就在本块内
+                    if (Block.getBlockId(robot.getTargetPos()) == thisBlockId) {
+                        List ends = new ArrayList<>();
+                        //todo:ends加入泊位的4*4范围
+                        ends.add(robot.getTargetPos());
+                        List<Pos> path = findPathInBlock(robot, ends, frame);
+                        if (path != null) {
+                            robot.setPathList(path);
+                            robot.stepOnce();
+                        } else {
+                            //todo:没有找到路径，直接使用A*寻整个路，但无法考虑碰撞
+                            continue;
+                        }
+                    } else {
+                        int nextBlockId;
+                        if (robot.getNextBlock() == null) {
+                            nextBlockId = -1000;
+                        } else {
+                            nextBlockId = robot.getNextBlock().getId();
+                        }
+
+                        int direction = Block.getDirection(thisBlockId, nextBlockId);
+                        if (direction != -1) {
+                            //处在边界，直接走一步进入另一个block
+                            //todo:考虑另一个块机器人对冲带来的碰撞
+                            if (Block.atBorder(pos, direction)) {
+                                if (robot.getBlocksList().isEmpty()) {
+                                    robot.setNextBlock(null);
+                                } else {
+                                    robot.setNextBlock((Block) robot.getBlocksList().remove(0));
+                                }
+                                robot.setPathList(null);
+                                Pos nextPos = new Pos(pos.X() + Cons.dx[direction], pos.Y() + Cons.dy[direction]);
+                                robot.setPath(nextPos);
+                                continue;
+                            }
+                            //在本块内移动到对应方向的边界
+                            else {
+                                List borders = thisBlock.getBorders(frame.getMap().getAreaId(robot), direction);
+                                List<Pos> path = findPathInBlock(robot, borders, frame);
+                                if (path != null) {
+                                    robot.setPathList(path);
+                                    robot.stepOnce();
+                                } else {
+                                    //todo:没有找到路径，直接使用A*寻整个路，但无法考虑碰撞
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+        }
+
+        private List<Pos> findPathInBlock(Robot robot, List<Pos> ends, Frame frame) {
+            int areaId = frame.getMap().getAreaId(robot);
+            List<Pos> path;
+            boolean visited[][] = new boolean[Cons.BLOCK_SIZE][Cons.BLOCK_SIZE];
+            PriorityQueue<Node> pq = new PriorityQueue<>();
+            Pos start = robot.getPos();
+            pq.offer(new Node(start, 0, heuristic(start, ends.get(0)), null));
+            visited[start.X() % Cons.BLOCK_SIZE][start.Y() % Cons.BLOCK_SIZE] = true;
+            //左闭右开
+            int minX = Block.getBlockId(start) / Cons.BLOCK_HEIGHT * Cons.BLOCK_SIZE;
+            int minY = Block.getBlockId(start) % Cons.BLOCK_WIDTH * Cons.BLOCK_SIZE;
+            int maxX = minX + Cons.BLOCK_SIZE;
+            int maxY = minY + Cons.BLOCK_SIZE;
+            while (!pq.isEmpty() && pq.size() < Cons.BLOCK_SIZE * Cons.BLOCK_SIZE) {
+                Node cur = pq.poll();
+                for (int i = 0; i < ends.size(); i++) {
+                    if (ends.get(i).equals(cur.pos)) {
+                        path = getPath(cur);
+                        if (path.get(0).equals(start)) {
+                            path.remove(0);
+                        }
+                        return path;
+                    }
+                }
+                for (int i = 0; i < 4; i++) {
+                    int nx = cur.pos.X() + Cons.dx[i], ny = cur.pos.Y() + Cons.dy[i];
+                    if (nx < minX || nx >= maxX || ny < minY || ny >= maxY) {
+                        continue;
+                    }
+                    if (!visited[nx % Cons.BLOCK_SIZE][ny % Cons.BLOCK_SIZE] && !frame.getMap().isObstacle(nx, ny)) {
+                        Pos next = new Pos(nx, ny);
+                        //在加入新一个节点时，需要考虑是否会与本块内的其他机器人冲突、
+                        //g==1即为第一步
+                        if (checkCollision(next, cur.g + 1, frame)) {
+                            continue;
+                        }
+                        pq.offer(new Node(next, cur.g + 1, heuristic(next, ends.get(0)), cur));
+                        visited[nx % Cons.BLOCK_SIZE][ny % Cons.BLOCK_SIZE] = true;
+                    }
+                }
+            }
+            return null;
+        }
+
+        private boolean checkCollision(Pos pos, int step, Frame frame) {
+            int blockId = Block.getBlockId(pos);
+            for (Robot robot : frame.getRobots()) {
+                if (Block.getBlockId(robot.getPos()) == blockId && robot.getPathList() != null && !robot.getPathList().isEmpty()) {
+                    if (robot.getPathList().size() <= step) {
+                        continue;
+                    }
+                    if (robot.getPathList().get(step).equals(pos)) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        private List<Pos> getPath(Node end) {
+            List<Pos> path = new ArrayList<>();
+            Node cur = end;
+            while (cur != null) {
+                path.add(cur.pos);
+                cur = cur.parent;
+            }
+            Collections.reverse(path);
+            return path;
+        }
+
+        class Node implements Comparable<Node> {
+            Pos pos;
+            /**
+             * 深度，步时
+             */
+            int g;
+            /**
+             * 启发式函数值
+             */
+            int h;
+            Node parent;
+
+            Node(int x, int y) {
+                this.pos = new Pos(x, y);
+                this.g = 0;
+                this.h = 0;
+                this.parent = null;
+            }
+
+            Node(Pos pos) {
+                this.pos = pos;
+                this.g = 0;
+                this.h = 0;
+                this.parent = null;
+            }
+
+            Node(Pos pos, int g, int h, Node parent) {
+                this.pos = pos;
+                this.g = g;
+                this.h = h;
+                this.parent = parent;
+            }
+
+            int f() {
+                //启发式函数
+                return g + 5 * h;
+            }
+
+            @Override
+            public int compareTo(Node o) {
+                return Integer.compare(this.f(), o.f());
+            }
+        }
+
+        private int heuristic(Pos start, Pos end) {
+            return Math.abs(start.X() - end.X()) + Math.abs(start.Y() - end.Y());
+        }
+    }
 }
