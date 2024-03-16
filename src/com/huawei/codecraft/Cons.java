@@ -16,6 +16,34 @@ public class Cons {
     public static final int EXPIRE_TIME = 1000;
     public static final int PRIORITY_QUEUE_SIZE = 10000;
     public static final int MAX_DISTANCE=80;
+    public static final int BLOCK_WIDTH = 8;
+    public static final int BLOCK_HEIGHT = 8;
+    public static final int BLOCK_SIZE = MAP_SIZE / BLOCK_WIDTH;
+    public static final int DIRECTION_RIGHT = 0;
+    public static final int DIRECTION_LEFT = 1;
+    public static final int DIRECTION_UP = 2;
+    public static final int DIRECTION_DOWN = 3;
+    public static final int DIRECTION_STOP = -1;
+    public static final int ACTION_MOVE = 0;
+    public static final int ACTION_GET = 1;
+    public static final int ACTION_PULL = 2;
+    public static final int ACTION_SHIP = 1;
+    public static final int ACTION_GO = 2;
+    public static int dx[] = {0, 0, -1, 1};
+    public static int dy[] = {1, -1, 0, 0};
+    public static int reverseDirection(int direction) {
+        if (direction == DIRECTION_RIGHT) {
+            return DIRECTION_LEFT;
+        } else if (direction == DIRECTION_LEFT) {
+            return DIRECTION_RIGHT;
+        } else if (direction == DIRECTION_UP) {
+            return DIRECTION_DOWN;
+        } else if (direction == DIRECTION_DOWN) {
+            return DIRECTION_UP;
+        } else {
+            return DIRECTION_STOP;
+        }
+    }
 //    public static final int MAX_GOODS_WEIGHT = 100;
 //    public static final int MAX_GOODS_VALUE = 100;
 //    public static final int MAX_GOODS_VOLUME = 100;

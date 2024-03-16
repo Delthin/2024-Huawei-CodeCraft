@@ -23,25 +23,34 @@ public class Frame {
     private int frameNumber;
     private int money;
     public static ArrayList<Goods> goods = new ArrayList<>();
-    private Robot[] robots = new Robot[Cons.MAX_ROBOT];
+    public static Robot[] robots = new Robot[Cons.MAX_ROBOT];
+    static {
+        for (int i = 0; i < robots.length; i++) {
+            robots[i] = new Robot(i); // 显式初始化
+        }
+    }
     private static Boat[] boats = new Boat[Cons.MAX_BOAT];
+
     static {
         for (int i = 0; i < boats.length; i++) {
             boats[i] = new Boat(i); // 显式初始化
         }
     }
+
     public static Berth[] berths = Main.berths;
-    public Frame(int frameNumber, Map map){
+
+    public Frame(int frameNumber, Map map) {
         this.frameNumber = frameNumber;
         this.map = map;
     }
+
     public Frame(int frameNumber, int money) {
         this.frameNumber = frameNumber;
         this.money = money;
         map = Map.duplicateMap(Main.map);
     }
 
-    public void updateGoods (Goods[] goods) {
+    public void updateGoods(Goods[] goods) {
         Frame.goods.addAll(Arrays.asList(goods));
         for (int i = 0; i < Frame.goods.size(); i++) {
             if (Frame.goods.get(i).expired(frameNumber)) {
@@ -49,16 +58,24 @@ public class Frame {
             }
         }
     }
-    public void updateRobots (Robot[] robots) {
-        this.robots = robots;
+
+    public void updateRobots(Robot[] robots) {
+    for (int i = 0; i < robots.length; i++) {
+            Frame.robots[i].setState(robots[i].getState());
+            Frame.robots[i].setPos(robots[i].getPos());
+            Frame.robots[i].setHasGoods(robots[i].isHasGoods());
+            Frame.robots[i].clear();
+        }
     }
-    public void updateBoats (Boat[] boats) {
+
+    public void updateBoats(Boat[] boats) {
         for (int i = 0; i < boats.length; i++) {
             Frame.boats[i].setState(boats[i].getState());
             Frame.boats[i].setTargetBerthId(boats[i].getTargetBerthId());
         }
     }
-    public void updateMap () {
+
+    public void updateMap() {
         for (int i = 0; i < Cons.MAX_ROBOT; i++) {
             if (robots[i] != null) {
                 map.setRobot(robots[i].getPos());
@@ -68,6 +85,17 @@ public class Frame {
             map.setGoods(goods.get(i).getPos());
         }
     }
+
+    public void updateBlock(Goods[] goods) {
+        for (int i = 0; i < Cons.BLOCK_HEIGHT; i++)
+            for (int j = 0; j < Cons.BLOCK_WIDTH; j++) {
+                Block.blocks[i * Cons.BLOCK_WIDTH + j].newGoods();
+            }
+        for (Goods good : goods) {
+            Block.blocks[Block.getBlockId(good.getPos())].addGoods(good);
+        }
+    }
+
     public Robot[] getRobots() {
         return robots;
     }
@@ -75,17 +103,25 @@ public class Frame {
     public Boat[] getBoats() {
         return boats;
     }
+
     public Berth[] getBerth() {
         return berths;
     }//todo:如何获得港口list
 
     /**
      * 获取货物列表,使用时需要获取数组长度（变长）
+     *
      * @return
      */
-    public Goods[] getGoods() {return goods.toArray(new Goods[0]);}
-    public Map getMap() {return map;}
-    public int getFrameNumber(){
+    public Goods[] getGoods() {
+        return goods.toArray(new Goods[0]);
+    }
+
+    public Map getMap() {
+        return map;
+    }
+
+    public int getFrameNumber() {
         return this.frameNumber;
     }
 }

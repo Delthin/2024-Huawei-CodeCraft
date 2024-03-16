@@ -7,6 +7,7 @@ package com.huawei.codecraft;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Scanner;
+import java.util.*;
 import java.util.logging.Logger;
 
 /**
@@ -15,15 +16,14 @@ import java.util.logging.Logger;
  * @since 2024-02-05
  */
 
-public class Main{
+public class Main {
     public static Map map;
     public static Berth[] berths = new Berth[Cons.MAX_BERTH];
     public static HashSet[][] visited ;
-
     /**
      * 初始化
      */
-    private void init(){
+    private void init() {
         Scanner scanf = new Scanner(System.in);
         String[] mapData = new String[Cons.MAP_SIZE];
         // 读取地图数据
@@ -52,16 +52,20 @@ public class Main{
         // 读取OK
         String okk = scanf.nextLine();
         assert okk.equals("OK");
+        initArea();
+        initBlock();
         //这里初始化可能添加别的内容
         //输出OK，初始化结束
         System.out.println("OK");
         System.out.flush();
     }
+
     /**
      * 处理一帧的数据
+     *
      * @param frame
      */
-    private void processFrame(Frame frame){
+    private void processFrame(Frame frame) {
         /**
          * 按以下顺序对机器人和船只分别处理当前已经读取好的帧
          * 机器人策略
@@ -76,19 +80,127 @@ public class Main{
          */
 
         //todo: 目前采用每一帧都重新计算路径的方式，后续如果跳帧可以考虑优化
-         RobotStrategy.process(frame);
-         BoatStrategy.process(frame);
+        RobotStrategy.process(frame);
+        BoatStrategy.process(frame);
     }
-    public static void main(String[] args){
+
+    private void initArea() {
+        boolean visited[][] = new boolean[Cons.MAP_SIZE][Cons.MAP_SIZE];
+        int areaId = 0;
+        for (int x = 0; x < Cons.MAP_SIZE; x++) {
+            for (int y = 0; y < Cons.MAP_SIZE; y++) {
+                // 遍历所有地图位置，划分区域
+                // 如果已经访问过或者是障碍物，直接跳过
+                if (visited[x][y]) {
+                    continue;
+                }
+                if (map.isObstacle(x, y)) {
+                    visited[x][y] = true;
+                    map.setArea(x, y, -1);
+                    continue;
+                }
+                int areaSize = 0;
+                Queue<Pos> queue = new LinkedList<>();
+                queue.add(new Pos(x, y));
+                visited[x][y] = true;
+                map.setArea(x, y, areaId);
+                // 一轮BFS确定一个area
+                while (!queue.isEmpty()) {
+                    Pos pos = queue.poll();
+                    areaSize++;
+                    for (int i = 0; i < 4; i++) {
+                        int nx = pos.X() + Cons.dx[i];
+                        int ny = pos.Y() + Cons.dy[i];
+                        if (map.isValidXY(nx, ny) && !visited[nx][ny] && !map.isObstacle(nx, ny)) {
+                            visited[nx][ny] = true;
+                            map.setArea(nx, ny, areaId);
+                            queue.add(new Pos(nx, ny));
+                        }
+                    }
+                }
+                if (areaSize > 50){
+                areaId++;}
+            }
+        }
+        areaId++;//使areaNum比实际多一，为了在initBlock时游离（小于50）的区域不越界，但不影响判断
+        //todo:想办法优化这里
+        Main.map.setAreaNum(areaId);
+    }
+
+    private void initBlock() {
+        Block[] blocks = Block.blocks;
+        // 第一轮遍历，新建blocks
+        for (int i = 0; i < Cons.BLOCK_WIDTH; i++) {
+            for (int j = 0; j < Cons.BLOCK_WIDTH; j++) {
+                blocks[i * Cons.BLOCK_WIDTH + j] = new Block(i * Cons.BLOCK_WIDTH + j);
+            }
+        }
+        // 第二轮遍历，确定每个block的邻居和边界可用点
+        for (int i = 0; i < Cons.BLOCK_WIDTH; i++) {
+            for (int j = 0; j < Cons.BLOCK_WIDTH; j++) {
+                Block block = blocks[i * Cons.BLOCK_WIDTH + j];
+                List<List<Block>> neighbours = new ArrayList<>();
+                List<List<Pos>> bordersLeft = new ArrayList<>();
+                List<List<Pos>> bordersRight = new ArrayList<>();
+                List<List<Pos>> bordersUp = new ArrayList<>();
+                List<List<Pos>> bordersDown = new ArrayList<>();
+                for (int areaId = 0; areaId < Main.map.getAreaNum(); areaId++) {
+                    neighbours.add(new ArrayList<>());
+                    bordersLeft.add(new ArrayList<>());
+                    bordersRight.add(new ArrayList<>());
+                    bordersUp.add(new ArrayList<>());
+                    bordersDown.add(new ArrayList<>());
+                }// 四个方向分别遍历此areaId下的边界，如果边界存在，则添加neighbour
+                for (int x = i * Cons.BLOCK_SIZE; x < (i + 1) * Cons.BLOCK_SIZE; x++) {
+                    for (int y = j * Cons.BLOCK_SIZE; y < (j + 1) * Cons.BLOCK_SIZE; y++) {
+                        if (!map.isObstacle(x, y) && Block.isConnected(x, y)) {
+                            if (block.atBorder(x, y, Cons.DIRECTION_RIGHT)) {
+                                int areaId = Main.map.getAreaId(x, y);
+                                bordersRight.get(areaId).add(new Pos(x, y));
+                            } else if (block.atBorder(x, y, Cons.DIRECTION_LEFT)) {
+                                int areaId = Main.map.getAreaId(x, y);
+                                bordersLeft.get(areaId).add(new Pos(x, y));
+                            } else if (block.atBorder(x, y, Cons.DIRECTION_UP)) {
+                                int areaId = Main.map.getAreaId(x, y);
+                                bordersUp.get(areaId).add(new Pos(x, y));
+                            } else if (block.atBorder(x, y, Cons.DIRECTION_DOWN)) {
+                                int areaId = Main.map.getAreaId(x, y);
+                                bordersDown.get(areaId).add(new Pos(x, y));
+                            }
+                        }
+                    }
+                }
+                // 根据边界是否存在添加neighbours
+                for (int areaId = 0; areaId < Main.map.getAreaNum(); areaId++) {
+                    if (!bordersRight.get(areaId).isEmpty()) {
+                        neighbours.get(areaId).add(blocks[i * Cons.BLOCK_WIDTH + j + 1]);
+                    }if (!bordersLeft.get(areaId).isEmpty()) {
+                        neighbours.get(areaId).add(blocks[i * Cons.BLOCK_WIDTH + j - 1]);
+                    }if (!bordersUp.get(areaId).isEmpty()) {
+                        neighbours.get(areaId).add(blocks[(i - 1) * Cons.BLOCK_WIDTH + j]);
+                    }if (!bordersDown.get(areaId).isEmpty()) {
+                        neighbours.get(areaId).add(blocks[(i + 1) * Cons.BLOCK_WIDTH + j]);
+                    }
+                }
+                block.setNeighbours(neighbours);
+                block.setBordersLeft(bordersLeft);
+                block.setBordersRight(bordersRight);
+                block.setBordersUp(bordersUp);
+                block.setBordersDown(bordersDown);
+            }
+        }
+    }
+
+
+    public static void main(String[] args) {
         Main mainInstance = new Main();
         mainInstance.init();
-        for(int zhen = 1; zhen < Cons.MAX_FRAME; zhen ++){
+        for (int zhen = 1; zhen <= Cons.MAX_FRAME; zhen++) {
             // 读取每一帧的输入数据
             Frame frame = InputParser.parseFrameData();
             mainInstance.processFrame(frame);
             // 根据当前Frame信息输出格式化
             OutputFormatter.formatOutput(frame);
-
         }
     }
 }

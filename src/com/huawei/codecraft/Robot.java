@@ -31,21 +31,20 @@ public class Robot {
      * 0:移动（move）,1:拾取（get）,2:卸货（pull）
      * 此属性用于输出处理
      */
-    private int[] action=new int[2];
-    public Pos targetPos;
+    private int[] action = new int[2];
+    private Pos targetPos;
     private Pos nextPos;
-    public static List[] paths = new ArrayList[Cons.MAX_ROBOT];
-    static {
-        for (int i = 0; i < paths.length; i++) {
-            paths[i] = new ArrayList();
-        }
-    }
+    private List<Pos> pathList;
+    private List<Block> blockList;
+
+    private Block nextBlock;
 
     public Berth targetBerth;
 
-    public Robot(int id){
-        this.id=id;
+    public Robot(int id) {
+        this.id = id;
     }
+
     public Robot(int id, int hasGoods, int x, int y, int state) {
         this.id = id;
         this.pos = new Pos(x, y);
@@ -57,76 +56,154 @@ public class Robot {
     public Pos getPos() {
         return pos;
     }
+
     public Goods getGoods() {
         return goods;
     }
+
     public void assignTargetGoods(Goods goods) {
-        this.targetBerth=null;
-        this.targetGoods=goods;
-        this.targetPos=goods.getPos();
+        this.targetBerth = null;
+        this.targetGoods = goods;
+        this.targetPos = goods.getPos();
     }
+
     public void assignTargetBerth(Berth berth) {
-        this.targetPos=berth.getPos();
+        this.targetPos = berth.getPos();
         this.targetBerth = berth;
+        this.targetGoods = null;
     }
+
     public int getId() {
         return id;
     }
+
     public int getDirection() {
         return direction;
     }
+
     public int[] getAction() {
         return action;
     }
+
     public Pos getTargetPos() {
         return targetPos;
     }
+
     public boolean isHasGoods() {
         return hasGoods;
     }
+
     public Goods getTargetGoods() {
         return targetGoods;
     }
+
     public int getState() {
         return state;
     }
+
     public void setDirection(int direction) {
         this.direction = direction;
         setAction(0);
     }
-    public void setPath(Pos nextPos){
-        this.nextPos=nextPos;
+
+    public void setPath(Pos nextPos) {
+        this.nextPos = nextPos;
     }
-    public static void setPathList(int id, List path){
-        if (path != null && path.size() > 0){
-        paths[id]=path;}
+
+    public void setPathList(List path) {
+        this.pathList = path;
     }
-    public Pos getNextPos(){
+
+    public static void setPathList(int id, List path) {
+        if (path != null && !path.isEmpty()) {
+            Frame.robots[id].setPathList(path);
+        }
+    }
+    public void clearPathList() {
+        this.pathList = null;
+    }
+
+    public Pos getNextPos() {
         return this.nextPos;
     }
-    public List getPathList(){
-        return paths[this.id];
+
+    public List getPathList() {
+        return this.pathList;
     }
-    public boolean hasPath(){
-        return paths[this.id].size()>0;
+
+    public boolean hasPath() {
+        return this.pathList != null && !this.pathList.isEmpty();
     }
-    public void stepOnce(){
-        if(paths[this.id]==null||paths[this.id].size()==0){
-            this.nextPos=null;
-        }else if(paths[this.id].size()>0){
-            this.nextPos=(Pos)paths[this.id].get(0);
-            this.paths[this.id].remove(0);
+
+    public void stepOnce() {
+        if (this.pathList == null || this.pathList.isEmpty()) {
+            this.nextPos = null;
+        } else {
+            this.nextPos = this.pathList.get(0);
+            this.pathList.remove(0);
         }
 
     }
+    public void blockOnce(){
+        if (this.blockList == null || this.blockList.isEmpty()) {
+            this.nextBlock = null;
+        } else {
+            this.nextBlock = this.blockList.get(0);
+            this.blockList.remove(0);
+        }
+    }
+
     private void setAction(int action) {
         this.action[0] = action;
         this.action[1] = 0;
     }
+
     public void pickUpGoods(Goods goods) {
         this.action[1] = 1;
     }
+
     public void putDownGoods() {
         this.action[1] = 2;
+    }
+
+    public static void setBlocksList(int id, List blocks) {
+        Frame.robots[id].setBlocksList(blocks);
+    }
+
+    public void setBlocksList(List blocks) {
+        this.blockList = blocks;
+    }
+    public List getBlocksList() {
+        return this.blockList;
+    }
+
+    public void setState(int state) {
+        this.state = state;
+    }
+
+    public void setPos(Pos pos) {
+        this.pos = pos;
+    }
+
+    public void setHasGoods(boolean hasGoods) {
+        this.hasGoods = hasGoods;
+    }
+    public void setNextBlock(Block block) {
+        this.nextBlock = block;
+    }
+    public Block getNextBlock() {
+        return this.nextBlock;
+    }
+    /**
+     * 刷新每一帧会变化的属性，比如action，direction
+     */
+    public void clear() {
+        this.action[0] = 0;
+        this.action[1] = 0;
+        this.direction = -1;
+    }
+
+    public void setTargetPos(Pos pos) {
+        this.targetPos = pos;
     }
 }

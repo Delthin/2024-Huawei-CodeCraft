@@ -44,6 +44,18 @@ public class InputParser {
         frame.updateRobots(robots);
         frame.updateBoats(boats);
         frame.updateMap();
+//        mapPrint(frame.getMap());
         return frame;
     }
+    public static void mapPrint(Map map){
+        char[][] mapData = map.getMapData();
+        for (int i = 0; i < Cons.MAP_SIZE; i++) {
+            for (int j = 0; j < Cons.MAP_SIZE; j++) {
+                System.out.print(mapData[i][j]);
+            }
+            System.out.println();
+        }
+    }
 }
+
+

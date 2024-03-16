@@ -28,11 +28,11 @@ public class Pos {
         return "(" + x + "," + y + ")";
     }
     public int X() {
-        return x;
+        return this.x;
     }
 
     public int Y() {
-        return y;
+        return this.y;
     }
 
     public void setPos(int x, int y) {
@@ -46,7 +46,7 @@ public class Pos {
     }
 
     public boolean equals(Pos pos) {
-        return x == pos.x && y == pos.y;
+        return this.x == pos.x && this.y == pos.y;
     }
 
     public int distance(Pos pos) {
@@ -56,5 +56,6 @@ public class Pos {
     public Pos clone() {
         return new Pos(x, y);
     }
+
 
 }
