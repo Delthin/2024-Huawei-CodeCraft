@@ -16,7 +16,7 @@ public class Goods {
     private int summonFrame;
     private boolean isAssigned = false;
     public Goods(int x, int y, int value, int summonFrame) {
-        this.pos = new Pos(x, y);
+        this.pos = Main.mapPos[x][y];
         this.value = value;
         this.summonFrame = summonFrame;
     }

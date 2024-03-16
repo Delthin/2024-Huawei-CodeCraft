@@ -16,7 +16,7 @@ public class RobotStrategy {
      * @param frame
      */
     public static void process(Frame frame) {
-        AssignTarget assignTarget = new AssignTarget.greedyAssignTarget();
+        AssignTarget assignTarget = new AssignTarget.bfsAssignTarget();
         PlanPath planPath = new PlanPath.CBSPlanPath();
         assignTarget.assign(frame);
         planPath.plan(frame);

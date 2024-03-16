@@ -380,14 +380,17 @@ public interface PlanPath {
         //private static Set<Node> closedSetBackward;  // 后向搜索的关闭集合
         Robot[] robots;
         static int frameNumber;
+        static Pos[][] mapPos;
+        private static int plan;
         @Override
         public void plan(Frame frame) {
             frameNumber=frame.getFrameNumber();
             grid = frame.getMap().getMapData();
             gridSizeX = Cons.MAP_SIZE;
             gridSizeY = Cons.MAP_SIZE;
-
+            mapPos=Main.mapPos;
             robots = frame.getRobots();
+            plan=0;
             for (Robot robot : robots) {
                 Pos start = robot.getPos();
                 visited[start.X()][start.Y()].add(frameNumber);
@@ -399,6 +402,7 @@ public interface PlanPath {
                 }
             }
             for (Robot robot : robots) {
+                if(plan>=500)break;//todo:调参
                 if (robot.getState() == 0) {
                     continue;
                 }
@@ -409,13 +413,14 @@ public interface PlanPath {
                     robot.stepOnce();
                 } else {
                     //更新路径的情况，分配到港口、分配的货物消失、
-                    if (goal == null) {
+                    if (goal == null || robot.isHasGoods()) {//先分配去拿货的机器人
                         continue;
                     }
+
                     Node startNode = new Node(start.X(), start.Y());
                     Node endNode = new Node(goal.X(), goal.Y());
 
-                    // 执行双向A*搜索
+                    // 执行A*搜索
                     Node intersectionNode = AStar(startNode, endNode);
 
                     // 输出最短路径
@@ -434,7 +439,24 @@ public interface PlanPath {
 
             }
             for (Robot robot : robots) {
-                if(robot.targetPos==null){
+                if (robot.isHasGoods()) {//前往港口
+                    int minDistance=Integer.MAX_VALUE;
+                    Pos start = robot.getPos();
+                    Pos next = start;
+                    for (int[] direction : Cons.DIRECTIONS) {
+                        int neighborX = start.X() + direction[0];
+                        int neighborY = start.Y() + direction[1];
+
+                        if (isValidPosition(neighborX, neighborY, 1)) {
+                            if(mapPos[neighborX][neighborY].bfsWeightsDistance<minDistance){
+                                minDistance = mapPos[neighborX][neighborY].bfsWeightsDistance;
+                                next=mapPos[neighborX][neighborY];
+                            }
+                        }
+                    }
+                    robot.nextPos=next;
+                }
+                if(robot.nextPos==null){
                     Pos start = robot.getPos();
                     if(visited[start.X()][start.Y()].contains(frameNumber+1)){
                         int[][] directions = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
@@ -443,7 +465,7 @@ public interface PlanPath {
                             int neighborY = start.Y() + direction[1];
 
                             if (isValidPosition(neighborX, neighborY, 1)) {
-                                robot.nextPos=new Pos(neighborX,neighborY);
+                                robot.nextPos=mapPos[neighborX][neighborY];
                             }
                         }
                     }
@@ -468,9 +490,10 @@ public interface PlanPath {
             //int step=0;
             while (!openSetForward.isEmpty()  ) {
                 //step+=1;
+                plan+=1;
                 Node currentForward = openSetForward.poll();
                 //closedSetForward.add(currentForward);
-                if((currentForward.g>startNode.h*5 ) && grid[endNode.x][endNode.y]!='B')return null;//
+                if((currentForward.g>startNode.h*3 ) && grid[endNode.x][endNode.y]!='B')return null;//todo:调参
                 if(visitedStart[currentForward.x][currentForward.y])continue;
                 visitedStart[currentForward.x][currentForward.y] = true;
 
@@ -561,7 +584,7 @@ public interface PlanPath {
             while (currentNode != null && currentNode.parent != null) {
                 visited[currentNode.x][currentNode.y].add(frameNumber+currentNode.g);
 
-                path.add(new Pos(currentNode.x, currentNode.y));
+                path.add(mapPos[currentNode.x][currentNode.y]);
                 currentNode = currentNode.parent;
             }
             // 反转路径，使其从起点到相交节点

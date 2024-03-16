@@ -32,8 +32,8 @@ public class Robot {
      * 此属性用于输出处理
      */
     private int[] action = new int[2];
-    private Pos targetPos;
-    private Pos nextPos;
+    public Pos targetPos;
+    public Pos nextPos;
     private List<Pos> pathList;
     private List<Block> blockList;
 
@@ -47,7 +47,7 @@ public class Robot {
 
     public Robot(int id, int hasGoods, int x, int y, int state) {
         this.id = id;
-        this.pos = new Pos(x, y);
+        this.pos = Main.mapPos[x][y];
         this.hasGoods = hasGoods == 1;
         this.targetGoods = null;
         this.state = state;
@@ -159,11 +159,13 @@ public class Robot {
     }
 
     public void pickUpGoods(Goods goods) {
+        this.targetPos=null;
         this.action[1] = 1;
     }
 
     public void putDownGoods() {
         this.action[1] = 2;
+        this.targetPos=null;
     }
 
     public static void setBlocksList(int id, List blocks) {

@@ -18,6 +18,7 @@ public class Pos {
         this.x = x;
         this.y = y;
         this.bfsRealDistance=Integer.MAX_VALUE;
+        this.bfsWeightsDistance=Integer.MAX_VALUE;
     }
 
     public Pos(Pos pos) {

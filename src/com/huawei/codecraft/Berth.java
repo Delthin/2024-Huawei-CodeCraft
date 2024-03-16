@@ -20,7 +20,7 @@ public class Berth {
 
     public Berth(int id, int x, int y, int transportTime, int loadingSpeed) {
         this.id = id;
-        this.pos = new Pos(x, y);
+        this.pos = Main.mapPos[x][y];
         this.transportTime = transportTime;
         this.loadingSpeed = loadingSpeed;
         this.bfsWeight=1;//todo:调参
