@@ -160,12 +160,21 @@ public class Robot {
 
     public void pickUpGoods(Goods goods) {
         this.targetPos=null;
+        this.setPathList(null);
         this.action[1] = 1;
     }
 
-    public void putDownGoods() {
+    public void putDownGoods(int f) {
         this.action[1] = 2;
         this.targetPos=null;
+        this.setPathList(null);
+        if(this.nextPos.bfsWeightsDistance!=0){
+            System.err.println(this.pos);
+            System.err.println(f);
+            System.err.println(this.id);
+
+        }
+
     }
 
     public static void setBlocksList(int id, List blocks) {

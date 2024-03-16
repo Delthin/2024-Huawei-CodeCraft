@@ -266,19 +266,22 @@ public interface AssignTarget {
         }
         private Goods findBestGoods(Robot robot, Goods[] goodsList) {
             Goods closestGoods = null;
-            double minDistance = Double.MAX_VALUE;
+            int minDistance=Integer.MAX_VALUE;
+            double maxWeight = Integer.MIN_VALUE;
 
             for (Goods goods : goodsList) {
                 if(goods.getValue() < 20)continue;
                 if (!goods.isAssigned()) {
-                    double distance = robot.getPos().Mdistance(goods.getPos());
-                    if (distance < minDistance) {
+                    int distance = robot.getPos().Mdistance(goods.getPos())+goods.getPos().bfsWeightsDistance;
+                    double weight = (double) goods.getValue() /distance;
+                    if (weight > maxWeight) {
                         minDistance = distance;
+                        maxWeight = weight;
                         closestGoods = goods;
                     }
                 }
             }
-            if(frameNumber<=10 && minDistance>Cons.MAX_DISTANCE)return null;//TODO:暂时性前期防跳帧
+            if(frameNumber<=10 && minDistance>2*Cons.MAX_DISTANCE)return null;//TODO:暂时性前期防跳帧
             return closestGoods;
         }
     }

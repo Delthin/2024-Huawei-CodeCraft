@@ -395,6 +395,12 @@ public interface PlanPath {
                 Pos start = robot.getPos();
                 visited[start.X()][start.Y()].add(frameNumber);
                 if(robot.getState()==0){
+                    if(robot.hasPath()){
+                        System.err.println(frameNumber);
+                        System.err.println(visited[start.X()][start.Y()]);
+                        System.err.println(visited[robot.nextPos.X()][robot.nextPos.Y()]);
+
+                    }
                     robot.setPathList(robot.getId(), null);
                     for(int i=1;i<20;i++){
                         visited[start.X()][start.Y()].add(frameNumber+i);//todo:撞傻的机器人应该add不止此帧
@@ -402,7 +408,7 @@ public interface PlanPath {
                 }
             }
             for (Robot robot : robots) {
-                if(plan>=500)break;//todo:调参
+                if(plan>=500)break;
                 if (robot.getState() == 0) {
                     continue;
                 }
@@ -410,7 +416,11 @@ public interface PlanPath {
                 Pos goal = robot.getTargetPos();
 
                 if (robot.getPathList() != null && !robot.getPathList().isEmpty()) {
-                    robot.stepOnce();
+                    if(robot.getState()==0){
+                        System.err.println(start);
+                        System.err.println(frameNumber);
+                    }
+                    robot.stepOnce();//todo
                 } else {
                     //更新路径的情况，分配到港口、分配的货物消失、
                     if (goal == null || robot.isHasGoods()) {//先分配去拿货的机器人
@@ -493,7 +503,7 @@ public interface PlanPath {
                 plan+=1;
                 Node currentForward = openSetForward.poll();
                 //closedSetForward.add(currentForward);
-                if((currentForward.g>startNode.h*3 ) && grid[endNode.x][endNode.y]!='B')return null;//todo:调参
+                if((currentForward.g>startNode.h*5 ) && grid[endNode.x][endNode.y]!='B')return null;//
                 if(visitedStart[currentForward.x][currentForward.y])continue;
                 visitedStart[currentForward.x][currentForward.y] = true;
 

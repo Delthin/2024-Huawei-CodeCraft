@@ -39,6 +39,18 @@ public class RobotStrategy {
             Pos nextPos = robot.getNextPos();
 
             int direction = getMovementDirection(currentPos, nextPos);
+            if(direction==100 ){
+                //if(frame.getFrameNumber()<3000) {
+                    System.err.println(frame.getFrameNumber());
+                    System.err.println(robot.getId());
+                    System.err.println(robot.getPathList());
+                    System.err.println(nextPos);
+                    System.err.println(currentPos);
+                    System.err.println(robot.getTargetPos());
+
+                //}
+                direction=-1;
+            }
             robot.setDirection(direction);
 
 
@@ -53,7 +65,7 @@ public class RobotStrategy {
                 robot.pickUpGoods(target);// todo:如何得到此地的goods对象
             } else if (robot.isHasGoods() && nextPos!=null && map.isBerth(nextPos)) {
                 // 当前处在停泊点上且携带货物，放下货物
-                robot.putDownGoods();
+                robot.putDownGoods(frame.getFrameNumber());
             }
 
         }
@@ -67,16 +79,20 @@ public class RobotStrategy {
         }
         int nextX = nextPos.X();
         int nextY = nextPos.Y();
-        if(currentX < nextX){
+        if(currentX == nextX-1 && currentY == nextY){
             return 3;
-        }else if (currentX > nextX){
+        }else if (currentX == 1 + nextX && currentY == nextY){
             return 2;}
-        else if (currentY < nextY){
+        else if (currentY == nextY - 1 && currentX==nextX){
             return 0;}
-        else if (currentY > nextY){
+        else if (currentY == nextY+1 && currentX == nextX){
             return 1;}
-        else{
+        else if(currentY==nextY && currentX==nextX){
             return -1;
+        }else{
+            //return Math.abs(currentX-nextX)+Math.abs(currentY-nextY)+100;
+
+            return 100;
         }
 
     }
