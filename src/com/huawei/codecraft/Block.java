@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Block {
-    Block(int id) {
+    public Block(int id) {
         this.id = id;
     }
 
@@ -97,7 +97,7 @@ public class Block {
      * @param blockIdTo
      * @return
      */
-    public int getDirection(int blockIdFrom, int blockIdTo) {
+    public static int getDirection(int blockIdFrom, int blockIdTo) {
         //0-1向右，1-0向左，0-8向下，8-0向上
         if (blockIdFrom == blockIdTo - 1) {
             return Cons.DIRECTION_RIGHT;
@@ -139,7 +139,7 @@ public class Block {
      * @param direction
      * @return
      */
-    public boolean atBorder(Pos a, int direction) {
+    public static boolean atBorder(Pos a, int direction) {
         if (direction == Cons.DIRECTION_RIGHT) {
             return a.Y() % Cons.BLOCK_SIZE == Cons.BLOCK_SIZE - 1;
         } else if (direction == Cons.DIRECTION_LEFT) {

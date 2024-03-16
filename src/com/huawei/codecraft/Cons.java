@@ -28,8 +28,21 @@ public class Cons {
     public static final int ACTION_PULL = 2;
     public static final int ACTION_SHIP = 1;
     public static final int ACTION_GO = 2;
-    public static int dx[] = {0, 0, 1, -1};
+    public static int dx[] = {0, 0, -1, 1};
     public static int dy[] = {1, -1, 0, 0};
+    public static int reverseDirection(int direction) {
+        if (direction == DIRECTION_RIGHT) {
+            return DIRECTION_LEFT;
+        } else if (direction == DIRECTION_LEFT) {
+            return DIRECTION_RIGHT;
+        } else if (direction == DIRECTION_UP) {
+            return DIRECTION_DOWN;
+        } else if (direction == DIRECTION_DOWN) {
+            return DIRECTION_UP;
+        } else {
+            return DIRECTION_STOP;
+        }
+    }
 //    public static final int MAX_GOODS_WEIGHT = 100;
 //    public static final int MAX_GOODS_VALUE = 100;
 //    public static final int MAX_GOODS_VOLUME = 100;

@@ -16,8 +16,12 @@ public class RobotStrategy {
      * @param frame
      */
     public static void process(Frame frame) {
-        AssignTarget assignTarget = new AssignTarget.greedyAssignTarget();
-        PlanPath planPath = new PlanPath.BidirectionalAStar();
+        AssignTarget assignTarget = new AssignTarget.blockAssignTarget();
+        PlanPath planPath = new PlanPath.blockPlanPath();
+//        if (frame.getFrameNumber() < 50){
+//            //物品过少，可以跳过？
+//            return;
+//        }
         assignTarget.assign(frame);
         planPath.plan(frame);
         decideInstruction(frame);

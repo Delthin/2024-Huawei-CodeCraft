@@ -94,6 +94,7 @@ public interface AssignTarget {
          *
          * @param frame
          */
+        //todo:已知缺陷，Block中有隔断无法正确运行
         @Override
         public void assign(Frame frame) {
             for (Robot robot : frame.getRobots()) {
@@ -103,9 +104,10 @@ public interface AssignTarget {
                 if (robot.isHasGoods()) {
                     if (robot.targetBerth == null) {
                         robot.clearPathList();
-                        Berth closestBerth = findClosestBerth(robot, frame.getBerth());
+                        Berth closestBerth = findClosestBerth(robot, frame.getBerth(), frame);
                         if (closestBerth != null) {
                             robot.assignTargetBerth(closestBerth);
+                            robot.blockOnce();
                         }
                     }
                     else{
@@ -117,10 +119,11 @@ public interface AssignTarget {
                     //没有目标和目标过期（如果分配时间长，可以调整目标过期判断）
                     if (robot.getTargetGoods() == null || robot.getTargetGoods().expired(frame.getFrameNumber())){
                         robot.clearPathList();
-                        Goods closestGoods = findClosestGoods(robot, frame.getGoods());
+                        Goods closestGoods = findClosestGoods(robot, frame.getGoods(), frame);
                         if (closestGoods != null) {
                             robot.assignTargetGoods(closestGoods);
                             closestGoods.setAssigned(true);
+                            robot.blockOnce();
                         }
                     }else {
                         continue;
@@ -129,43 +132,50 @@ public interface AssignTarget {
             }
         }
 
-        private Goods findClosestGoods(Robot robot, Goods[] goodsList) {
-            int areaId = Main.map.getAreaId(robot);
+        private Goods findClosestGoods(Robot robot, Goods[] goodsList, Frame frame) {
+            int areaId = frame.getMap().getAreaId(robot);
             List<Pos> ends = new ArrayList<>();
             for (Goods goods : goodsList) {
-                if (Main.map.getAreaId(goods) == areaId && !goods.isAssigned()) {
+                //同一个块，直接分配
+                if (Block.getBlockId(goods.getPos()) == Block.getBlockId(robot.getPos())) {
+                    return goods;
+                }
+                if (frame.getMap().getAreaId(goods) == areaId && !goods.isAssigned()) {
                     ends.add(goods.getPos());
                 }
             }
             List<Block> blocks = bfsBlock(areaId, robot.getPos(), ends);
-            if (blocks == null) {
+            if (blocks == null || blocks.isEmpty()) {
                 return null;
             }
             robot.setBlocksList(blocks);
             Block endBlock = blocks.get(blocks.size() - 1);
             for (Goods goods : goodsList) {
-                if (Main.map.getAreaId(goods) == areaId && Block.getBlockId(goods.getPos()) == endBlock.getId()) {
+                if (frame.getMap().getAreaId(goods) == areaId && Block.getBlockId(goods.getPos()) == endBlock.getId()) {
                     return goods;
                 }
             }
             return null;
         }
-        private Berth findClosestBerth(Robot robot, Berth[] berths) {
-            int areaId = Main.map.getAreaId(robot);
+        private Berth findClosestBerth(Robot robot, Berth[] berths, Frame frame) {
+            int areaId = frame.getMap().getAreaId(robot);
             List<Pos> ends = new ArrayList<>();
             for (Berth berth : berths) {
-                if (Main.map.getAreaId(berth) == areaId) {
+                if (Block.getBlockId(berth.getPos()) == Block.getBlockId(robot.getPos()) ){
+                    return berth;
+                }
+                if (frame.getMap().getAreaId(berth) == areaId) {
                     ends.add(berth.getPos());
                 }
             }
             List<Block> blocks = bfsBlock(areaId, robot.getPos(), ends);
-            if (blocks == null) {
+            if (blocks == null || blocks.isEmpty()) {
                 return null;
             }
             robot.setBlocksList(blocks);
             Block endBlock = blocks.get(blocks.size() - 1);
             for (Berth berth : berths) {
-                if (Main.map.getAreaId(berth) == areaId && Block.getBlockId(berth.getPos()) == endBlock.getId()) {
+                if (frame.getMap().getAreaId(berth) == areaId && Block.getBlockId(berth.getPos()) == endBlock.getId()) {
                     return berth;
                 }
             }

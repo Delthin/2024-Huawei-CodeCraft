@@ -70,6 +70,7 @@ public class Robot {
     public void assignTargetBerth(Berth berth) {
         this.targetPos = berth.getPos();
         this.targetBerth = berth;
+        this.targetGoods = null;
     }
 
     public int getId() {
@@ -143,6 +144,14 @@ public class Robot {
         }
 
     }
+    public void blockOnce(){
+        if (this.blockList == null || this.blockList.isEmpty()) {
+            this.nextBlock = null;
+        } else {
+            this.nextBlock = this.blockList.get(0);
+            this.blockList.remove(0);
+        }
+    }
 
     private void setAction(int action) {
         this.action[0] = action;
@@ -164,6 +173,9 @@ public class Robot {
     public void setBlocksList(List blocks) {
         this.blockList = blocks;
     }
+    public List getBlocksList() {
+        return this.blockList;
+    }
 
     public void setState(int state) {
         this.state = state;
@@ -176,7 +188,12 @@ public class Robot {
     public void setHasGoods(boolean hasGoods) {
         this.hasGoods = hasGoods;
     }
-
+    public void setNextBlock(Block block) {
+        this.nextBlock = block;
+    }
+    public Block getNextBlock() {
+        return this.nextBlock;
+    }
     /**
      * 刷新每一帧会变化的属性，比如action，direction
      */
