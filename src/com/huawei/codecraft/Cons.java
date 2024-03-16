@@ -31,6 +31,7 @@ public class Cons {
     public static final int ACTION_GO = 2;
     public static int dx[] = {0, 0, -1, 1};
     public static int dy[] = {1, -1, 0, 0};
+    public static final int[][] DIRECTIONS = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
     public static int reverseDirection(int direction) {
         if (direction == DIRECTION_RIGHT) {
             return DIRECTION_LEFT;

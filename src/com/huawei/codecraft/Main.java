@@ -18,6 +18,7 @@ import java.util.logging.Logger;
 
 public class Main {
     public static Map map;
+    public static Pos[][] mapPos;
     public static Berth[] berths = new Berth[Cons.MAX_BERTH];
     public static HashSet[][] visited ;
     /**
@@ -49,6 +50,7 @@ public class Main {
         assert okk.equals("OK");
         initArea();
         initBlock();
+        initBFS();
         //这里初始化可能添加别的内容
         //输出OK，初始化结束
         System.out.println("OK");
@@ -185,7 +187,57 @@ public class Main {
             }
         }
     }
+    private void initBFS(){
+        Queue<Pos> queue = new LinkedList<>();
 
+        for (Berth berth : berths) {
+            Pos berthPos = berth.getPos();//
+            berthPos.bfsWeightsDistance = 0;
+            berthPos.bfsRealDistance =0;
+            queue.offer(berthPos);
+            queue.offer(mapPos[berthPos.X()+1][berthPos.Y()]);
+            queue.offer(mapPos[berthPos.X()+1][berthPos.Y()+1]);
+            queue.offer(mapPos[berthPos.X()][berthPos.Y()+1]);
+            mapPos[berthPos.X()+1][berthPos.Y()].bfsRealDistance=0;
+            mapPos[berthPos.X()+1][berthPos.Y()+1].bfsRealDistance=0;
+            mapPos[berthPos.X()][berthPos.Y()+1].bfsRealDistance=0;
+            mapPos[berthPos.X()+1][berthPos.Y()].bfsWeightsDistance=0;
+            mapPos[berthPos.X()+1][berthPos.Y()+1].bfsWeightsDistance=0;
+            mapPos[berthPos.X()][berthPos.Y()+1].bfsWeightsDistance=0;
+            berthPos.berth=berth;
+            mapPos[berthPos.X()+1][berthPos.Y()].berth=berth;
+            mapPos[berthPos.X()+1][berthPos.Y()+1].berth=berth;
+            mapPos[berthPos.X()][berthPos.Y()+1].berth=berth;
+        }
+
+        // 进行广度优先搜索
+        while (!queue.isEmpty()) {
+            Pos currPos = queue.poll();
+            int bfsWeightDistance = currPos.bfsWeightsDistance+currPos.berth.bfsWeight;
+            int bfsRealDistance = currPos.bfsRealDistance + 1;
+
+            // 遍历四个方向
+            for (int[] dir : Cons.DIRECTIONS) {
+                int newRow = currPos.X() + dir[0];
+                int newCol = currPos.Y() + dir[1];
+
+                // 判断是否越界
+                if (newRow < 0 || newRow >= Cons.MAP_SIZE || newCol < 0 || newCol >= Cons.MAP_SIZE) {
+                    continue;
+                }
+                Pos next = mapPos[newRow][newCol];
+                // 如果当前位置未被访问过，则更新距离并将其入队
+                if (bfsWeightDistance < next.bfsWeightsDistance) {
+                    next.bfsWeightsDistance = bfsWeightDistance;
+                    next.bfsRealDistance = bfsRealDistance;
+                    next.berth=currPos.berth;
+                    if(!queue.contains(next))queue.offer(next);
+                }
+            }
+        }
+
+
+    }
 
     public static void main(String[] args) {
         Main mainInstance = new Main();

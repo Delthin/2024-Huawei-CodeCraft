@@ -9,14 +9,15 @@ package com.huawei.codecraft;
 public class Pos {
     private int x;
     private int y;
-    public int g;
-    public int h;
-    public int f;
-    public Pos parent;
+    public int bfsRealDistance;//实际
+    public int bfsWeightsDistance;//权重
+    public Berth berth;
 
+    public Pos parent;
     public Pos(int x, int y) {
         this.x = x;
         this.y = y;
+        this.bfsRealDistance=Integer.MAX_VALUE;
     }
 
     public Pos(Pos pos) {
@@ -49,7 +50,7 @@ public class Pos {
         return this.x == pos.x && this.y == pos.y;
     }
 
-    public int distance(Pos pos) {
+    public int Mdistance(Pos pos) {
         return Math.abs(x - pos.X()) + Math.abs(y - pos.Y());
     }
 
