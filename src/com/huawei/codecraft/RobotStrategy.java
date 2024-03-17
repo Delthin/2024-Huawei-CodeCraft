@@ -45,19 +45,19 @@ public class RobotStrategy {
             Pos nextPos = robot.getNextPos();
 
             int direction = getMovementDirection(currentPos, nextPos);
-            if (direction == 100) {
-                //if(frame.getFrameNumber()<3000) {
-                System.err.println(frame.getFrameNumber());
-                System.err.println(robot.getId());
-                System.err.println(robot.getPathList());
-                System.err.println(nextPos);
-                System.err.println(currentPos);
-                System.err.println(robot.getTargetPos());
-
-                //}
-                robot.waitRecover();
-                direction = -1;
-            }
+//            if (direction == 100) {
+//                //if(frame.getFrameNumber()<3000) {
+//                System.err.println(frame.getFrameNumber());
+//                System.err.println(robot.getId());
+//                System.err.println(robot.getPathList());
+//                System.err.println(nextPos);
+//                System.err.println(currentPos);
+//                System.err.println(robot.getTargetPos());
+//
+//                //}
+//                robot.waitRecover();
+//                direction = -1;
+//            }
             robot.setDirection(direction);
 
 
@@ -65,9 +65,9 @@ public class RobotStrategy {
             Goods target = robot.getTargetGoods();//目标物品
             Map map = frame.getMap();
 
-            //if (currentGoods == null && target!=null && nextPos!=null && nextPos.equals(target.getPos()) || currentGoods == null && target!=null && currentPos.equals(target.getPos())) {
+            if (currentGoods == null && target!=null && nextPos!=null && nextPos.equals(target.getPos()) || currentGoods == null && target!=null && currentPos.equals(target.getPos())) {
 
-            if (currentGoods == null && nextPos != null && map.isGoods(nextPos) || currentGoods == null && target != null && currentPos.equals(target.getPos())) {
+            //if (currentGoods == null && nextPos != null && map.isGoods(nextPos) || currentGoods == null && target != null && currentPos.equals(target.getPos())) {
                 // 当前处在货物上且空闲，捡起货物
                 robot.pickUpGoods(target);// todo:如何得到此地的goods对象
             } else if (robot.isHasGoods() && nextPos != null && map.isBerth(nextPos)) {
