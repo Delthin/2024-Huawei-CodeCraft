@@ -217,4 +217,9 @@ public class Robot {
     public void setTargetPos(Pos pos) {
         this.targetPos = pos;
     }
+
+    public void waitRecover() {
+        this.pathList = null;
+        this.nextPos = null;
+    }
 }

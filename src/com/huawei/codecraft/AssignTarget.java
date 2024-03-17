@@ -14,9 +14,10 @@ public interface AssignTarget {
 
     public class greedyAssignTarget implements AssignTarget {
         int frameNumber;
+
         @Override
         public void assign(Frame frame) {
-            frameNumber=frame.getFrameNumber();
+            frameNumber = frame.getFrameNumber();
             Robot[] robots = frame.getRobots(); // 获取机器人列表
             Goods[] goodsList = frame.getGoods(); // 获取货物列表
             Berth[] berths = frame.getBerth();
@@ -61,7 +62,7 @@ public interface AssignTarget {
             double minDistance = Double.MAX_VALUE;
 
             for (Goods goods : goodsList) {
-                if(goods.getValue() < 20)continue;
+                if (goods.getValue() < 20) continue;
                 if (!goods.isAssigned()) {
                     double distance = robot.getPos().Mdistance(goods.getPos());
                     if (distance < minDistance) {
@@ -70,7 +71,7 @@ public interface AssignTarget {
                     }
                 }
             }
-            if(frameNumber<=10 && minDistance>Cons.MAX_DISTANCE)return null;
+            if (frameNumber <= 10 && minDistance > Cons.MAX_DISTANCE) return null;
             return closestGoods;
         }
 
@@ -113,15 +114,14 @@ public interface AssignTarget {
                             robot.assignTargetBerth(closestBerth);
                             robot.blockOnce();
                         }
-                    }
-                    else{
+                    } else {
                         continue;
                     }
                 }
                 //没有货物
-                else{
+                else {
                     //没有目标和目标过期（如果分配时间长，可以调整目标过期判断）
-                    if (robot.getTargetGoods() == null || robot.getTargetGoods().expired(frame.getFrameNumber())){
+                    if (robot.getTargetGoods() == null || robot.getTargetGoods().expired(frame.getFrameNumber())) {
                         robot.clearPathList();
                         Goods closestGoods = findClosestGoods(robot, frame.getGoods(), frame);
                         if (closestGoods != null) {
@@ -129,7 +129,7 @@ public interface AssignTarget {
                             closestGoods.setAssigned(true);
                             robot.blockOnce();
                         }
-                    }else {
+                    } else {
                         continue;
                     }
                 }
@@ -161,11 +161,12 @@ public interface AssignTarget {
             }
             return null;
         }
+
         private Berth findClosestBerth(Robot robot, Berth[] berths, Frame frame) {
             int areaId = frame.getMap().getAreaId(robot);
             List<Pos> ends = new ArrayList<>();
             for (Berth berth : berths) {
-                if (Block.getBlockId(berth.getPos()) == Block.getBlockId(robot.getPos()) ){
+                if (Block.getBlockId(berth.getPos()) == Block.getBlockId(robot.getPos())) {
                     return berth;
                 }
                 if (frame.getMap().getAreaId(berth) == areaId) {
@@ -188,6 +189,7 @@ public interface AssignTarget {
 
         /**
          * bfs从start到end在areaId里经过的block，不含含start所在块本身
+         *
          * @param areaId
          * @param start
          * @param ends
@@ -230,28 +232,72 @@ public interface AssignTarget {
                     }
                 }
             }
-            if(!find){
+            if (!find) {
                 return null;
             }
             return blocks;
         }
     }
 
-    public class bfsAssignTarget implements AssignTarget{
+    public class bfsAssignTarget implements AssignTarget {
         int frameNumber;
+
         @Override
         public void assign(Frame frame) {
             frameNumber = frame.getFrameNumber();
             Robot[] robots = frame.getRobots(); // 获取机器人列表
             Goods[] goodsList = frame.getGoods(); // 获取货物列表
-            Berth[] berths = frame.getBerth();
+            assignRecover(robots);
+            assignBerth(robots);
+            assignByRobot(robots, goodsList);
+//            assignByGoods(robots, goodsList);
+        }
+        private void assignRecover(Robot[] robots) {
             for (Robot robot : robots) {
-                if (robot.getState() == 0) continue;
+                if (robot.getState() == 0) {
+                    robot.waitRecover();
+                }
+            }
+        }
+        private void assignByGoods(Robot[] robots, Goods[] goodsList) {
+            //垃圾策略，别用
+            Arrays.sort(goodsList, new Comparator<Goods>() {
+                @Override
+                public int compare(Goods o1, Goods o2) {
+                    return o2.getValue() - o1.getValue();
+                }
+            });
+            for (Goods goods : goodsList) {
+                if (goods.isAssigned()) continue;
+                int minDistance = Integer.MAX_VALUE;
+                Robot closestRobot = null;
+                for (Robot robot : robots) {
+                    if (robot.getState() == 0 || robot.hasPath() || robot.isHasGoods() || robot.getTargetPos() != null) continue;
+                    int distance = getDistance(robot.getPos().Mdistance(goods.getPos()) , goods.getPos().bfsWeightsDistance);
+                    if (distance < minDistance) {
+                        minDistance = distance;
+                        closestRobot = robot;
+                    }
+                }
+                if (closestRobot != null) {
+                    closestRobot.assignTargetGoods(goods);
+                    goods.setAssigned(true);
+                }
+            }
+        }
+        private void assignBerth(Robot[] robots) {
+            for (Robot robot : robots) {
                 Berth berth = robot.getPos().berth;
                 if (robot.isHasGoods() && robot.targetBerth == null) {
                     if (berth != null) {
                         robot.assignTargetBerth(berth);
                     }
+                }
+            }
+        }
+        private void assignByRobot(Robot[] robots, Goods[] goodsList) {
+            for (Robot robot : robots) {
+                if (robot.isHasGoods()){
                 } else {
                     if (robot.hasPath() || robot.getTargetPos() != null) {
                         continue;
@@ -266,14 +312,14 @@ public interface AssignTarget {
         }
         private Goods findBestGoods(Robot robot, Goods[] goodsList) {
             Goods closestGoods = null;
-            int minDistance=Integer.MAX_VALUE;
-            double maxWeight = Integer.MIN_VALUE;
+            int minDistance = Integer.MAX_VALUE;
+            double maxWeight = Double.MIN_VALUE;
 
             for (Goods goods : goodsList) {
-                if(goods.getValue() < 20)continue;
+//                if (goods.getValue() < 10) continue;
                 if (!goods.isAssigned()) {
-                    int distance = robot.getPos().Mdistance(goods.getPos())+goods.getPos().bfsWeightsDistance;
-                    double weight = (double) goods.getValue() /distance;
+                    int distance = getDistance(robot.getPos().Mdistance(goods.getPos()) , goods.getPos().bfsWeightsDistance);
+                    double weight = getWeight(goods, distance);
                     if (weight > maxWeight) {
                         minDistance = distance;
                         maxWeight = weight;
@@ -281,8 +327,14 @@ public interface AssignTarget {
                     }
                 }
             }
-            if(frameNumber<=10 && minDistance>2*Cons.MAX_DISTANCE)return null;//TODO:暂时性前期防跳帧
+//            if (minDistance > Cons.MAX_DISTANCE) return null;
             return closestGoods;
+        }
+        private double getWeight(Goods goods, int distance) {
+            return (double) (goods.getValue() + 200) / (distance);
+        }
+        private int getDistance(int robotDistance, int BerthDistance) {
+            return robotDistance;
         }
     }
 }

@@ -14,8 +14,8 @@ public class Berth {
      * 左上角坐标
      */
     private Pos pos;
-    private int transportTime;
-    private int loadingSpeed;
+    private int transportTime;//1-1000
+    private int loadingSpeed;//1-5
     public int bfsWeight;
 
     public Berth(int id, int x, int y, int transportTime, int loadingSpeed) {
@@ -23,7 +23,7 @@ public class Berth {
         this.pos = Main.mapPos[x][y];
         this.transportTime = transportTime;
         this.loadingSpeed = loadingSpeed;
-        this.bfsWeight=1;//todo:调参
+        this.bfsWeight= loadingSpeed * 10 / ((transportTime+1000) / 100) + 1 ;//todo:调参
     }
 
     public int getId() {

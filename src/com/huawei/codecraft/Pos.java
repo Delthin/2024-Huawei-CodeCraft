@@ -58,6 +58,11 @@ public class Pos {
     public Pos clone() {
         return new Pos(x, y);
     }
-
+    public int getBfsRealDistance() {
+        return bfsRealDistance;
+    }
+    public int getBfsWeightsDistance() {
+        return bfsWeightsDistance;
+    }
 
 }

@@ -15,7 +15,7 @@ public class Cons {
     public static final int BOAT_HEIGHT = 4;
     public static final int EXPIRE_TIME = 1000;
     public static final int PRIORITY_QUEUE_SIZE = 10000;
-    public static final int MAX_DISTANCE=80;
+    public static final int MAX_DISTANCE=200;
     public static final int BLOCK_WIDTH = 8;
     public static final int BLOCK_HEIGHT = 8;
     public static final int BLOCK_SIZE = MAP_SIZE / BLOCK_WIDTH;
