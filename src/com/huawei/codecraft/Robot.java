@@ -40,7 +40,7 @@ public class Robot {
     private Block nextBlock;
 
     public Berth targetBerth;
-    private int responsibleBerthId;
+    private int responsibleBerthId =-1;
 
     public Robot(int id) {
         this.id = id;
@@ -52,7 +52,7 @@ public class Robot {
         this.hasGoods = hasGoods == 1;
         this.targetGoods = null;
         this.state = state;
-        this.responsibleBerthId=-1;
+        //this.responsibleBerthId=-1;
     }
 
     public Pos getPos() {

@@ -103,10 +103,10 @@ public class PathTest {
     @Test
     public void testObstacle(){
         Frame frame = frameObstacleInit();
-        Main.visited = new HashSet[Cons.MAP_SIZE][Cons.MAP_SIZE];
+        Main.visitedRecord = new HashSet[Cons.MAP_SIZE][Cons.MAP_SIZE];
         for(int i=0;i<Cons.MAP_SIZE;i++){
             for(int j=0;j<Cons.MAP_SIZE;j++) {
-                Main.visited[i][j] = new HashSet<>();
+                Main.visitedRecord[i][j] = new HashSet<>();
             }
         }
         PlanPath planPath = new PlanPath.CBSPlanPath();

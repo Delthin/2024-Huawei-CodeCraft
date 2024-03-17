@@ -320,6 +320,8 @@ public interface AssignTarget {
             for (Goods goods : goodsList) {
                 if (!goods.isAssigned() && goods.getPos().berth == berth){
                     int distance = goods.getPos().bfsWeightsDistance;
+                    //if(distance>200)continue;//todo:调参
+
                     double weight = getWeight(goods, distance);
                     if (weight > maxWeight) {
                         minDistance = distance;
@@ -329,11 +331,13 @@ public interface AssignTarget {
                 }
             }
             if (closestGoods != null) return closestGoods;
+
             //第二遍循环找其他港口
             for (Goods goods : goodsList) {
 //                if (goods.getValue() < 10) continue;
                 if (!goods.isAssigned()) {
                     int distance = getDistance(robot.getPos().Mdistance(goods.getPos()) , goods.getPos().bfsWeightsDistance);
+                    //if(distance>350)continue;//todo:调参
                     double weight = getWeight(goods, distance);
                     if (weight > maxWeight) {
                         minDistance = distance;
@@ -346,10 +350,10 @@ public interface AssignTarget {
             return closestGoods;
         }
         private double getWeight(Goods goods, int distance) {
-            return (double) (goods.getValue() + 200) / (distance);
+            return (double) (goods.getValue() ) / (distance);
         }
         private int getDistance(int robotDistance, int BerthDistance) {
-            return robotDistance;
+            return robotDistance + BerthDistance;
         }
         private Goods findClosestGoods(Robot robot, Goods[] goodsList) {
             Goods closestGoods = null;

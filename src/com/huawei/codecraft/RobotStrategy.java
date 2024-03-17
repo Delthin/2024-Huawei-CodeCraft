@@ -102,7 +102,7 @@ public class RobotStrategy {
         } else {
             //return Math.abs(currentX-nextX)+Math.abs(currentY-nextY)+100;
 
-            return 100;
+            return -1;
         }
 
     }

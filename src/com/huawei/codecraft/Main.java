@@ -5,8 +5,10 @@
 package com.huawei.codecraft;
 
 import java.util.HashSet;
+import java.util.Random;
 import java.util.Scanner;
 import java.util.*;
+import java.util.logging.Logger;
 
 /**
  * Main
@@ -19,7 +21,7 @@ public class Main {
     public static char[][] mapdata;
     public static Pos[][] mapPos;
     public static Berth[] berths = new Berth[Cons.MAX_BERTH];
-    public static HashSet[][] visitedRecord ;
+    public static HashSet<Integer>[][] visitedRecord ;
     /**
      * 初始化
      */
@@ -81,11 +83,13 @@ public class Main {
         //todo: 目前采用每一帧都重新计算路径的方式，后续如果跳帧可以考虑优化
         RobotStrategy.process(frame);
         BoatStrategy.process(frame);
+
+        //测试
 //        Print.printRobotInfo(frame);
-        if(frame.getFrameNumber() > 13000){
-            System.err.println("frameNo: " + frame.getFrameNumber());
-            Print.printBerthInfo(frame);
-            Print.printBoatInfo(frame);}
+//        if(frame.getFrameNumber() > 13000){
+//            System.err.println("frameNo: " + frame.getFrameNumber());
+//            Print.printBerthInfo(frame);
+//            Print.printBoatInfo(frame);}
     }
 
 //    private void initArea() {

@@ -20,6 +20,8 @@ public class OutputFormatter {
             if (act[0] == 0) {
                 if (robot.getDirection() != -1) {
                     System.out.println("move " + robot.getId() + " " + robot.getDirection());
+                    //if(frame.getFrameNumber()<10)System.err.println("frame"+frame.getFrameNumber()+"    move " + robot.getId() + " " + robot.getDirection());
+
                 }
             }
             if (act[1] == 1 ) {
@@ -39,6 +41,8 @@ public class OutputFormatter {
                 System.out.println("go " + boat.getId());
             }
         }
+        //if(frame.getFrameNumber()<10)System.err.println("frame"+frame.getFrameNumber());
+
         System.out.println("OK");
         System.out.flush();
     }
