@@ -133,12 +133,25 @@ public interface AssignTargetBoat {
                     } else {
                         //最后时刻全部开往虚拟店
                         Berth berth = berths[boat.getTargetBerthId()];
-                        if (14995 - frame.getFrameNumber() <= berth.getTransportTime()) {
+                        if (14997 - frame.getFrameNumber() <= berth.getTransportTime()) {
                             boat.setAction(2);
                             berth.setAssigned(false);
+                            //不让机器人再去此港口
+                            berth.setDeserted();
                         }
                         //装货，泊位的装完就走
-                        else if (berth.getGoodsNum() <= 0 || boat.getVacancy() < 0) {
+                        else if (berth.getGoodsNum() <= 0 || boat.getVacancy() <= 0) {
+                            if (boat.getVacancy()<= 0){
+                                boat.setAction(2);
+                                berth.setAssigned(false);
+                            }
+                            if(frame.getFrameNumber() > 11000 && frame.getFrameNumber() < (Cons.MAX_FRAME - 550)){
+                                //特判临近结束时去别的港口继续装
+                                assignBerth(frame, boat, berths);
+                                berth.setAssigned(false);
+                                //不加setAssigned意味这个港口也别来了
+                                continue;
+                            }
                             boat.setAction(2);
                             berth.setAssigned(false);
                         } else {
@@ -148,6 +161,14 @@ public interface AssignTargetBoat {
                         }
                     }
                 } else if (boat.getState() == 2) {
+                    Berth berth = berths[boat.getTargetBerthId()];
+                    if (14997 - frame.getFrameNumber() <= berth.getTransportTime()) {
+                        boat.setAction(2);
+                        berth.setAssigned(false);
+                        //不让机器人再去此港口
+                        berth.setDeserted();
+                        continue;
+                    }
                     assignBerth(frame, boat, berths);
                 }
             }
@@ -170,9 +191,13 @@ public interface AssignTargetBoat {
         private void assignBerth(Frame frame, Boat boat, Berth[] berths) {
             int maxId = 0;
             for (Berth berth: berths){
-                if (!berth.isItAssigned() && (berth.getGoodsNum() > berths[maxId].getGoodsNum())){
+                if (!berth.isItAssigned() && (berth.getGoodsNum() > berths[maxId].getGoodsNum()) && (frame.getFrameNumber() + 2 * berth.getTransportTime() < Cons.MAX_FRAME - 5)){
                     maxId = berth.getId();
                 }
+            }
+            if (maxId == 0 && berths[0].isItAssigned()){
+                //没分到
+                return;
             }
             boat.setShipTarget(maxId);
             boat.setAction(1);

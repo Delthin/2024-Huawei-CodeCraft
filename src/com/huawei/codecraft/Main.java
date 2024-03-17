@@ -4,6 +4,8 @@
 
 package com.huawei.codecraft;
 
+import com.sun.jndi.ldap.Ber;
+
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Scanner;
@@ -35,14 +37,17 @@ public class Main {
         map = new Map(mapData);
         mapdata=map.getMapData();
         // 读取港口数据
+        int maxTransportTime = 0;
         for (int i = 0; i < Cons.MAX_BERTH; i++) {
             int id = scanf.nextInt();
             int x = scanf.nextInt();
             int y = scanf.nextInt();
             int transportTime = scanf.nextInt();
+            maxTransportTime = Math.max(maxTransportTime, transportTime);
             int loadingSpeed = scanf.nextInt();
             berths[id] = new Berth(id, x, y, transportTime, loadingSpeed);
         }
+        Berth.maxTransportTime = maxTransportTime;
         // 读取船只容量
         Boat.setCapacity(scanf.nextInt());
         scanf.nextLine();//去除最后一个int后的line
@@ -80,9 +85,11 @@ public class Main {
         //todo: 目前采用每一帧都重新计算路径的方式，后续如果跳帧可以考虑优化
         RobotStrategy.process(frame);
         BoatStrategy.process(frame);
-//        Print.printBerthInfo(frame);
-//        if(frame.getFrameNumber() > 1000){
-//        Print.printBoatInfo(frame);}
+
+        if(frame.getFrameNumber() > 13000){
+            System.err.println("frameNo: " + frame.getFrameNumber());
+            Print.printBerthInfo(frame);
+            Print.printBoatInfo(frame);}
     }
 
 //    private void initArea() {

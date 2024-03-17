@@ -19,6 +19,8 @@ public class Berth {
     public int bfsWeight;
     private int goodsNum;
     private boolean isAssigned = false;
+    private boolean deserted = false;
+    public static int maxTransportTime = 0;
 
     public Berth(int id, int x, int y, int transportTime, int loadingSpeed) {
         this.id = id;
@@ -63,6 +65,12 @@ public class Berth {
     }
     public void setAssigned(boolean assigned) {
         isAssigned = assigned;
+    }
+    public void setDeserted(){
+        this.deserted = true;
+    }
+    public boolean isDeserted(){
+        return this.deserted;
     }
     public void clearGoodsNum() {
         this.goodsNum = 0;
