@@ -376,24 +376,29 @@ public interface AssignTarget {
     }
     public class bfsAssignTarget implements AssignTarget{
         int frameNumber;
+        Berth[] berths;
         @Override
         public void assign(Frame frame) {
             frameNumber = frame.getFrameNumber();
             Robot[] robots = frame.getRobots(); // 获取机器人列表
             Goods[] goodsList = frame.getGoods(); // 获取货物列表
-            Berth[] berths = frame.getBerth();
+            berths = frame.getBerth();
             for (Robot robot : robots) {
                 if (robot.getState() == 0) continue;
                 Berth berth = robot.getPos().berth;
                 if (robot.isHasGoods() && robot.targetBerth == null) {
+                    if(berth!=null && berth.isDeserted()){
+                        berth =findClosestBerth(robot);
+                    }
                     if (berth != null) {
-                        robot.assignTargetBerth(berth);
+                        robot.assignTargetBerth(berth);//此处目标泊位仍是推荐泊位，有无遗弃在planpath判断
                     }
                 } else {
                     if (robot.hasPath() || robot.getTargetPos() != null) {
                         continue;
                     }
-                    Goods bestGoods = findClosestGoods(robot, goodsList);
+                    //Goods bestGoods = findClosestGoods(robot, goodsList);
+                    Goods bestGoods = findBestGoods(robot, goodsList);
                     if (bestGoods != null) {
                         robot.assignTargetGoods(bestGoods);
                         bestGoods.setAssigned(true);
@@ -438,7 +443,21 @@ public interface AssignTarget {
             if(frameNumber<=10 && minDistance>Cons.MAX_DISTANCE)return null;
             return closestGoods;
         }
+        private Berth findClosestBerth(Robot robot) {
+            Berth nearestPos = null;
+            double minDistance = Double.MAX_VALUE;
 
+            for (Berth berth : berths) {
+                if(berth.isDeserted())continue;
+                double distance = robot.getPos().Mdistance(berth.getPos());
+                if (distance < minDistance) {
+                    minDistance = distance;
+                    nearestPos = berth;
+                }
+            }
+
+            return nearestPos;
+        }
     }
 }
 

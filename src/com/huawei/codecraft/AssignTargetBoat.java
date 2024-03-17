@@ -137,6 +137,7 @@ public interface AssignTargetBoat {
                             boat.setAction(2);
                             berth.setAssigned(false);
                             //不让机器人再去此港口
+                            //todo:港口关闭还能更早
                             berth.setDeserted();
                         }
                         //装货，泊位的装完就走

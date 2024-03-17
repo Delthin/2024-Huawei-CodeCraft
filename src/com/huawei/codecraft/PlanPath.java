@@ -404,7 +404,7 @@ public interface PlanPath {
                 }
             }
             for (Robot robot : robots) {
-                if(plan>=500)break;
+                if(plan>=500)break;//todo:
                 if (robot.getState() == 0) {
                     continue;
                 }
@@ -419,7 +419,7 @@ public interface PlanPath {
                     robot.stepOnce();//todo
                 } else {
                     //更新路径的情况，分配到港口、分配的货物消失、
-                    if (goal == null || robot.isHasGoods()) {//先分配去拿货的机器人
+                    if (goal == null || robot.isHasGoods() && robot.targetBerth==robot.getPos().berth) {//先分配去拿货的机器人
                         continue;
                     }
 
@@ -445,8 +445,8 @@ public interface PlanPath {
 
             }
             for (Robot robot : robots) {
-                if (robot.isHasGoods()) {//前往港口
-                    int minDistance=Integer.MAX_VALUE;
+                if (robot.isHasGoods() && robot.targetBerth==robot.getPos().berth) {//前往港口
+                    int minDistance = Integer.MAX_VALUE;
                     Pos start = robot.getPos();
                     Pos next = start;
                     for (int[] direction : Cons.DIRECTIONS) {
@@ -454,14 +454,16 @@ public interface PlanPath {
                         int neighborY = start.Y() + direction[1];
 
                         if (isValidPosition(neighborX, neighborY, 1)) {
-                            if(mapPos[neighborX][neighborY].bfsWeightsDistance<minDistance){
+                            if (mapPos[neighborX][neighborY].bfsWeightsDistance < minDistance) {
                                 minDistance = mapPos[neighborX][neighborY].bfsWeightsDistance;
-                                next=mapPos[neighborX][neighborY];
+                                next = mapPos[neighborX][neighborY];
                             }
                         }
                     }
-                    robot.nextPos=next;
+                    robot.nextPos = next;
                 }
+            }
+            for (Robot robot : robots) {
                 if(robot.nextPos==null){
                     Pos start = robot.getPos();
                     if(visitedRecord[start.X()][start.Y()].contains(frameNumber+1)){
