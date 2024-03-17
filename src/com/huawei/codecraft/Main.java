@@ -4,8 +4,6 @@
 
 package com.huawei.codecraft;
 
-import com.sun.jndi.ldap.Ber;
-
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Scanner;
@@ -23,7 +21,7 @@ public class Main {
     public static char[][] mapdata;
     public static Pos[][] mapPos;
     public static Berth[] berths = new Berth[Cons.MAX_BERTH];
-    public static HashSet[][] visited ;
+    public static HashSet<Integer>[][] visitedRecord ;
     /**
      * 初始化
      */
@@ -246,10 +244,10 @@ public class Main {
 
     public static void main(String[] args) {
         Main mainInstance = new Main();
-        visited = new HashSet[Cons.MAP_SIZE][Cons.MAP_SIZE];
+        visitedRecord = new HashSet[Cons.MAP_SIZE][Cons.MAP_SIZE];
         for(int i=0;i<Cons.MAP_SIZE;i++){
             for(int j=0;j<Cons.MAP_SIZE;j++) {
-                visited[i][j] = new HashSet<Integer>();
+                visitedRecord[i][j] = new HashSet<Integer>();
             }
         }
         mapPos = new Pos[Cons.MAP_SIZE][Cons.MAP_SIZE];

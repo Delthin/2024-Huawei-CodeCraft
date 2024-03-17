@@ -287,6 +287,7 @@ public interface AssignTarget {
         }
         private void assignBerth(Robot[] robots) {
             for (Robot robot : robots) {
+                if (robot.getState() == 0) continue;
                 Berth berth = robot.getPos().berth;
                 if (robot.isHasGoods() && robot.targetBerth == null) {
                     if (berth != null) {
@@ -350,6 +351,24 @@ public interface AssignTarget {
         private int getDistance(int robotDistance, int BerthDistance) {
             return robotDistance;
         }
+        private Goods findClosestGoods(Robot robot, Goods[] goodsList) {
+            Goods closestGoods = null;
+            double minDistance = Double.MAX_VALUE;
+
+            for (Goods goods : goodsList) {
+                if(goods.getValue() < 20)continue;
+                if (!goods.isAssigned()) {
+                    double distance = robot.getPos().Mdistance(goods.getPos());
+                    if (distance < minDistance) {
+                        minDistance = distance;
+                        closestGoods = goods;
+                    }
+                }
+            }
+            if(frameNumber<=10 && minDistance>Cons.MAX_DISTANCE)return null;
+            return closestGoods;
+        }
+
     }
 }
 

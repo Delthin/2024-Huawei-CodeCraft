@@ -52,6 +52,7 @@ public class Robot {
         this.hasGoods = hasGoods == 1;
         this.targetGoods = null;
         this.state = state;
+        this.responsibleBerthId=-1;
     }
 
     public Pos getPos() {

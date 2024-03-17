@@ -32,7 +32,7 @@ public interface PlanPath {
                 return g + h;
             }
         }
-        private static HashSet[][] visited = Main.visited;
+        private static HashSet[][] visited = Main.visitedRecord;
         private static char[][] grid;  // 地图网格
         private static int gridSizeX;  // 网格大小X
         private static int gridSizeY;  // 网格大小Y
@@ -369,7 +369,7 @@ public interface PlanPath {
                 return g + h;
             }
         }
-        private static HashSet[][] visited = Main.visited;
+        private static HashSet[][] visitedRecord = Main.visitedRecord;
         private static char[][] grid;  // 地图网格
         private static int gridSizeX;  // 网格大小X
         private static int gridSizeY;  // 网格大小Y
@@ -393,17 +393,17 @@ public interface PlanPath {
             plan=0;
             for (Robot robot : robots) {
                 Pos start = robot.getPos();
-                visited[start.X()][start.Y()].add(frameNumber);
+                visitedRecord[start.X()][start.Y()].add(frameNumber);
                 if(robot.getState()==0){
                     if(robot.hasPath()){
                         System.err.println(frameNumber);
-                        System.err.println(visited[start.X()][start.Y()]);
-                        System.err.println(visited[robot.nextPos.X()][robot.nextPos.Y()]);
+                        System.err.println(visitedRecord[start.X()][start.Y()]);
+                        System.err.println(visitedRecord[robot.nextPos.X()][robot.nextPos.Y()]);
 
                     }
                     robot.setPathList(robot.getId(), null);
                     for(int i=1;i<20;i++){
-                        visited[start.X()][start.Y()].add(frameNumber+i);//todo:撞傻的机器人应该add不止此帧
+                        visitedRecord[start.X()][start.Y()].add(frameNumber+i);//todo:撞傻的机器人应该add不止此帧
                     }
                 }
             }
@@ -468,7 +468,7 @@ public interface PlanPath {
                 }
                 if(robot.nextPos==null){
                     Pos start = robot.getPos();
-                    if(visited[start.X()][start.Y()].contains(frameNumber+1)){
+                    if(visitedRecord[start.X()][start.Y()].contains(frameNumber+1)){
                         int[][] directions = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
                         for (int[] direction : directions) {
                             int neighborX = start.X() + direction[0];
@@ -589,10 +589,10 @@ public interface PlanPath {
 
         private static List<Pos> reconstructPath(Node currentNode, Node startNode) {
             List<Pos> path = new ArrayList<>();
-            visited[currentNode.x][currentNode.y].add(frameNumber+currentNode.g+1);
+            visitedRecord[currentNode.x][currentNode.y].add(frameNumber+currentNode.g+1);
             //Pos cur = new Pos(currentNode.x,currentNode.y);
             while (currentNode != null && currentNode.parent != null) {
-                visited[currentNode.x][currentNode.y].add(frameNumber+currentNode.g);
+                visitedRecord[currentNode.x][currentNode.y].add(frameNumber+currentNode.g);
 
                 path.add(mapPos[currentNode.x][currentNode.y]);
                 currentNode = currentNode.parent;
@@ -610,7 +610,7 @@ public interface PlanPath {
 
         private static boolean isValidPosition(int x, int y ,int g) {
 
-            return x >= 0 && x < gridSizeX && y >= 0 && y < gridSizeY && grid[x][y] != '#'&& grid[x][y] != 'R' && grid[x][y] != '*' && !visited[x][y].contains(frameNumber+g) && !visited[x][y].contains(frameNumber+g-1) && !visited[x][y].contains(frameNumber+g+1)&& !visited[x][y].contains(frameNumber+g-2) && !visited[x][y].contains(frameNumber+g+2);
+            return x >= 0 && x < gridSizeX && y >= 0 && y < gridSizeY && grid[x][y] != '#'&& grid[x][y] != 'R' && grid[x][y] != '*' && !visitedRecord[x][y].contains(frameNumber+g) && !visitedRecord[x][y].contains(frameNumber+g-1) && !visitedRecord[x][y].contains(frameNumber+g+1);
         }
 
 
@@ -684,7 +684,7 @@ public interface PlanPath {
 //
 //            int[][] directions = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}}; // 上下左右四个方向
 //
-//            boolean[][] visited = new boolean[Cons.MAP_SIZE][Cons.MAP_SIZE];
+//            boolean[][] visitedRecord = new boolean[Cons.MAP_SIZE][Cons.MAP_SIZE];
 //
 //            replanPathDFS(start.X(), start.Y(), goal, visited, path);
 //        }
@@ -719,7 +719,7 @@ public interface PlanPath {
     public class aStarPlanPath implements PlanPath {
         static final int[] dx = {-1, 0, 1, 0};
         static final int[] dy = {0, 1, 0, -1};
-        private static HashSet[][] visitedFrame = Main.visited;
+        private static HashSet[][] visitedFrame = Main.visitedRecord;
         Robot[] robots;
         static int frameNumber;
 

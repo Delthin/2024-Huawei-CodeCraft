@@ -1,7 +1,9 @@
 package com.huawei.codecraft;
 
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.PriorityQueue;
 import java.util.Scanner;
 
 /**
@@ -61,8 +63,23 @@ public class InputParser {
     }
     public static void initResponsibleBerth(Robot[] robots){
         boolean visited[] = new boolean[Cons.MAX_BERTH];
-        for (Robot robot : robots){
-            robot.setResponsibleBerthId(-1);
+//        for (Robot robot : robots){
+//            robot.setResponsibleBerthId(-1);
+//            Berth berth = robot.getPos().berth;
+//            if (berth == null){
+//                continue;
+//            }
+//            if (visited[berth.getId()]){
+//                continue;
+//            }else{
+//                visited[berth.getId()] = true;
+//                robot.setResponsibleBerthId(berth.getId());
+//            }
+//        }
+        PriorityQueue<Robot> pq = new PriorityQueue<>((robot1, robot2) -> Integer.compare(robot1.getPos().bfsRealDistance, robot2.getPos().bfsRealDistance));
+        pq.addAll(Arrays.asList(robots));
+        while(pq.size()!=0){
+            Robot robot = pq.poll();
             Berth berth = robot.getPos().berth;
             if (berth == null){
                 continue;
@@ -73,7 +90,7 @@ public class InputParser {
                 visited[berth.getId()] = true;
                 robot.setResponsibleBerthId(berth.getId());
             }
-        }
+        }//用堆，近的先分配
         for (Robot robot : robots){
             if (robot.getResponsibleBerthId() == -1){
                 int minDistance = Integer.MAX_VALUE;
