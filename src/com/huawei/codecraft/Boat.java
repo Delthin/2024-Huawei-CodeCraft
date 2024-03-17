@@ -22,6 +22,10 @@ public class Boat {
      */
     private int targetBerthId;
     /**
+     * 此属性用于输出的ship
+     */
+    private int shipTarget;
+    /**
      * 0:等待，1；移动（ship），2；驶向虚拟点（go）
      */
     private int action = 0;
@@ -79,12 +83,27 @@ public class Boat {
     public void load(){
         this.goodsSize += 1;
     }
+    public void load(int loadingSpeed){
+        this.goodsSize += loadingSpeed;
+    }
     public int getVacancy() {
         return capacity - goodsSize;
+    }
+    public int getGoodsSize() {
+        return goodsSize;
+    }
+    public void clearGoods(){
+        goodsSize = 0;
     }
 
     public void setTargetBerthId(int targetBerthId) {
         this.targetBerthId = targetBerthId;
+    }
+    public void setShipTarget(int shipTarget){
+        this.shipTarget = shipTarget;
+    }
+    public int getShipTarget(){
+        return this.shipTarget;
     }
 
 }

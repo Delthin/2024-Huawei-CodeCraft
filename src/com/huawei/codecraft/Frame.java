@@ -124,6 +124,10 @@ public class Frame {
     public int getFrameNumber() {
         return this.frameNumber;
     }
+
+    public Berth[] getBerths() {
+        return berths;
+    }
 }
 
 

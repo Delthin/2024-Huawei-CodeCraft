@@ -34,7 +34,7 @@ public class OutputFormatter {
             if (act == 0) {
                 continue;
             } else if (act == 1) {
-                System.out.println("ship " + boat.getId() + " " + boat.getTargetBerthId());
+                System.out.println("ship " + boat.getId() + " " + boat.getShipTarget());
             } else if (act == 2) {
                 System.out.println("go " + boat.getId());
             }

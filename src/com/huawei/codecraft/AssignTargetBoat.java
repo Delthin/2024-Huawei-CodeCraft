@@ -113,6 +113,7 @@ public interface AssignTargetBoat {
          * 基本随机对10个泊位轮流前往，获取后即卖
          */
         static int berthNo = 0;
+
         @Override
         public void assign(Frame frame) {
             Boat[] boats = frame.getBoats();
@@ -123,25 +124,59 @@ public interface AssignTargetBoat {
                     continue;
                 } else if (boat.getState() == 1) {
                     if (boat.getTargetBerthId() == -1) {
-                        boat.setTargetBerthId(berthNo);
-                        boat.setAction(1);
-                        berthNo = (berthNo + 1) % 10;
+                        //选最多的泊位去
+                        //初始化船只状态为state=1，TargetBerthId=-1
+                        //卖完后清空货物
+                        boat.clearGoods();
+                        assignBerth(frame, boat, berths);
+//                        berthNo = (berthNo + 1) % 10;
                     } else {
                         //最后时刻全部开往虚拟店
-                        if (14995 - frame.getFrameNumber() <= berths[boat.getTargetBerthId()].getTransportTime()) {
+                        Berth berth = berths[boat.getTargetBerthId()];
+                        if (14995 - frame.getFrameNumber() <= berth.getTransportTime()) {
                             boat.setAction(2);
+                            berth.setAssigned(false);
                         }
-                        //装货
-                        if (frame.getFrameNumber() % (2 * berths[boat.getTargetBerthId()].getTransportTime()) == 0) {
+                        //装货，泊位的装完就走
+                        else if (berth.getGoodsNum() <= 0 || boat.getVacancy() < 0) {
                             boat.setAction(2);
+                            berth.setAssigned(false);
+                        } else {
+                            //原地装货
+                            boat.setAction(0);
+                            loading(boat);
                         }
                     }
                 } else if (boat.getState() == 2) {
-                    boat.setTargetBerthId(berthNo);
-                    boat.setAction(1);
-                    berthNo = (berthNo + 1) % 10;
+                    assignBerth(frame, boat, berths);
                 }
             }
+        }
+
+        private void loading(Boat boat) {
+            if (boat.getTargetBerthId() == -1) {
+                return;
+            }
+            Berth berth = Main.berths[boat.getTargetBerthId()];
+            int goodsNum = berth.getGoodsNum();
+            int loadingSpeed = berth.getLoadingSpeed();
+            int loadNum = 0;
+            if (berth.getGoodsNum() > 0 && boat.getVacancy() > 0) {
+                loadNum = Math.min(boat.getVacancy(), Math.min(loadingSpeed, berth.getGoodsNum()));
+                boat.load(loadNum);
+                berth.subGoodsNum(loadNum);
+            }
+        }
+        private void assignBerth(Frame frame, Boat boat, Berth[] berths) {
+            int maxId = 0;
+            for (Berth berth: berths){
+                if (!berth.isItAssigned() && (berth.getGoodsNum() > berths[maxId].getGoodsNum())){
+                    maxId = berth.getId();
+                }
+            }
+            boat.setShipTarget(maxId);
+            boat.setAction(1);
+            berths[maxId].setAssigned(true);
         }
     }
 }

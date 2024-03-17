@@ -17,13 +17,15 @@ public class Berth {
     private int transportTime;//1-1000
     private int loadingSpeed;//1-5
     public int bfsWeight;
+    private int goodsNum;
+    private boolean isAssigned = false;
 
     public Berth(int id, int x, int y, int transportTime, int loadingSpeed) {
         this.id = id;
         this.pos = Main.mapPos[x][y];
         this.transportTime = transportTime;
         this.loadingSpeed = loadingSpeed;
-        this.bfsWeight= loadingSpeed * 10 / ((transportTime+1000) / 100) + 1 ;//todo:调参
+        this.bfsWeight= Cons.bfsWeight(loadingSpeed, transportTime) ;//todo:调参
     }
 
     public int getId() {
@@ -40,5 +42,29 @@ public class Berth {
 
     public int getLoadingSpeed() {
         return loadingSpeed;
+    }
+    public int getGoodsNum() {
+        return goodsNum;
+    }
+    public void setGoodsNum(int goodsNum) {
+        this.goodsNum = goodsNum;
+    }
+    public void addGoodsNum(int goodsNum) {
+        this.goodsNum += goodsNum;
+    }
+    public void addGoodsNum() {
+        this.goodsNum += 1;
+    }
+    public void subGoodsNum(int goodsNum) {
+        this.goodsNum -= goodsNum;
+    }
+    public boolean isItAssigned() {
+        return isAssigned;
+    }
+    public void setAssigned(boolean assigned) {
+        isAssigned = assigned;
+    }
+    public void clearGoodsNum() {
+        this.goodsNum = 0;
     }
 }

@@ -73,6 +73,8 @@ public class RobotStrategy {
             } else if (robot.isHasGoods() && nextPos != null && map.isBerth(nextPos)) {
                 // 当前处在停泊点上且携带货物，放下货物
                 robot.putDownGoods(frame.getFrameNumber());
+                Berth berth = nextPos.berth;
+                berth.addGoodsNum();
             }
 
         }
