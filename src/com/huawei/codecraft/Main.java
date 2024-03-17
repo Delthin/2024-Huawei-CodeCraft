@@ -5,10 +5,8 @@
 package com.huawei.codecraft;
 
 import java.util.HashSet;
-import java.util.Random;
 import java.util.Scanner;
 import java.util.*;
-import java.util.logging.Logger;
 
 /**
  * Main
@@ -21,7 +19,7 @@ public class Main {
     public static char[][] mapdata;
     public static Pos[][] mapPos;
     public static Berth[] berths = new Berth[Cons.MAX_BERTH];
-    public static HashSet<Integer>[][] visitedRecord ;
+    public static HashSet[][] visitedRecord ;
     /**
      * 初始化
      */
@@ -247,7 +245,7 @@ public class Main {
         visitedRecord = new HashSet[Cons.MAP_SIZE][Cons.MAP_SIZE];
         for(int i=0;i<Cons.MAP_SIZE;i++){
             for(int j=0;j<Cons.MAP_SIZE;j++) {
-                visitedRecord[i][j] = new HashSet<Integer>();
+                visitedRecord[i][j] = new HashSet<>();
             }
         }
         mapPos = new Pos[Cons.MAP_SIZE][Cons.MAP_SIZE];

@@ -32,7 +32,7 @@ public interface PlanPath {
                 return g + h;
             }
         }
-        private static HashSet[][] visited = Main.visitedRecord;
+        private static HashSet<Integer>[][] visited = Main.visitedRecord;
         private static char[][] grid;  // 地图网格
         private static int gridSizeX;  // 网格大小X
         private static int gridSizeY;  // 网格大小Y
@@ -81,7 +81,7 @@ public interface PlanPath {
                         path = reconstructPath(intersectionNode);
                     }
                     if (path != null) {
-                        robot.setPathList(robot.getId(), path);
+                        robot.setPathList( path);
                         robot.stepOnce();
                     }
 
@@ -401,7 +401,7 @@ public interface PlanPath {
                         System.err.println(visitedRecord[robot.nextPos.X()][robot.nextPos.Y()]);
 
                     }
-                    robot.setPathList(robot.getId(), null);
+                    robot.setPathList( null);
                     for(int i=1;i<20;i++){
                         visitedRecord[start.X()][start.Y()].add(frameNumber+i);//todo:撞傻的机器人应该add不止此帧
                     }
@@ -439,7 +439,7 @@ public interface PlanPath {
                         path = reconstructPath(intersectionNode,startNode);
                     }
                     if (path != null) {
-                        robot.setPathList(robot.getId(), path);
+                        robot.setPathList( path);
                         robot.stepOnce();
                     }else{
                         robot.setTargetPos(null);
