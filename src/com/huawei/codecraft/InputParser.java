@@ -47,9 +47,9 @@ public class InputParser {
         frame.updateBoats(boats);
         frame.updateMap();
 //        mapPrint(frame.getMap());
-        if (frameNumber < 2){
-            initResponsibleBerth(frame.getRobots());
-        }
+//        if (frameNumber < 2){
+//            initResponsibleBerth(frame.getRobots());
+//        }
         return frame;
     }
     public static void mapPrint(Map map){

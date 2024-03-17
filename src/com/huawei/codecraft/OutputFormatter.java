@@ -14,13 +14,13 @@ public class OutputFormatter {
      * 根据当前帧信息，输出机器人与船只指令
      */
     public static void formatOutput(Frame frame) {
+        if(frame.getFrameNumber()%100==0)System.err.println("frame "+frame.getFrameNumber()+"   len "+frame.getGoods().length);
         Robot[] robots = frame.getRobots();
         for (Robot robot : robots) {
             int[] act = robot.getAction();
             if (act[0] == 0) {
                 if (robot.getDirection() != -1) {
                     System.out.println("move " + robot.getId() + " " + robot.getDirection());
-                    //if(frame.getFrameNumber()<10)System.err.println("frame"+frame.getFrameNumber()+"    move " + robot.getId() + " " + robot.getDirection());
 
                 }
             }
