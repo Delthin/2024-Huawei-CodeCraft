@@ -314,7 +314,21 @@ public interface AssignTarget {
             Goods closestGoods = null;
             int minDistance = Integer.MAX_VALUE;
             double maxWeight = Double.MIN_VALUE;
-
+            //第一遍循环找同港口
+            Berth berth = robot.getPos().berth;
+//            for (Goods goods : goodsList) {
+//                if (!goods.isAssigned() && goods.getPos().berth == berth){
+//                    int distance = goods.getPos().bfsWeightsDistance;
+//                    double weight = getWeight(goods, distance);
+//                    if (weight > maxWeight) {
+//                        minDistance = distance;
+//                        maxWeight = weight;
+//                        closestGoods = goods;
+//                    }
+//                }
+//            }
+//            if (closestGoods != null) return closestGoods;
+            //第二遍循环找其他港口
             for (Goods goods : goodsList) {
 //                if (goods.getValue() < 10) continue;
                 if (!goods.isAssigned()) {
