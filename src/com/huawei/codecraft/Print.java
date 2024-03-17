@@ -27,6 +27,16 @@ public class Print {
             System.err.println("Boat id: " + id + " state: " + stateToString(state) + " target: " + targetBerthId + " action: " + actionToString(action) + " goods: " + goodsSize);
         }
     }
+    public static void printRobotInfo(Frame frame){
+        Robot[] robots = frame.getRobots();
+        for (Robot robot : robots) {
+            int id = robot.getId();
+            Pos pos = robot.getPos();
+            int state = robot.getState();
+            int responsibleBerthId = robot.getResponsibleBerthId();
+            System.err.println("Robot id: " + id + " pos: " + pos + " state: " + stateToString(state) + " responsibleBerthId: " + responsibleBerthId);
+        }
+    }
     public static String stateToString(int state){
         if (state == 0){
             return "MOVING";
@@ -46,4 +56,5 @@ public class Print {
             return "WAITING";
         }
     }
+
 }

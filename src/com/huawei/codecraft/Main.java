@@ -85,7 +85,7 @@ public class Main {
         //todo: 目前采用每一帧都重新计算路径的方式，后续如果跳帧可以考虑优化
         RobotStrategy.process(frame);
         BoatStrategy.process(frame);
-
+//        Print.printRobotInfo(frame);
         if(frame.getFrameNumber() > 13000){
             System.err.println("frameNo: " + frame.getFrameNumber());
             Print.printBerthInfo(frame);

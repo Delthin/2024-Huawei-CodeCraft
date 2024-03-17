@@ -40,6 +40,7 @@ public class Robot {
     private Block nextBlock;
 
     public Berth targetBerth;
+    private int responsibleBerthId;
 
     public Robot(int id) {
         this.id = id;
@@ -221,5 +222,11 @@ public class Robot {
     public void waitRecover() {
         this.pathList = null;
         this.nextPos = null;
+    }
+    public void setResponsibleBerthId(int id) {
+        this.responsibleBerthId = id;
+    }
+    public int getResponsibleBerthId() {
+        return this.responsibleBerthId;
     }
 }

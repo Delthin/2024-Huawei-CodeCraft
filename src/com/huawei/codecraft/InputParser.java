@@ -45,6 +45,9 @@ public class InputParser {
         frame.updateBoats(boats);
         frame.updateMap();
 //        mapPrint(frame.getMap());
+        if (frameNumber < 2){
+            initResponsibleBerth(frame.getRobots());
+        }
         return frame;
     }
     public static void mapPrint(Map map){
@@ -54,6 +57,39 @@ public class InputParser {
                 System.out.print(mapData[i][j]);
             }
             System.out.println();
+        }
+    }
+    public static void initResponsibleBerth(Robot[] robots){
+        boolean visited[] = new boolean[Cons.MAX_BERTH];
+        for (Robot robot : robots){
+            robot.setResponsibleBerthId(-1);
+            Berth berth = robot.getPos().berth;
+            if (berth == null){
+                continue;
+            }
+            if (visited[berth.getId()]){
+                continue;
+            }else{
+                visited[berth.getId()] = true;
+                robot.setResponsibleBerthId(berth.getId());
+            }
+        }
+        for (Robot robot : robots){
+            if (robot.getResponsibleBerthId() == -1){
+                int minDistance = Integer.MAX_VALUE;
+                int minId = -1;
+                for (int i = 0; i < Cons.MAX_BERTH; i++){
+                    if (!visited[i]){
+                        if (robot.getPos().Mdistance(Main.berths[i].getPos()) < minDistance){
+                            minDistance = robot.getPos().Mdistance(Main.berths[i].getPos());
+                            minId = i;
+                        }
+
+                    }
+                }
+                robot.setResponsibleBerthId(minId);
+                visited[minId] = true;
+            }
         }
     }
 }
