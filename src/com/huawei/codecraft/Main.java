@@ -21,7 +21,7 @@ public class Main {
     public static char[][] mapdata;
     public static Pos[][] mapPos;
     public static Berth[] berths = new Berth[Cons.MAX_BERTH];
-    public static HashSet[][] visited ;
+    public static HashSet<Integer>[][] visited ;
     /**
      * 初始化
      */

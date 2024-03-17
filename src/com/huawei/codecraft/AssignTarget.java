@@ -256,7 +256,7 @@ public interface AssignTarget {
                     if (robot.hasPath() || robot.getTargetPos() != null) {
                         continue;
                     }
-                    Goods bestGoods = findBestGoods(robot, goodsList);
+                    Goods bestGoods = findClosestGoods(robot, goodsList);
                     if (bestGoods != null) {
                         robot.assignTargetGoods(bestGoods);
                         bestGoods.setAssigned(true);
@@ -284,6 +284,24 @@ public interface AssignTarget {
             if(frameNumber<=10 && minDistance>2*Cons.MAX_DISTANCE)return null;//TODO:暂时性前期防跳帧
             return closestGoods;
         }
+        private Goods findClosestGoods(Robot robot, Goods[] goodsList) {
+            Goods closestGoods = null;
+            double minDistance = Double.MAX_VALUE;
+
+            for (Goods goods : goodsList) {
+                if(goods.getValue() < 20)continue;
+                if (!goods.isAssigned()) {
+                    double distance = robot.getPos().Mdistance(goods.getPos());
+                    if (distance < minDistance) {
+                        minDistance = distance;
+                        closestGoods = goods;
+                    }
+                }
+            }
+            if(frameNumber<=10 && minDistance>Cons.MAX_DISTANCE)return null;
+            return closestGoods;
+        }
+
     }
 }
 

@@ -40,7 +40,7 @@ public class RobotStrategy {
 
             int direction = getMovementDirection(currentPos, nextPos);
             if(direction==100 ){
-                //if(frame.getFrameNumber()<3000) {
+                if(frame.getFrameNumber()<1000) {
                     System.err.println(frame.getFrameNumber());
                     System.err.println(robot.getId());
                     System.err.println(robot.getPathList());
@@ -48,7 +48,7 @@ public class RobotStrategy {
                     System.err.println(currentPos);
                     System.err.println(robot.getTargetPos());
 
-                //}
+                }
                 direction=-1;
             }
             robot.setDirection(direction);
