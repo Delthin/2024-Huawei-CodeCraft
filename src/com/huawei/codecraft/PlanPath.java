@@ -369,15 +369,11 @@ public interface PlanPath {
                 return g + h;
             }
         }
-        private static HashSet[][] visitedRecord = Main.visitedRecord;
+        private static final HashSet<Integer>[][] visitedRecord = Main.visitedRecord;
         private static char[][] grid;  // 地图网格
         private static int gridSizeX;  // 网格大小X
         private static int gridSizeY;  // 网格大小Y
 
-        private static PriorityQueue<Node> openSetForward;  // 前向搜索的开放集合
-        private static PriorityQueue<Node> openSetBackward;  // 后向搜索的开放集合
-        //private static Set<Node> closedSetForward;  // 前向搜索的关闭集合
-        //private static Set<Node> closedSetBackward;  // 后向搜索的关闭集合
         Robot[] robots;
         static int frameNumber;
         static Pos[][] mapPos;
@@ -395,12 +391,12 @@ public interface PlanPath {
                 Pos start = robot.getPos();
                 visitedRecord[start.X()][start.Y()].add(frameNumber);
                 if(robot.getState()==0){
-                    if(robot.hasPath()){
-                        System.err.println(frameNumber);
-                        System.err.println(visitedRecord[start.X()][start.Y()]);
-                        System.err.println(visitedRecord[robot.nextPos.X()][robot.nextPos.Y()]);
-
-                    }
+//                    if(robot.hasPath()){
+//                        System.err.println(frameNumber);
+//                        System.err.println(visitedRecord[start.X()][start.Y()]);
+//                        System.err.println(visitedRecord[robot.nextPos.X()][robot.nextPos.Y()]);
+//
+//                    }
                     robot.setPathList( null);
                     for(int i=1;i<20;i++){
                         visitedRecord[start.X()][start.Y()].add(frameNumber+i);//todo:撞傻的机器人应该add不止此帧
@@ -488,7 +484,8 @@ public interface PlanPath {
 
 
         private static Node AStar(Node startNode, Node endNode) {
-            openSetForward = new PriorityQueue<>(Comparator.comparingInt(Node::getF));
+            // 前向搜索的开放集合
+            PriorityQueue<Node> openSetForward = new PriorityQueue<>(Comparator.comparingInt(Node::getF));
             //openSetBackward = new PriorityQueue<>(Comparator.comparingInt(Node::getF));
             //closedSetForward = new HashSet<>();
             //closedSetBackward = new HashSet<>();
@@ -548,36 +545,6 @@ public interface PlanPath {
             }
         }
 
-        private static void exploreNeighbors(Node current, PriorityQueue<Node> openSet, Node[][] visited, Node endNode) {
-            int[][] directions = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
-
-            for (int[] direction : directions) {
-                int neighborX = current.x + direction[0];
-                int neighborY = current.y + direction[1];
-
-                if (isValidPosition(neighborX, neighborY,current.g+1)) {
-                    Node neighbor = new Node(neighborX, neighborY);
-                    neighbor.parent = current;
-                    neighbor.g = current.g + 1;
-                    neighbor.h = calculateHeuristic(neighbor, endNode);
-
-                    if (visited[neighborX][neighborY] != null) {
-                        continue;  // 已在关闭集合中，跳过
-                    }
-
-                    Node existingNode = findNodeInOpenSet(neighbor, openSet);
-                    if (existingNode == null) {
-                        openSet.add(neighbor);  // 添加到开放集合
-                    } else {
-                        if (neighbor.g < existingNode.g) {
-                            existingNode.parent = current;
-                            existingNode.g = neighbor.g;
-                        }
-                    }
-                }
-            }
-        }
-
         private static Node findNodeInOpenSet(Node node, PriorityQueue<Node> openSet) {
             for (Node n : openSet) {
                 if (n.x == node.x && n.y == node.y) {
@@ -612,109 +579,6 @@ public interface PlanPath {
 
             return x >= 0 && x < gridSizeX && y >= 0 && y < gridSizeY && grid[x][y] != '#'&& grid[x][y] != 'R' && grid[x][y] != '*' && !visitedRecord[x][y].contains(frameNumber+g) && !visitedRecord[x][y].contains(frameNumber+g-1) && !visitedRecord[x][y].contains(frameNumber+g+1);
         }
-
-
-//        public List<List<Pos>> runCBSAlgorithm() {
-//            // 冲突检测和解决
-//            boolean conflictDetected = true;
-//            while (conflictDetected) {
-//                conflictDetected = false;
-//                Set<Integer> conflictedRobots = new HashSet<>();
-//                for (int i = 0; i < Cons.MAX_ROBOT; i++) {
-//                    if (conflictedRobots.contains(i)) {
-//                        continue;
-//                    }
-//
-//                    for (int j = i + 1; j < Cons.MAX_ROBOT; j++) {
-//                        if (conflictedRobots.contains(j)) {
-//                            continue;
-//                        }
-//
-//                        List<Pos> path1 = paths.get(i);
-//                        List<Pos> path2 = paths.get(j);
-//                        if (checkCollision(path1, path2)) {
-//                            // 发生冲突，进行解决
-//                            if (robots[i].isHasGoods() && robots[j].isHasGoods() || !robots[i].isHasGoods() && !robots[j].isHasGoods()) {
-//                                // 路径交换
-//                                swapGoals(path1, path2);
-//                            }
-//                            // 路径重规划
-//                            replanPath(path1);
-//                            replanPath(path2);
-//
-//                            conflictDetected = true;
-//                            conflictedRobots.add(i);
-//                            conflictedRobots.add(j);
-//                        }
-//                    }
-//                }
-//            }
-//
-//            return paths;
-//        }
-//
-//        public static boolean checkCollision(List<Pos> path1, List<Pos> path2) {
-//            // 检查两个路径是否有重叠的位置
-//            for (Pos position1 : path1) {
-//                for (Pos position2 : path2) {
-//                    if (position1.X() == position2.X() && position1.Y() == position2.Y()) {
-//                        return true; // 发生碰撞冲突
-//                    }
-//                }
-//            }
-//            return false;
-//        }
-//
-//        public static void swapPaths(List<Pos> path1, List<Pos> path2) {
-//            // 交换两个路径
-//            List<Pos> temp = new ArrayList<>(path1);
-//            path1.clear();
-//            path1.addAll(path2);
-//            path2.clear();
-//            path2.addAll(temp);
-//        }
-//
-//        public static void replanPath(List<Pos> path) {
-//            // 重新规划路径，考虑障碍物
-//
-//            Pos start = path.get(0);
-//            Pos goal = path.get(path.size() - 1);
-//            path.clear();
-//            path.add(start);
-//
-//            int[][] directions = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}}; // 上下左右四个方向
-//
-//            boolean[][] visitedRecord = new boolean[Cons.MAP_SIZE][Cons.MAP_SIZE];
-//
-//            replanPathDFS(start.X(), start.Y(), goal, visited, path);
-//        }
-//
-//        public static void replanPathDFS(int x, int y, Pos goal, boolean[][] visited, List<Pos> path) {
-//            if (x == goal.X() && y == goal.Y()) {
-//                return;
-//            }
-//
-//            int[][] directions = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}}; // 上下左右四个方向
-//
-//            for (int[] direction : directions) {
-//                int newX = x + direction[0];
-//                int newY = y + direction[1];
-//
-//                if (isValidPosition(newX, newY, visited)) {
-//                    visited[newX][newY] = true;
-//                    path.add(new Pos(newX, newY));
-//                    replanPathDFS(newX, newY, goal, visited, path);
-//
-//                    if (path.get(path.size() - 1).X() == goal.X() && path.get(path.size() - 1).Y() == goal.Y()) {
-//                        return;
-//                    }
-//
-//                    path.remove(path.size() - 1);
-//                }
-//            }
-//        }
-
-
     }
     public class aStarPlanPath implements PlanPath {
         static final int[] dx = {-1, 0, 1, 0};

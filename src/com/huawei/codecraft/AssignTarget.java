@@ -409,7 +409,7 @@ public interface AssignTarget {
             for (Goods goods : goodsList) {
                 if(goods.getValue() < 20)continue;
                 if (!goods.isAssigned()) {
-                    int distance = robot.getPos().Mdistance(goods.getPos())+goods.getPos().bfsWeightsDistance;
+                    int distance = 2*robot.getPos().Mdistance(goods.getPos())+goods.getPos().bfsWeightsDistance;
                     double weight = (double) goods.getValue() /distance;
                     if (weight > maxWeight) {
                         minDistance = distance;
