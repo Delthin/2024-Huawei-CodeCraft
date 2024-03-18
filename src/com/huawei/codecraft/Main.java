@@ -86,10 +86,10 @@ public class Main {
 
         //测试
 //        Print.printRobotInfo(frame);
-//        if(frame.getFrameNumber() > 13000){
-//            System.err.println("frameNo: " + frame.getFrameNumber());
-//            Print.printBerthInfo(frame);
-//            Print.printBoatInfo(frame);}
+        if(frame.getFrameNumber() > 13000){
+            System.err.println("frameNo: " + frame.getFrameNumber());
+            Print.printBerthInfo(frame);
+            Print.printBoatInfo(frame);}
     }
 
 //    private void initArea() {
@@ -263,6 +263,9 @@ public class Main {
         for (int zhen = 1; zhen <= Cons.MAX_FRAME; zhen++) {
             // 读取每一帧的输入数据
             Frame frame = InputParser.parseFrameData();
+            if(frame == null){
+                break;
+            }
             mainInstance.processFrame(frame);
             // 根据当前Frame信息输出格式化
             OutputFormatter.formatOutput(frame);

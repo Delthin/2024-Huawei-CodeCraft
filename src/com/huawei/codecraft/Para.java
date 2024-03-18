@@ -1,5 +1,8 @@
 package com.huawei.codecraft;
 
+
+import java.util.Random;
+
 public class Para {
     /**
      * 初始化bfs的权重距离
@@ -27,4 +30,16 @@ public class Para {
      * 分配货物时忽视的小货物
      */
     public static final int IGNORE_VALUE = 20;
+    public static double boatAssignWeight(Boat boat, Berth berth){
+        boolean isAssigned = berth.isItAssigned();
+        int assignWeight = isAssigned ? 1 : 5;
+        int goodsNum = berth.getGoodsNum();
+        int loadingSpeed = berth.getLoadingSpeed();
+        int transportTime = berth.getTransportTime();
+        int flow = berth.getFlow();
+        return assignWeight * (transportTime / 100) * Math.log(berth.getGoodsFlow()) * goodsNum / Math.pow(loadingSpeed, 2) / Math.sqrt(flow + 1);
+    }
+    public static double boatRandomWeight(){
+        return new Random().nextDouble();
+    }
 }

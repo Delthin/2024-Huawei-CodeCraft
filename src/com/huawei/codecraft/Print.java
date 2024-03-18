@@ -9,7 +9,8 @@ public class Print {
             int transportTime = berth.getTransportTime();
             int loadingSpeed = berth.getLoadingSpeed();
             int goodsNum = berth.getGoodsNum();
-            System.err.println("Berth id: " + id + " goodsNum: " + goodsNum + " isAssigned: " + berth.isItAssigned() + " pos: " + pos + " transportTime: " + transportTime + " loadingSpeed: " + loadingSpeed);
+            int goodsFlow = berth.getGoodsFlow();
+            System.err.println("Berth id: " + id + " goodsNum: " + goodsNum + " goodsFlow: " + goodsFlow +  " transportTime: " + transportTime + " loadingSpeed: " + loadingSpeed);
 //            System.err.println("pos: " + pos );
 //            System.err.println("transportTime: " + transportTime );
 //            System.err.println("loadingSpeed: " + loadingSpeed );

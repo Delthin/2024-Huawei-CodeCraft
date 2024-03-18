@@ -14,7 +14,7 @@ public class OutputFormatter {
      * 根据当前帧信息，输出机器人与船只指令
      */
     public static void formatOutput(Frame frame) {
-        if(frame.getFrameNumber()%100==0)System.err.println("frame "+frame.getFrameNumber()+"   len "+frame.getGoods().length);
+//        if(frame.getFrameNumber()%100==0)System.err.println("frame "+frame.getFrameNumber()+"   len "+frame.getGoods().length);
         Robot[] robots = frame.getRobots();
         for (Robot robot : robots) {
             int[] act = robot.getAction();

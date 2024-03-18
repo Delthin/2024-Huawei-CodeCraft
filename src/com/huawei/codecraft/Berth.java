@@ -21,6 +21,9 @@ public class Berth {
     private boolean isAssigned = false;
     private boolean deserted = false;
     public static int maxTransportTime = 0;
+    //船流量（可改为货物）
+    private int flow = 0;
+    private int goodsFlow = 0;
 
     public Berth(int id, int x, int y, int transportTime, int loadingSpeed) {
         this.id = id;
@@ -56,6 +59,7 @@ public class Berth {
     }
     public void addGoodsNum() {
         this.goodsNum += 1;
+        this.goodsFlow += 1;
     }
     public void subGoodsNum(int goodsNum) {
         this.goodsNum -= goodsNum;
@@ -74,5 +78,14 @@ public class Berth {
     }
     public void clearGoodsNum() {
         this.goodsNum = 0;
+    }
+    public int getFlow() {
+        return flow;
+    }
+    public void addFlow(int flow) {
+        this.flow += flow;
+    }
+    public int getGoodsFlow() {
+        return goodsFlow;
     }
 }
