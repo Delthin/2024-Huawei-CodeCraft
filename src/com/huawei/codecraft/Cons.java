@@ -45,9 +45,6 @@ public class Cons {
             return DIRECTION_STOP;
         }
     }
-    public static int bfsWeight(int loadingSpeed, int transportTime){
-        return loadingSpeed * 1000 / transportTime + 1;
-    }
     public static final int MAX_GOODS_VALUE = 200;
 //    public static final int MAX_GOODS_VOLUME = 100;
 //    public static final int MAX_GOODS_DEST = 10;

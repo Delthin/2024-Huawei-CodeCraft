@@ -408,22 +408,21 @@ public interface AssignTarget {
         }
         private Goods findBestGoods(Robot robot, Goods[] goodsList) {
             Goods closestGoods = null;
-            int minDistance=Integer.MAX_VALUE;
+//            int minDistance=Integer.MAX_VALUE;
             double maxWeight = Integer.MIN_VALUE;
 
             for (Goods goods : goodsList) {
-                if(goods.getValue() < 20)continue;
+                if(goods.getValue() < Para.IGNORE_VALUE)continue;
                 if (!goods.isAssigned()) {
-                    int distance = 2*robot.getPos().Mdistance(goods.getPos())+goods.getPos().bfsWeightsDistance;
-                    double weight = (double) goods.getValue() /distance;
+                    double weight = Para.goodsAssignWeight(robot, goods);
                     if (weight > maxWeight) {
-                        minDistance = distance;
+//                        minDistance = distance;
                         maxWeight = weight;
                         closestGoods = goods;
                     }
                 }
             }
-            if(frameNumber<=10 && minDistance>2*Cons.MAX_DISTANCE)return null;//TODO:暂时性前期防跳帧
+//            if(frameNumber<=10 && minDistance>2*Cons.MAX_DISTANCE)return null;//TODO:暂时性前期防跳帧
             return closestGoods;
         }
         private Goods findClosestGoods(Robot robot, Goods[] goodsList) {
@@ -431,7 +430,7 @@ public interface AssignTarget {
             double minDistance = Double.MAX_VALUE;
 
             for (Goods goods : goodsList) {
-                if(goods.getValue() < 20)continue;
+                if(goods.getValue() < Para.IGNORE_VALUE)continue;
                 if (!goods.isAssigned()) {
                     double distance = robot.getPos().Mdistance(goods.getPos());
                     if (distance < minDistance) {
@@ -440,7 +439,7 @@ public interface AssignTarget {
                     }
                 }
             }
-            if(frameNumber<=10 && minDistance>Cons.MAX_DISTANCE)return null;
+//            if(frameNumber<=10 && minDistance>Cons.MAX_DISTANCE)return null;
             return closestGoods;
         }
         private Berth findClosestBerth(Robot robot) {

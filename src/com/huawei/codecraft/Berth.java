@@ -27,7 +27,7 @@ public class Berth {
         this.pos = Main.mapPos[x][y];
         this.transportTime = transportTime;
         this.loadingSpeed = loadingSpeed;
-        this.bfsWeight= Cons.bfsWeight(loadingSpeed, transportTime) ;//todo:调参
+        this.bfsWeight= Para.bfsBerthWeight(loadingSpeed, transportTime) ;//todo:调参
     }
 
     public int getId() {
