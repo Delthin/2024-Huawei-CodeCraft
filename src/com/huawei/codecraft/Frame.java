@@ -127,7 +127,9 @@ public class Frame {
     public Goods[] getGoods() {
         return goods.toArray(new Goods[0]);
     }
-
+    public ArrayList<Goods> getGoodsList(){
+        return goods;
+    }
     public Map getMap() {
         return map;
     }

@@ -17,6 +17,9 @@ public class InputParser {
          *
          */
         Scanner scan = new Scanner(System.in);
+        if(!scan.hasNext()){
+            return null;
+        }
         int frameNumber = scan.nextInt();
         int money = scan.nextInt();
         int goodsNumber = scan.nextInt();
