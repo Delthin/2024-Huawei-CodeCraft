@@ -11,7 +11,7 @@ public class Para {
      * @return
      */
     public static int bfsBerthWeight(int loadingSpeed, int transportTime){
-        return loadingSpeed * 1000 / transportTime + 1;
+        return loadingSpeed * 600 / transportTime + 1;
     }
 
     /**
