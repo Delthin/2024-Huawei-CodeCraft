@@ -19,11 +19,11 @@ public class RobotStrategy {
      * @param frame
      */
     public static void process(Frame frame) {
-        AssignTarget assignTarget = new AssignTarget.bfsAssignTarget();
-        PlanPath planPath = new PlanPath.CBSPlanPath();
+        AssignTarget assignTarget = new AssignTarget.planPathAssignTarget();
+        PlanPath planPath = new PlanPath.BFSPlanPath();
         assignTarget.assign(frame);
         planPath.plan(frame);
-        foolishConflictDetect(frame);
+        //foolishConflictDetect(frame);
         decideInstruction(frame);
     }
 
@@ -101,7 +101,7 @@ public class RobotStrategy {
             return -1;
         } else {
             //return Math.abs(currentX-nextX)+Math.abs(currentY-nextY)+100;
-
+            //System.err.println("FRAME:"+Main.frameNumberLocal+"  curr:"+currentPos+"  next:"+nextPos);
             return -1;
         }
 

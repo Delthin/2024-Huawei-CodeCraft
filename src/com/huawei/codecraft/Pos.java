@@ -12,13 +12,17 @@ public class Pos {
     public int bfsRealDistance;//实际
     public int bfsWeightsDistance;//权重
     public Berth berth;
+    public int tempg;
+    public Goods goods;
 
-    public Pos parent;
+    public Pos tempParent;
     public Pos(int x, int y) {
         this.x = x;
         this.y = y;
         this.bfsRealDistance=Integer.MAX_VALUE;
         this.bfsWeightsDistance=Integer.MAX_VALUE;
+        this.goods=null;
+        this.tempParent=null;
     }
 
     public Pos(Pos pos) {
