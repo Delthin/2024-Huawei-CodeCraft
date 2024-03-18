@@ -439,6 +439,10 @@ public interface PlanPath {
                         robot.stepOnce();
                     }else{
                         robot.setTargetPos(null);
+                        Goods targetGoods = robot.getTargetGoods();
+                        if (targetGoods!=null){
+                            targetGoods.setAssigned(false);
+                        }
                     }
 
                 }

@@ -52,7 +52,7 @@ public class Main {
         // 读取OK
         String okk = scanf.nextLine();
         assert okk.equals("OK");
-//        initArea();
+        initArea();
 //        initBlock();
         initBFS();
         //这里初始化可能添加别的内容
@@ -86,54 +86,57 @@ public class Main {
 
         //测试
 //        Print.printRobotInfo(frame);
-        if(frame.getFrameNumber() > 13000){
-            System.err.println("frameNo: " + frame.getFrameNumber());
-            Print.printBerthInfo(frame);
-            Print.printBoatInfo(frame);}
+
+
+//        if(frame.getFrameNumber() > 13000){
+//            System.err.println("frameNo: " + frame.getFrameNumber());
+//            Print.printGoodsInfo(frame);
+//            Print.printBerthInfo(frame);
+//            Print.printBoatInfo(frame);}
     }
 
-//    private void initArea() {
-//        boolean visited[][] = new boolean[Cons.MAP_SIZE][Cons.MAP_SIZE];
-//        int areaId = 0;
-//        for (int x = 0; x < Cons.MAP_SIZE; x++) {
-//            for (int y = 0; y < Cons.MAP_SIZE; y++) {
-//                // 遍历所有地图位置，划分区域
-//                // 如果已经访问过或者是障碍物，直接跳过
-//                if (visited[x][y]) {
-//                    continue;
-//                }
-//                if (map.isObstacle(x, y)) {
-//                    visited[x][y] = true;
-//                    map.setArea(x, y, -1);
-//                    continue;
-//                }
-//                int areaSize = 0;
-//                Queue<Pos> queue = new LinkedList<>();
-//                queue.add(new Pos(x, y));
-//                visited[x][y] = true;
-//                map.setArea(x, y, areaId);
-//                // 一轮BFS确定一个area
-//                while (!queue.isEmpty()) {
-//                    Pos pos = queue.poll();
-//                    areaSize++;
-//                    for (int i = 0; i < 4; i++) {
-//                        int nx = pos.X() + Cons.dx[i];
-//                        int ny = pos.Y() + Cons.dy[i];
-//                        if (map.isValidXY(nx, ny) && !visited[nx][ny] && !map.isObstacle(nx, ny)) {
-//                            visited[nx][ny] = true;
-//                            map.setArea(nx, ny, areaId);
-//                            queue.add(new Pos(nx, ny));
-//                        }
-//                    }
-//                }
-//                if (areaSize > 50){
-//                areaId++;}
-//            }
-//        }
-//        areaId++;//使areaNum比实际多一，为了在initBlock时游离（小于50）的区域不越界，但不影响判断
-//        //todo:想办法优化这里
-//        Main.map.setAreaNum(areaId);
-//    }
+    private void initArea() {
+        boolean visited[][] = new boolean[Cons.MAP_SIZE][Cons.MAP_SIZE];
+        int areaId = 0;
+        for (int x = 0; x < Cons.MAP_SIZE; x++) {
+            for (int y = 0; y < Cons.MAP_SIZE; y++) {
+                // 遍历所有地图位置，划分区域
+                // 如果已经访问过或者是障碍物，直接跳过
+                if (visited[x][y]) {
+                    continue;
+                }
+                if (map.isObstacle(x, y)) {
+                    visited[x][y] = true;
+                    map.setArea(x, y, -1);
+                    continue;
+                }
+                int areaSize = 0;
+                Queue<Pos> queue = new LinkedList<>();
+                queue.add(new Pos(x, y));
+                visited[x][y] = true;
+                map.setArea(x, y, areaId);
+                // 一轮BFS确定一个area
+                while (!queue.isEmpty()) {
+                    Pos pos = queue.poll();
+                    areaSize++;
+                    for (int i = 0; i < 4; i++) {
+                        int nx = pos.X() + Cons.dx[i];
+                        int ny = pos.Y() + Cons.dy[i];
+                        if (map.isValidXY(nx, ny) && !visited[nx][ny] && !map.isObstacle(nx, ny)) {
+                            visited[nx][ny] = true;
+                            map.setArea(nx, ny, areaId);
+                            queue.add(new Pos(nx, ny));
+                        }
+                    }
+                }
+                if (areaSize > 50){
+                areaId++;}
+            }
+        }
+        areaId++;//使areaNum比实际多一，为了在initBlock时游离（小于50）的区域不越界，但不影响判断
+        //todo:想办法优化这里
+        Main.map.setAreaNum(areaId);
+    }
 //
 //    private void initBlock() {
 //        Block[] blocks = Block.blocks;

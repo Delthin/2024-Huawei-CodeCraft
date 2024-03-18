@@ -38,6 +38,16 @@ public class Print {
             System.err.println("Robot id: " + id + " pos: " + pos + " state: " + stateToString(state) + " responsibleBerthId: " + responsibleBerthId);
         }
     }
+    public static void printGoodsInfo(Frame frame){
+        Goods[] goods = frame.getGoods();
+        for (Goods good : goods) {
+            Pos pos = good.getPos();
+            int summonFrame = good.getSummonFrame();
+            int value = good.getValue();
+            int assigned = good.isAssigned() ? 1 : 0;
+            System.err.println("Goods pos: " + pos + " summonFrame: " + summonFrame + " value: " + value + " assigned: " + assigned);
+        }
+    }
     public static String stateToString(int state){
         if (state == 0){
             return "MOVING";

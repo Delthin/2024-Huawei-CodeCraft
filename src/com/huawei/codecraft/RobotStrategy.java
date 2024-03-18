@@ -69,7 +69,9 @@ public class RobotStrategy {
 
             //if (currentGoods == null && nextPos != null && map.isGoods(nextPos) || currentGoods == null && target != null && currentPos.equals(target.getPos())) {
                 // 当前处在货物上且空闲，捡起货物
-                robot.pickUpGoods(target);// todo:如何得到此地的goods对象
+                robot.pickUpGoods(target);
+                frame.getGoodsList().remove(target);
+                // todo:如何得到此地的goods对象
             } else if (robot.isHasGoods() && nextPos != null && map.isBerth(nextPos)) {
                 // 当前处在停泊点上且携带货物，放下货物
                 robot.putDownGoods(frame.getFrameNumber());

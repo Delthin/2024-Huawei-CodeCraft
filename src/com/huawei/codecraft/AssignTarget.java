@@ -412,7 +412,10 @@ public interface AssignTarget {
             double maxWeight = Integer.MIN_VALUE;
 
             for (Goods goods : goodsList) {
-                if(goods.getValue() < Para.IGNORE_VALUE)continue;
+                if(goods.getValue() < Para.IGNORE_VALUE){continue;}
+                if (!Map.isSameArea(robot.getPos(), goods.getPos())){
+                    continue;
+                }
                 if (!goods.isAssigned()) {
                     double weight = Para.goodsAssignWeight(robot, goods);
                     if (weight > maxWeight) {
@@ -448,6 +451,9 @@ public interface AssignTarget {
 
             for (Berth berth : berths) {
                 if(berth.isDeserted())continue;
+                if(Map.isSameArea(robot.getPos(),berth.getPos())){
+                    continue;
+                }
                 double distance = robot.getPos().Mdistance(berth.getPos());
                 if (distance < minDistance) {
                     minDistance = distance;
