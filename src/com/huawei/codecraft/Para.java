@@ -11,7 +11,7 @@ public class Para {
      * @return
      */
     public static int bfsBerthWeight(int loadingSpeed, int transportTime){
-        return loadingSpeed * 600 / transportTime + 1;
+        return loadingSpeed * 300 / transportTime + 1;
     }
 
     /**
@@ -29,7 +29,7 @@ public class Para {
     /**
      * 分配货物时忽视的小货物
      */
-    public static final int IGNORE_VALUE = 20;
+    public static final int IGNORE_VALUE = 10;
     public static double boatAssignWeight(Boat boat, Berth berth){
         boolean isAssigned = berth.isItAssigned();
         int assignWeight = isAssigned ? 1 : 5;
