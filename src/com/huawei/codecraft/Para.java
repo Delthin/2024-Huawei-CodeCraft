@@ -12,9 +12,9 @@ public class Para {
      * @return
      */
     public static int bfsBerthWeight(int loadingSpeed, int transportTime){
-        return loadingSpeed * 300 / transportTime + 1;
+        return loadingSpeed * loadingSpeedWeight / transportTime + 1;
     }
-
+    public static int loadingSpeedWeight = 300;
     /**
      * 分配货物时的权重计算
      * @param robot

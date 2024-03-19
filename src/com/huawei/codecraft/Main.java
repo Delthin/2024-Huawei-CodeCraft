@@ -90,15 +90,15 @@ public class Main {
         //测试
 //        Print.printRobotInfo(frame);
 
-        int frameNumber = frame.getFrameNumber();
-        if (frameNumber > 10000){
-            initBerth();
-        }
-        if(frameNumber > 13000 && frameNumber < 14203){
-            System.err.println("frameNo: " + frameNumber);
-//            Print.printGoodsInfo(frame);
-            Print.printBerthInfo(frame);
-            Print.printBoatInfo(frame);}
+//        int frameNumber = frame.getFrameNumber();
+//        if (frameNumber > 10000){
+//            initBerth();
+//        }
+//        if(frameNumber > 13000 && frameNumber < 14203){
+//            System.err.println("frameNo: " + frameNumber);
+////            Print.printGoodsInfo(frame);
+//            Print.printBerthInfo(frame);
+//            Print.printBoatInfo(frame);}
     }
 
     private void initArea() {
@@ -264,6 +264,7 @@ public class Main {
     }
     public static void main(String[] args) {
         Main mainInstance = new Main();
+        Para.loadingSpeedWeight = Integer.parseInt(args[0]);
         visitedRecord = new HashSet[Cons.MAP_SIZE][Cons.MAP_SIZE];
         for(int i=0;i<Cons.MAP_SIZE;i++){
             for(int j=0;j<Cons.MAP_SIZE;j++) {
