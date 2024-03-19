@@ -43,7 +43,7 @@ public class Para {
     public static double boatRandomWeight(){
         return new Random().nextDouble();
     }
-    public static int bfsAssignHeapCapacity = 5;
+    public static int bfsAssignHeapCapacity = 6;
     public static int bfsMaxdistance = 150;
     public static Comparator<Goods> bfsAssignHeapComparator= Comparator.comparingInt(Para::calculatePriority);
 

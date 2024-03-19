@@ -380,9 +380,11 @@ public interface AssignTarget {
         Pos[][] mapPos;
         private static final HashSet<Integer>[][] visitedRecord = Main.visitedRecord;
         static char[][] mapData;
+        Frame frame0;
         Goods[] goodsList;
         @Override
         public void assign(Frame frame) {
+            frame0=frame;
             frameNumber = Main.frameNumberLocal;
             Robot[] robots = frame.getRobots(); // 获取机器人列表
             goodsList = frame.getGoods(); // 获取货物列表
@@ -436,7 +438,7 @@ public interface AssignTarget {
                 if (!isValidPosition(x,y, curr.tempg) && !isStart) continue;
                 isStart=false;
                 //if(curr.goods!=null && frameNumber<500)System.err.println("frame: "+frameNumber + "   R id: "+robot.getId()+"   goods: "+curr.goods.getPos());
-                if (curr.goods!=null && !curr.goods.isAssigned()){
+                if (curr.goods!=null && !curr.goods.isAssigned() && curr.goods.getSummonFrame()+1000>frame0.getFrameNumber() + curr.tempg){
                     //if(frameNumber<500)System.err.println("frame: "+frameNumber + "   R id: "+robot.getId()+"   goods: "+curr.goods.getPos());
                     targetGoodsPQ.add(curr.goods);
                 }
