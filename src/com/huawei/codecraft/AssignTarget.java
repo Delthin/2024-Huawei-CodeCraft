@@ -404,7 +404,7 @@ public interface AssignTarget {
                         continue;
                     }
                     //Goods bestGoods = findClosestGoods(robot, goodsList);
-                    Goods bestGoods = bfsfindBestGoods(robot,3);//todo:调参 k
+                    Goods bestGoods = bfsfindBestGoods(robot);//todo:调参 k
                     if (bestGoods != null) {
                         robot.assignTargetGoods(bestGoods);
                         bestGoods.setAssigned(true);
@@ -413,21 +413,21 @@ public interface AssignTarget {
                 }
             }
         }
-        private Goods bfsfindBestGoods(Robot robot, int k) {
+        private Goods bfsfindBestGoods(Robot robot) {
             int[][] directions = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}}; // 上下左右四个方向
             boolean[][] visited = new boolean[Cons.MAP_SIZE][Cons.MAP_SIZE];
             Pos start = robot.getPos();
             int start_x = start.X();
             int start_y = start.Y();
             Queue<Pos> queue = new LinkedList<>();
-            PriorityQueue<Goods> targetGoodsPQ = new PriorityQueue<>(Comparator.comparingInt(goods -> (goods.getPos().tempg + goods.getPos().bfsRealDistance) / goods.getValue()));//todo
+            PriorityQueue<Goods> targetGoodsPQ = new PriorityQueue<>(Para.bfsAssignHeapComparator);//todo
             Pos curr=mapPos[start_x][start_y];
             curr.tempg=0;
             curr.tempParent =null;
             queue.offer(curr);
             visited[start_x][start_y] = true;
             boolean isStart = true;
-            while (!queue.isEmpty() && targetGoodsPQ.size() < k  && curr.tempg<150) {
+            while (!queue.isEmpty() && targetGoodsPQ.size() < Para.bfsAssignHeapCapacity  && curr.tempg<Para.bfsMaxdistance) {
                 //if(frameNumber<100 && frameNumber>50)System.err.println("frame: "+frameNumber + "   R id: "+robot.getId() + "queueNum"+ queue.size());
 
                 curr = queue.poll();

@@ -1,6 +1,7 @@
 package com.huawei.codecraft;
 
 
+import java.util.Comparator;
 import java.util.Random;
 
 public class Para {
@@ -42,4 +43,15 @@ public class Para {
     public static double boatRandomWeight(){
         return new Random().nextDouble();
     }
+    public static int bfsAssignHeapCapacity = 5;
+    public static int bfsMaxdistance = 150;
+    public static Comparator<Goods> bfsAssignHeapComparator= Comparator.comparingInt(Para::calculatePriority);
+
+
+    private static int calculatePriority(Goods goods) {
+        return (goods.getPos().tempg + goods.getPos().bfsRealDistance) / goods.getValue();
+    }
+
+
+
 }
