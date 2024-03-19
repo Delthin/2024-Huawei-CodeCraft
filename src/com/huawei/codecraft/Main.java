@@ -57,6 +57,7 @@ public class Main {
         initArea();
 //        initBlock();
         initBFS();
+//        initBerth();
         //这里初始化可能添加别的内容
         //输出OK，初始化结束
         System.out.println("OK");
@@ -89,12 +90,15 @@ public class Main {
         //测试
 //        Print.printRobotInfo(frame);
 
-
-//        if(frame.getFrameNumber() > 13000){
-//            System.err.println("frameNo: " + frame.getFrameNumber());
+        int frameNumber = frame.getFrameNumber();
+        if (frameNumber > 10000){
+            initBerth();
+        }
+        if(frameNumber > 13000 && frameNumber < 14203){
+            System.err.println("frameNo: " + frameNumber);
 //            Print.printGoodsInfo(frame);
-//            Print.printBerthInfo(frame);
-//            Print.printBoatInfo(frame);}
+            Print.printBerthInfo(frame);
+            Print.printBoatInfo(frame);}
     }
 
     private void initArea() {
@@ -249,6 +253,15 @@ public class Main {
 
     }
 
+    /**
+     * 面向地图开局废掉部分港口
+     */
+    private void initBerth(){
+        //map5
+//        berths[2].setDeserted();
+//        berths[6].setDeserted();
+//        berths[9].setDeserted();
+    }
     public static void main(String[] args) {
         Main mainInstance = new Main();
         visitedRecord = new HashSet[Cons.MAP_SIZE][Cons.MAP_SIZE];

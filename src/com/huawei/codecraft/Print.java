@@ -10,7 +10,8 @@ public class Print {
             int loadingSpeed = berth.getLoadingSpeed();
             int goodsNum = berth.getGoodsNum();
             int goodsFlow = berth.getGoodsFlow();
-            System.err.println("Berth id: " + id + " goodsNum: " + goodsNum + " goodsFlow: " + goodsFlow +  " transportTime: " + transportTime + " loadingSpeed: " + loadingSpeed);
+            boolean isDeserted = berth.isDeserted();
+            System.err.println("Berth id: " + id + " goodsNum: " + goodsNum + " goodsFlow: " + goodsFlow +  " transportTime: " + transportTime + " loadingSpeed: " + loadingSpeed + " isDeserted: " + isDeserted);
 //            System.err.println("pos: " + pos );
 //            System.err.println("transportTime: " + transportTime );
 //            System.err.println("loadingSpeed: " + loadingSpeed );

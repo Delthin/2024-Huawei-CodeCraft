@@ -24,11 +24,13 @@ public class Frame {
     private int money;
     public static ArrayList<Goods> goods = new ArrayList<>();
     public static Robot[] robots = new Robot[Cons.MAX_ROBOT];
+
     static {
         for (int i = 0; i < robots.length; i++) {
             robots[i] = new Robot(i); // 显式初始化
         }
     }
+
     private static Boat[] boats = new Boat[Cons.MAX_BOAT];
 
     static {
@@ -53,25 +55,84 @@ public class Frame {
     public void updateGoods(Goods[] goods) {
         for (int i = 0; i < Frame.goods.size(); i++) {
             if (Frame.goods.get(i).expired(frameNumber)) {
-                Frame.goods.get(i).getPos().goods=null;
+                Frame.goods.get(i).getPos().goods = null;
                 Frame.goods.remove(i);
             }
         }
         Frame.goods.addAll(Arrays.asList(goods));
         Pos p;
-        for(Goods good : goods){
+        for (Goods good : goods) {
             //if(good)
-            p=good.getPos();
+            p = good.getPos();
             //if(frameNumber<500)System.err.println("frame: "+frameNumber +"   goods: "+p +"newGoodsNum"+goods.length);
-            Main.mapPos[p.X()][p.Y()].goods=good;
+            Main.mapPos[p.X()][p.Y()].goods = good;
             //if(frameNumber<500)System.err.println("frame: "+frameNumber +"   goods: "+good +"   "+Main.mapPos[p.X()][p.Y()].goods+"   newGoodsNum"+goods.length );
 
         }
 
     }
 
+    public void updateBerths() {
+        //最后时刻运不走全部设为废弃
+        if (frameNumber < Cons.MAX_FRAME - Berth.maxTransportTime) {
+            for (Berth berth : berths) {
+                if (berth.getTransportTime() + frameNumber + 3 > Cons.MAX_FRAME) {
+                    berth.setDeserted();
+                }
+            }
+        }
+//        setMaxAsFinal();
+        setTargetAsFinal();
+    }
+
+    boolean flagFirst = true;
+
+    private void setTargetAsFinal() {
+        //将船目前的目标设为最终港口
+
+        if (frameNumber > Cons.MAX_FRAME - Berth.maxTransportTime * 4) {
+            if (flagFirst) {
+                //第一次将所有港口设为废弃
+                for (Berth berth : berths) {
+                    berth.setDeserted();
+                }
+                flagFirst = false;
+                //为了防止正好全废弃，设定最优港口为不费
+                int maxId = Para.guessBestBerthId(berths);
+                berths[maxId].setDeserted(false);
+            }
+            //之后只要有船开往就不设为废弃
+            for (Boat boat : boats) {
+                if (boat.getTargetBerthId() != -1) {
+                    berths[boat.getTargetBerthId()].setDeserted(false);
+                }
+            }
+
+
+        }
+    }
+
+    private void setMaxAsFinal() {
+        //即将到最后时刻全部运往货流量最大的港口（按理说最近的多）
+        if (frameNumber > Cons.MAX_FRAME - Berth.maxTransportTime * 2) {
+            int maxId = Para.finalBerthId(this);
+            int otherId = 0;
+            int distance = 0;
+            for (Berth berth : berths) {
+                berth.setDeserted();
+                if (berth.getPos().Mdistance(berths[maxId].getPos()) > distance) {
+                    distance = berth.getPos().Mdistance(berths[maxId].getPos());
+                    otherId = berth.getId();
+                }
+            }
+            //最远的一个也设为最终港口
+            berths[otherId].setDeserted(false);
+            berths[maxId].setDeserted(false);
+        }
+    }
+
     public void updateRobots(Robot[] robots) {
-    for (int i = 0; i < robots.length; i++) {
+        for (int i = 0; i < robots.length; i++) {
             Frame.robots[i].setState(robots[i].getState());
             Frame.robots[i].setPos(robots[i].getPos());
             Frame.robots[i].setHasGoods(robots[i].isHasGoods());
@@ -127,9 +188,11 @@ public class Frame {
     public Goods[] getGoods() {
         return goods.toArray(new Goods[0]);
     }
-    public ArrayList<Goods> getGoodsList(){
+
+    public ArrayList<Goods> getGoodsList() {
         return goods;
     }
+
     public Map getMap() {
         return map;
     }
