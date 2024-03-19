@@ -45,11 +45,11 @@ public class Para {
     }
     public static int bfsAssignHeapCapacity = 6;
     public static int bfsMaxdistance = 150;
-    public static Comparator<Goods> bfsAssignHeapComparator= Comparator.comparingInt(Para::calculatePriority);
+    public static Comparator<Goods> bfsAssignHeapComparator= Comparator.comparingDouble(Para::calculatePriority);
 
 
-    private static int calculatePriority(Goods goods) {
-        return (goods.getPos().tempg + goods.getPos().bfsRealDistance) / goods.getValue();
+    private static double calculatePriority(Goods goods) {
+        return (double) (goods.getPos().tempg + goods.getPos().bfsRealDistance) / goods.getValue();
     }
 
 
