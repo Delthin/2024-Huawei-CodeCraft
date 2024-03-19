@@ -22,6 +22,8 @@ public class Main {
     public static Pos[][] mapPos;
     public static Berth[] berths = new Berth[Cons.MAX_BERTH];
     public static HashSet<Integer>[][] visitedRecord ;
+    public static int frameNumberLocal = 1;
+
     /**
      * 初始化
      */
@@ -262,7 +264,6 @@ public class Main {
             }
         }
         mainInstance.init();
-
         for (int zhen = 1; zhen <= Cons.MAX_FRAME; zhen++) {
             // 读取每一帧的输入数据
             Frame frame = InputParser.parseFrameData();

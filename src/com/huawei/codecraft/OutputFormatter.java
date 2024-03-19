@@ -42,7 +42,7 @@ public class OutputFormatter {
             }
         }
         //if(frame.getFrameNumber()<10)System.err.println("frame"+frame.getFrameNumber());
-
+        Main.frameNumberLocal+=1;
         System.out.println("OK");
         System.out.flush();
     }

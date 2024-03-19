@@ -51,12 +51,23 @@ public class Frame {
     }
 
     public void updateGoods(Goods[] goods) {
-        Frame.goods.addAll(Arrays.asList(goods));
         for (int i = 0; i < Frame.goods.size(); i++) {
             if (Frame.goods.get(i).expired(frameNumber)) {
+                Frame.goods.get(i).getPos().goods=null;
                 Frame.goods.remove(i);
             }
         }
+        Frame.goods.addAll(Arrays.asList(goods));
+        Pos p;
+        for(Goods good : goods){
+            //if(good)
+            p=good.getPos();
+            //if(frameNumber<500)System.err.println("frame: "+frameNumber +"   goods: "+p +"newGoodsNum"+goods.length);
+            Main.mapPos[p.X()][p.Y()].goods=good;
+            //if(frameNumber<500)System.err.println("frame: "+frameNumber +"   goods: "+good +"   "+Main.mapPos[p.X()][p.Y()].goods+"   newGoodsNum"+goods.length );
+
+        }
+
     }
 
     public void updateRobots(Robot[] robots) {

@@ -346,6 +346,251 @@ public interface PlanPath {
 
 
     }
+    public class BFSPlanPath implements PlanPath {
+
+        private static final int[][] DIRECTIONS = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+
+        private static class Node {
+            int x;
+            int y;
+            int g;  // 从起点到当前节点的实际代价
+            int h;  // 从当前节点到终点的估计代价
+            Node parent;
+
+            Node(int x, int y) {
+                this.x = x;
+                this.y = y;
+                this.g = 0;
+                this.h = 0;
+                this.parent = null;
+            }
+
+            int getF() {
+                return g + h;
+            }
+        }
+
+        private static final HashSet<Integer>[][] visitedRecord = Main.visitedRecord;
+        private static char[][] grid;  // 地图网格
+        private static int gridSizeX;  // 网格大小X
+        private static int gridSizeY;  // 网格大小Y
+
+        Robot[] robots;
+        static int frameNumber;
+        static Pos[][] mapPos;
+        //private static int plan;
+
+        @Override
+        public void plan(Frame frame) {
+            frameNumber = Main.frameNumberLocal;
+            grid = frame.getMap().getMapData();
+            gridSizeX = Cons.MAP_SIZE;
+            gridSizeY = Cons.MAP_SIZE;
+            mapPos = Main.mapPos;
+            robots = frame.getRobots();
+            //plan = 0;
+            for (Robot robot : robots) {
+                Pos start = robot.getPos();
+                visitedRecord[start.X()][start.Y()].add(frameNumber);
+                if (robot.getState() == 0) {
+                    robot.setPathList(null);
+                    for (int i = 1; i < 20; i++) {
+                        visitedRecord[start.X()][start.Y()].add(frameNumber + i);//todo:撞傻的机器人应该add不止此帧
+                    }
+                }
+            }
+            for (Robot robot : robots) {
+                //if (plan >= 500) break;//todo:
+                if (robot.getState() == 0) {
+                    continue;
+                }
+                Pos start = robot.getPos();
+                Pos goal = robot.getTargetPos();
+                //if(robot.nextPos!=robot.getPos() && frameNumber<1000)System.err.println("F"+frameNumber+robot.getId() +robot.getPos()+robot.nextPos+robot.isHasGoods());
+                if (robot.getPathList() != null && !robot.getPathList().isEmpty()) {
+//                    if (robot.getState() == 0) {
+//                        System.err.println(start);
+//                        System.err.println(frameNumber);
+//                    }
+                    robot.stepOnce();
+                } else {
+                    //更新路径的情况，分配到港口、分配的货物消失、
+                    if (goal == null || robot.isHasGoods() && robot.targetBerth == robot.getPos().berth) {//先分配去拿货的机器人
+                        continue;
+                    }
+
+                    Node startNode = new Node(start.X(), start.Y());
+                    Node endNode = new Node(goal.X(), goal.Y());
+
+                    // 执行Astar搜索;BFS部分在assign部分已生成路径
+                    Node intersectionNode = AStar(startNode , endNode);
+
+                    // 输出最短路径
+                    List<Pos> path = null;
+                    if (intersectionNode != null) {
+                        path = reconstructPath(intersectionNode, startNode);
+                    }
+                    if (path != null) {
+                        robot.setPathList(path);
+                        robot.stepOnce();
+                    } else {
+                        robot.setTargetPos(null);
+                    }
+
+                }
+
+            }
+            for (Robot robot : robots) {
+                //if(robot.nextPos!=robot.getPos())continue;
+                if (robot.isHasGoods() && robot.targetBerth == robot.getPos().berth) {//前往港口
+                    int minDistance = Integer.MAX_VALUE;
+                    Pos start = robot.getPos();
+                    Pos next = start;
+                    if (isValidPosition(start.X(), start.Y(), 1)) minDistance=start.bfsWeightsDistance;
+
+                    for (int[] direction : Cons.DIRECTIONS) {
+                        int neighborX = start.X() + direction[0];
+                        int neighborY = start.Y() + direction[1];
+
+                        if (isValidPosition(neighborX, neighborY, 1)) {
+                            if (mapPos[neighborX][neighborY].bfsWeightsDistance <= minDistance) {
+                                minDistance = mapPos[neighborX][neighborY].bfsWeightsDistance;
+                                next = mapPos[neighborX][neighborY];
+                            }
+                        }
+                    }
+                    visitedRecord[next.X()][next.Y()].add(frameNumber+1);
+                    robot.nextPos = next;
+                    //if(start.X()==14 && start.Y() == 168 && next==start)System.err.println("14 168!!!    FRAME"+frameNumber+"   VISIT    "+visitedRecord[14][167]);
+                }
+            }
+            for (Robot robot : robots) {
+                if (robot.nextPos == null) {
+                    Pos start = robot.getPos();
+                    if (visitedRecord[start.X()][start.Y()].contains(frameNumber + 1)) {
+                        int[][] directions = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+                        for (int[] direction : directions) {
+                            int neighborX = start.X() + direction[0];
+                            int neighborY = start.Y() + direction[1];
+
+                            if (isValidPosition(neighborX, neighborY, 1)) {
+                                visitedRecord[neighborX][neighborY].add(frameNumber+1);
+                                robot.nextPos = mapPos[neighborX][neighborY];
+                                break;
+                            }
+                        }
+                    }
+
+                }
+
+            }
+
+        }
+        private static Node AStar(Node startNode, Node endNode) {
+            // 前向搜索的开放集合
+            PriorityQueue<Node> openSetForward = new PriorityQueue<>(Comparator.comparingInt(Node::getF));
+            //openSetBackward = new PriorityQueue<>(Comparator.comparingInt(Node::getF));
+            //closedSetForward = new HashSet<>();
+            //closedSetBackward = new HashSet<>();
+            boolean[][] visitedStart = new boolean[gridSizeX][gridSizeY];
+
+            startNode.g = 0;
+            startNode.h = calculateHeuristic(startNode, endNode);
+            openSetForward.add(startNode);
+            //int step=0;
+            while (!openSetForward.isEmpty()  ) {
+                //step+=1;
+                //plan+=1;
+                Node currentForward = openSetForward.poll();
+                //closedSetForward.add(currentForward);
+                if((currentForward.g>startNode.h*5 ) && grid[endNode.x][endNode.y]!='B')return null;//
+                if(visitedStart[currentForward.x][currentForward.y])continue;
+                visitedStart[currentForward.x][currentForward.y] = true;
+
+                if (currentForward.x==endNode.x && currentForward.y==endNode.y) {
+                    return currentForward;  // 找到相交节点
+                }
+
+
+                exploreNeighbors(currentForward, openSetForward, visitedStart, endNode);
+            }
+
+            return null;  // 没有找到路径
+        }
+
+        private static void exploreNeighbors(Node current, PriorityQueue<Node> openSet, boolean[][] visited, Node endNode) {
+            int[][] directions = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+
+            for (int[] direction : directions) {
+                int neighborX = current.x + direction[0];
+                int neighborY = current.y + direction[1];
+
+                if (isValidPosition(neighborX, neighborY, current.g+1)) {
+                    Node neighbor = new Node(neighborX, neighborY);
+                    neighbor.parent = current;
+                    neighbor.g = current.g + 1;
+                    neighbor.h = calculateHeuristic(neighbor, endNode);
+
+                    if (visited[neighborX][neighborY]) {
+                        continue;  // 已在关闭集合中，跳过
+                    }
+
+                    Node existingNode = findNodeInOpenSet(neighbor, openSet);
+                    if (existingNode == null) {
+                        openSet.add(neighbor);  // 添加到开放集合
+                    } else {
+                        if (neighbor.g < existingNode.g) {
+                            existingNode.parent = current;
+                            existingNode.g = neighbor.g;
+                        }
+                    }
+                }
+            }
+        }
+
+        private static Node findNodeInOpenSet(Node node, PriorityQueue<Node> openSet) {
+            for (Node n : openSet) {
+                if (n.x == node.x && n.y == node.y) {
+                    return n;
+                }
+            }
+            return null;
+        }
+
+        private static List<Pos> reconstructPath(Node currentNode, Node startNode) {
+            List<Pos> path = new ArrayList<>();
+            visitedRecord[currentNode.x][currentNode.y].add(frameNumber+currentNode.g+1);
+            //Pos cur = new Pos(currentNode.x,currentNode.y);
+            while (currentNode != null && currentNode.parent != null) {
+                visitedRecord[currentNode.x][currentNode.y].add(frameNumber+currentNode.g);
+
+                path.add(mapPos[currentNode.x][currentNode.y]);
+                currentNode = currentNode.parent;
+            }
+            // 反转路径，使其从起点到相交节点
+            Collections.reverse(path);
+            return path;
+        }
+
+
+        private static int calculateHeuristic(Node node, Node targetNode) {
+            // 使用曼哈顿距离作为估计代价
+            return Math.abs(node.x - targetNode.x) + Math.abs(node.y - targetNode.y);
+        }
+
+        private static boolean isValidPosition(int x, int y ,int g) {
+
+            return x >= 0 && x < gridSizeX && y >= 0 && y < gridSizeY && grid[x][y] != '#' && grid[x][y] != '*' && !visitedRecord[x][y].contains(frameNumber+g) && !visitedRecord[x][y].contains(frameNumber+g-1);
+        }
+    }
+
+
+
+
+
+
+
+
     public class CBSPlanPath implements PlanPath {
 
         private static final int[][] DIRECTIONS = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
@@ -583,7 +828,7 @@ public interface PlanPath {
 
         private static boolean isValidPosition(int x, int y ,int g) {
 
-            return x >= 0 && x < gridSizeX && y >= 0 && y < gridSizeY && grid[x][y] != '#'&& grid[x][y] != 'R' && grid[x][y] != '*' && !visitedRecord[x][y].contains(frameNumber+g) && !visitedRecord[x][y].contains(frameNumber+g-1) && !visitedRecord[x][y].contains(frameNumber+g+1);
+            return x >= 0 && x < gridSizeX && y >= 0 && y < gridSizeY && grid[x][y] != '#'&& grid[x][y] != 'R' && grid[x][y] != '*' && !visitedRecord[x][y].contains(frameNumber+g) && !visitedRecord[x][y].contains(frameNumber+g-1);
         }
     }
     public class aStarPlanPath implements PlanPath {
