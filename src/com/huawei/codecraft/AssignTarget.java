@@ -397,14 +397,14 @@ public interface AssignTarget {
                         berth =findClosestBerth(robot);
                     }
                     if (berth != null) {
-                        robot.assignTargetBerth(berth);//此处目标泊位仍是推荐泊位，有无遗弃在planpath判断
+                        robot.assignTargetBerth(berth);
                     }
                 } else {
                     if (robot.hasPath() || robot.getTargetPos() != null ) {
                         continue;
                     }
                     //Goods bestGoods = findClosestGoods(robot, goodsList);
-                    Goods bestGoods = bfsfindBestGoods(robot,1);//todo:调参 k
+                    Goods bestGoods = bfsfindBestGoods(robot,3);//todo:调参 k
                     if (bestGoods != null) {
                         robot.assignTargetGoods(bestGoods);
                         bestGoods.setAssigned(true);
@@ -420,14 +420,14 @@ public interface AssignTarget {
             int start_x = start.X();
             int start_y = start.Y();
             Queue<Pos> queue = new LinkedList<>();
-            PriorityQueue<Goods> targetGoodsPQ = new PriorityQueue<>(Comparator.comparingInt(goods -> goods.getPos().tempg / goods.getValue()));//todo
+            PriorityQueue<Goods> targetGoodsPQ = new PriorityQueue<>(Comparator.comparingInt(goods -> (goods.getPos().tempg + goods.getPos().bfsRealDistance) / goods.getValue()));//todo
             Pos curr=mapPos[start_x][start_y];
             curr.tempg=0;
             curr.tempParent =null;
             queue.offer(curr);
             visited[start_x][start_y] = true;
             boolean isStart = true;
-            while (!queue.isEmpty() && targetGoodsPQ.size() < k  ) {
+            while (!queue.isEmpty() && targetGoodsPQ.size() < k  && curr.tempg<150) {
                 //if(frameNumber<100 && frameNumber>50)System.err.println("frame: "+frameNumber + "   R id: "+robot.getId() + "queueNum"+ queue.size());
 
                 curr = queue.poll();
