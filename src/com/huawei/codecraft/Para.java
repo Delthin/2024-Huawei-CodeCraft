@@ -30,7 +30,7 @@ public class Para {
     /**
      * 分配货物时忽视的小货物
      */
-    public static final int IGNORE_VALUE = 10;
+    public static int IGNORE_VALUE = 10;
     public static double boatAssignWeight(Boat boat, Berth berth){
         boolean isAssigned = berth.isItAssigned();
         int assignWeight = isAssigned ? 1 : 20;
@@ -44,14 +44,16 @@ public class Para {
         //哪里多去哪，优先去不废弃和未分配的
         boolean isAssigned = berth.isItAssigned();
         boolean isDeserted = berth.isDeserted();
-        int assignWeight = isAssigned ? 1 : 50;
-        int desertedWeight = isDeserted ? 1 : 10;
+        int assignWeight = isAssigned ? 1 : assignW;
+        int desertedWeight = isDeserted ? 1 : desertW;
         int goodsNum = berth.getGoodsNum();
         int loadingSpeed = berth.getLoadingSpeed();
         int transportTime = berth.getTransportTime();
         int flow = berth.getFlow();
         return assignWeight * desertedWeight * goodsNum / Math.pow(loadingSpeed, 2);
     }
+    public static int assignW = 50;
+    public static int desertW = 1300;//best in map5
     public static int guessBestBerthId(Berth[] berths){
         double maxWeight = 0;
         int maxId = 0;
