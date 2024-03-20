@@ -49,6 +49,8 @@ public class InputParser {
         frame.updateRobots(robots);
         frame.updateBoats(boats);
         frame.updateMap();
+        frame.updateBerths();
+
 //        mapPrint(frame.getMap());
 //        if (frameNumber < 2){
 //            initResponsibleBerth(frame.getRobots());

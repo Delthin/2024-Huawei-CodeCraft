@@ -21,7 +21,7 @@ public class Main {
     public static char[][] mapdata;
     public static Pos[][] mapPos;
     public static Berth[] berths = new Berth[Cons.MAX_BERTH];
-    public static HashSet<Integer>[][] visitedRecord ;
+    public static HashSet<Integer>[][] visitedRecord;
     public static int frameNumberLocal = 1;
 
     /**
@@ -35,7 +35,7 @@ public class Main {
             mapData[i] = scanf.nextLine();
         }
         map = new Map(mapData);
-        mapdata=map.getMapData();
+        mapdata = map.getMapData();
         // 读取港口数据
         int maxTransportTime = 0;
         for (int i = 0; i < Cons.MAX_BERTH; i++) {
@@ -57,6 +57,7 @@ public class Main {
         initArea();
 //        initBlock();
         initBFS();
+//        initBerth();
         //这里初始化可能添加别的内容
         //输出OK，初始化结束
         System.out.println("OK");
@@ -89,10 +90,13 @@ public class Main {
         //测试
 //        Print.printRobotInfo(frame);
 
-
-//        if(frame.getFrameNumber() > 13000){
-//            System.err.println("frameNo: " + frame.getFrameNumber());
-//            Print.printGoodsInfo(frame);
+//        int frameNumber = frame.getFrameNumber();
+//        if (frameNumber > 10000){
+//            initBerth();
+//        }
+//        if(frameNumber > 13000 && frameNumber < 14203){
+//            System.err.println("frameNo: " + frameNumber);
+////            Print.printGoodsInfo(frame);
 //            Print.printBerthInfo(frame);
 //            Print.printBoatInfo(frame);}
     }
@@ -131,15 +135,17 @@ public class Main {
                         }
                     }
                 }
-                if (areaSize > 50){
-                areaId++;}
+                if (areaSize > 50) {
+                    areaId++;
+                }
             }
         }
         areaId++;//使areaNum比实际多一，为了在initBlock时游离（小于50）的区域不越界，但不影响判断
         //todo:想办法优化这里
         Main.map.setAreaNum(areaId);
     }
-//
+
+    //
 //    private void initBlock() {
 //        Block[] blocks = Block.blocks;
 //        // 第一轮遍历，新建blocks
@@ -203,18 +209,18 @@ public class Main {
 //            }
 //        }
 //    }
-    private void initBFS(){
+    private void initBFS() {
 
         Queue<Pos> queue = new LinkedList<>();
 
         for (Berth berth : berths) {
             Pos berthPos = berth.getPos();//
-            for(int i=0;i<4;i++){
-                for(int j=0;j<4;j++){
-                    if(i==0||j==0||i==3||j==3) queue.offer(mapPos[berthPos.X()+i][berthPos.Y()+j]);
-                    mapPos[berthPos.X()+i][berthPos.Y()+j].berth=berth;
-                    mapPos[berthPos.X()+i][berthPos.Y()+j].bfsRealDistance=0;
-                    mapPos[berthPos.X()+i][berthPos.Y()+j].bfsWeightsDistance=0;
+            for (int i = 0; i < 4; i++) {
+                for (int j = 0; j < 4; j++) {
+                    if (i == 0 || j == 0 || i == 3 || j == 3) queue.offer(mapPos[berthPos.X() + i][berthPos.Y() + j]);
+                    mapPos[berthPos.X() + i][berthPos.Y() + j].berth = berth;
+                    mapPos[berthPos.X() + i][berthPos.Y() + j].bfsRealDistance = 0;
+                    mapPos[berthPos.X() + i][berthPos.Y() + j].bfsWeightsDistance = 0;
 
                 }
             }
@@ -223,7 +229,7 @@ public class Main {
         // 进行广度优先搜索
         while (!queue.isEmpty()) {
             Pos currPos = queue.poll();
-            int bfsWeightDistance = currPos.bfsWeightsDistance+currPos.berth.bfsWeight;
+            int bfsWeightDistance = currPos.bfsWeightsDistance + currPos.berth.bfsWeight;
             int bfsRealDistance = currPos.bfsRealDistance + 1;
 
             // 遍历四个方向
@@ -232,7 +238,7 @@ public class Main {
                 int newCol = currPos.Y() + dir[1];
 
                 // 判断是否越界
-                if (newRow < 0 || newRow >= Cons.MAP_SIZE || newCol < 0 || newCol >= Cons.MAP_SIZE ||mapdata[newRow][newCol]=='B'||mapdata[newRow][newCol]=='#'||mapdata[newRow][newCol]=='*') {
+                if (newRow < 0 || newRow >= Cons.MAP_SIZE || newCol < 0 || newCol >= Cons.MAP_SIZE || mapdata[newRow][newCol] == 'B' || mapdata[newRow][newCol] == '#' || mapdata[newRow][newCol] == '*') {
                     continue;
                 }
                 Pos next = mapPos[newRow][newCol];
@@ -240,8 +246,8 @@ public class Main {
                 if (bfsWeightDistance < next.bfsWeightsDistance) {
                     next.bfsWeightsDistance = bfsWeightDistance;
                     next.bfsRealDistance = bfsRealDistance;
-                    next.berth=currPos.berth;
-                    if(!queue.contains(next))queue.offer(next);
+                    next.berth = currPos.berth;
+                    if (!queue.contains(next)) queue.offer(next);
                 }
             }
         }
@@ -249,25 +255,38 @@ public class Main {
 
     }
 
+    /**
+     * 面向地图开局废掉部分港口
+     */
+    private void initBerth() {
+        //map5
+//        berths[2].setDeserted();
+//        berths[6].setDeserted();
+//        berths[9].setDeserted();
+    }
+
     public static void main(String[] args) {
         Main mainInstance = new Main();
+        if (args.length > 0) {
+            Para.assignW = Integer.parseInt(args[0]);
+        }
         visitedRecord = new HashSet[Cons.MAP_SIZE][Cons.MAP_SIZE];
-        for(int i=0;i<Cons.MAP_SIZE;i++){
-            for(int j=0;j<Cons.MAP_SIZE;j++) {
+        for (int i = 0; i < Cons.MAP_SIZE; i++) {
+            for (int j = 0; j < Cons.MAP_SIZE; j++) {
                 visitedRecord[i][j] = new HashSet<>();
             }
         }
         mapPos = new Pos[Cons.MAP_SIZE][Cons.MAP_SIZE];
         for (int i = 0; i < Cons.MAP_SIZE; i++) {
             for (int j = 0; j < Cons.MAP_SIZE; j++) {
-                mapPos[i][j] =new Pos(i,j);
+                mapPos[i][j] = new Pos(i, j);
             }
         }
         mainInstance.init();
         for (int zhen = 1; zhen <= Cons.MAX_FRAME; zhen++) {
             // 读取每一帧的输入数据
             Frame frame = InputParser.parseFrameData();
-            if(frame == null){
+            if (frame == null) {
                 break;
             }
             mainInstance.processFrame(frame);

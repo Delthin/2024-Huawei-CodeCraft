@@ -110,7 +110,7 @@ public interface AssignTargetBoat {
 
     public class randomAssignTarget implements AssignTargetBoat {
         /**
-         * 基本随机对10个泊位轮流前往，获取后即卖
+         * 一些参数乱调
          */
         static int berthNo = 0;
 
@@ -118,22 +118,41 @@ public interface AssignTargetBoat {
         public void assign(Frame frame) {
             Boat[] boats = frame.getBoats();
             Berth[] berths = Main.berths;
+            int frameNumber = frame.getFrameNumber();
             for (Boat boat : boats) {
-                if (boat.getState() == 0) {
+                int targetBerthId = boat.getTargetBerthId();
+                int state = boat.getState();
+                /**
+                 * 正在移动中
+                 */
+                if (state == 0) {
+                    //如果最后时刻目标不是-1那就前往-1
+                    if (targetBerthId != -1 && !enoughToSell(frameNumber, berths[targetBerthId].getTransportTime())) {
+                        boat.setAction(2);
+                        continue;
+                    }
                     boat.setAction(0);
                     continue;
-                } else if (boat.getState() == 1) {
-                    if (boat.getTargetBerthId() == -1) {
+                } else if (state == 1) {
+                    /**
+                     * 在虚拟点待机中
+                     */
+                    if (targetBerthId == -1) {
                         //选最多的泊位去
                         //初始化船只状态为state=1，TargetBerthId=-1
                         //卖完后清空货物
                         boat.clearGoods();
+                        boat.setAction(0);
                         assignBerth(frame, boat, berths);
 //                        berthNo = (berthNo + 1) % 10;
-                    } else {
+                    }
+                    /**
+                     * 在某个泊位待机中
+                     */
+                    else {
                         //最后时刻全部开往虚拟店
-                        Berth berth = berths[boat.getTargetBerthId()];
-                        if (14997 - frame.getFrameNumber() <= berth.getTransportTime()) {
+                        Berth berth = berths[targetBerthId];
+                        if (!enoughToSell(frameNumber, berth.getTransportTime())) {
                             boat.setAction(2);
                             berth.setAssigned(false);
                             //不让机器人再去此港口
@@ -145,7 +164,7 @@ public interface AssignTargetBoat {
                             if (boat.getVacancy() <= 0) {
                                 boat.setAction(2);
                                 berth.setAssigned(false);
-                            } else if (frame.getFrameNumber() < (Cons.MAX_FRAME - 550) && boat.getVacancy() > Boat.getCapacity() / 2) {
+                            } else if (frame.getFrameNumber() < (Cons.MAX_FRAME - 550) && boat.getVacancy() > Boat.getCapacity() / 3) {
                                 //没到一半去别的港口继续装
                                 assignBerth(frame, boat, berths);
                                 berth.setAssigned(false);
@@ -161,9 +180,13 @@ public interface AssignTargetBoat {
                             loading(boat);
                         }
                     }
-                } else if (boat.getState() == 2) {
+                }
+                /**
+                 * 泊位外等待中
+                 */
+                else if (boat.getState() == 2) {
                     Berth berth = berths[boat.getTargetBerthId()];
-                    if (14997 - frame.getFrameNumber() <= berth.getTransportTime()) {
+                    if (!enoughToSell(frameNumber, berth.getTransportTime())) {
                         boat.setAction(2);
                         berth.setAssigned(false);
                         //不让机器人再去此港口
@@ -201,13 +224,28 @@ public interface AssignTargetBoat {
             double maxWeight = 0;
             for (Berth berth : berths) {
                 double weight = Para.boatAssignWeight(boat, berth);
-                if (weight > maxWeight && (frame.getFrameNumber() + 2 * berth.getTransportTime() < Cons.MAX_FRAME - 5)) {
+                if (frame.getFrameNumber() > Cons.MAX_FRAME - 3 * Berth.maxTransportTime) {
+                    //最终时刻权重不同
+                    weight = Para.boatFinalWeight(boat, berth);
+                }
+                //更换泊位至少需要500+泊位运输时间，还有装货时间
+                if (weight > maxWeight && enoughToSell(frame.getFrameNumber(), berth.getTransportTime() + 500 + Boat.getCapacity())) {
                     maxWeight = weight;
                     maxId = berth.getId();
                 }
             }
             if (maxId == 0 && berths[0].isItAssigned()) {
-                //没分到
+                //没分到去流量最大的
+                if (frame.getFrameNumber() > Cons.MAX_FRAME - 3 * Berth.maxTransportTime ) {
+                    //最后时刻全部运往货流量最大的港口
+                    maxId = Para.finalBerthId(frame);
+                }else{
+                    boat.setAction(0);
+                    return;
+                }
+            }
+            if (!enoughToSell(frame.getFrameNumber(), berths[maxId].getTransportTime() + 500 + Boat.getCapacity())){
+                //如果运不走就不分配
                 return;
             }
             boat.setShipTarget(maxId);
@@ -216,6 +254,8 @@ public interface AssignTargetBoat {
             berths[maxId].setAssigned(true);
         }
     }
-
+    public static boolean enoughToSell(int frameNumber, int transportTime){
+        return frameNumber + transportTime < Cons.MAX_FRAME - 5;
+    }
 }
 

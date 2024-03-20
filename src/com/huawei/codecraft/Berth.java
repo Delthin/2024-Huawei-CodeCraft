@@ -73,6 +73,9 @@ public class Berth {
     public void setDeserted(){
         this.deserted = true;
     }
+    public void setDeserted(boolean deserted){
+        this.deserted = deserted;
+    }
     public boolean isDeserted(){
         return this.deserted;
     }
