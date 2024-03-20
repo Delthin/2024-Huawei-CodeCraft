@@ -74,7 +74,7 @@ public class Frame {
 
     public void updateBerths() {
         //最后时刻运不走全部设为废弃
-        if (frameNumber < Cons.MAX_FRAME - Berth.maxTransportTime) {
+        if (frameNumber >= Cons.MAX_FRAME - Berth.maxTransportTime) {
             for (Berth berth : berths) {
                 if (berth.getTransportTime() + frameNumber + 3 > Cons.MAX_FRAME) {
                     berth.setDeserted();
@@ -82,7 +82,8 @@ public class Frame {
             }
         }
 //        setMaxAsFinal();
-        setTargetAsFinal();
+        //为适应map6先去掉
+//        setTargetAsFinal();
     }
 
     boolean flagFirst = true;

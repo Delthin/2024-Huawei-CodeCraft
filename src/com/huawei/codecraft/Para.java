@@ -53,7 +53,8 @@ public class Para {
         return assignWeight * desertedWeight * goodsNum / Math.pow(loadingSpeed, 2);
     }
     public static int assignW = 50;
-    public static int desertW = 1300;//best in map5
+//    public static int desertW = 1300;//best in map5
+    public static int desertW = 13;
     public static int guessBestBerthId(Berth[] berths){
         double maxWeight = 0;
         int maxId = 0;

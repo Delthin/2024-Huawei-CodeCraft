@@ -268,7 +268,7 @@ public class Main {
     public static void main(String[] args) {
         Main mainInstance = new Main();
         if (args.length > 0) {
-            Para.assignW = Integer.parseInt(args[0]);
+            Para.bfsMaxdistance= Integer.parseInt(args[0]);
         }
         visitedRecord = new HashSet[Cons.MAP_SIZE][Cons.MAP_SIZE];
         for (int i = 0; i < Cons.MAP_SIZE; i++) {
