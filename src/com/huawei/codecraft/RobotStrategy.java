@@ -103,7 +103,7 @@ public class RobotStrategy {
             return -1;
         } else {
             //return Math.abs(currentX-nextX)+Math.abs(currentY-nextY)+100;
-            //System.err.println("FRAME:"+Main.frameNumberLocal+"  curr:"+currentPos+"  next:"+nextPos);
+            if(Main.frameNumberLocal<12000)System.err.println("FRAME:"+Main.frameNumberLocal+"  curr:"+currentPos+"  next:"+nextPos);
             return -1;
         }
 

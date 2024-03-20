@@ -392,19 +392,21 @@ public interface AssignTarget {
             mapPos=Main.mapPos;
             mapData=frame.getMap().getMapData();
             for (Robot robot : robots) {
-                if (robot.getState() == 0 && robot.getPos().bfsWeightsDistance==Integer.MAX_VALUE) continue;
+                if (robot.hasPath() ) {
+                    continue;
+                }if (robot.getState() == 0 && robot.getPos().bfsWeightsDistance==Integer.MAX_VALUE) continue;
                 Berth berth = robot.getPos().berth;
+
                 if (robot.isHasGoods()) {//todo:可以简化
+                    robot.isFromDesertedArea = false;
                     if(berth!=null && berth.isDeserted()){
                         berth =findClosestBerth(robot);
+                        robot.isFromDesertedArea=true;
                     }
                     if (berth != null) {
                         robot.assignTargetBerth(berth);
                     }
                 } else {
-                    if (robot.hasPath() || robot.getTargetPos() != null ) {
-                        continue;
-                    }
                     //Goods bestGoods = findClosestGoods(robot, goodsList);
                     Goods bestGoods = bfsfindBestGoods(robot);//todo:调参 k
                     if (bestGoods != null) {
@@ -464,42 +466,6 @@ public interface AssignTarget {
         private static boolean isValidPosition(int x, int y ,int g) {
 
             return x >= 0 && x < Cons.MAP_SIZE && y >= 0 && y < Cons.MAP_SIZE && mapData[x][y] != '#' && mapData[x][y] != '*' && !visitedRecord[x][y].contains(frameNumber+g) && !visitedRecord[x][y].contains(frameNumber+g-1) ;
-        }
-        private Goods findBestGoods(Robot robot, Goods[] goodsList) {
-            Goods closestGoods = null;
-//            int minDistance=Integer.MAX_VALUE;
-            double maxWeight = Integer.MIN_VALUE;
-
-            for (Goods goods : goodsList) {
-                if(goods.getValue() < Para.IGNORE_VALUE)continue;
-                if (!goods.isAssigned()) {
-                    double weight = Para.goodsAssignWeight(robot, goods);
-                    if (weight > maxWeight) {
-//                        minDistance = distance;
-                        maxWeight = weight;
-                        closestGoods = goods;
-                    }
-                }
-            }
-//            if(frameNumber<=10 && minDistance>2*Cons.MAX_DISTANCE)return null;//TODO:暂时性前期防跳帧
-            return closestGoods;
-        }
-        private Goods findClosestGoods(Robot robot, Goods[] goodsList) {
-            Goods closestGoods = null;
-            double minDistance = Double.MAX_VALUE;
-
-            for (Goods goods : goodsList) {
-                if(goods.getValue() < Para.IGNORE_VALUE)continue;
-                if (!goods.isAssigned()) {
-                    double distance = robot.getPos().Mdistance(goods.getPos());
-                    if (distance < minDistance) {
-                        minDistance = distance;
-                        closestGoods = goods;
-                    }
-                }
-            }
-//            if(frameNumber<=10 && minDistance>Cons.MAX_DISTANCE)return null;
-            return closestGoods;
         }
         private static List<Pos> reconstructPath(Pos currentNode ) {
             List<Pos> path = new ArrayList<>();

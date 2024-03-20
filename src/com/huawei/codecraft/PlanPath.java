@@ -406,7 +406,7 @@ public interface PlanPath {
                 }
                 Pos start = robot.getPos();
                 Pos goal = robot.getTargetPos();
-                //if(robot.nextPos!=robot.getPos() && frameNumber<1000)System.err.println("F"+frameNumber+robot.getId() +robot.getPos()+robot.nextPos+robot.isHasGoods());
+                //if(robot.nextPos!=robot.getPos() &&robot.nextPos!=null )System.err.println("F"+frameNumber+"   R"+robot.getId() +robot.targetBerth.getPos()+robot.targetPos );
                 if (robot.getPathList() != null && !robot.getPathList().isEmpty()) {
 //                    if (robot.getState() == 0) {
 //                        System.err.println(start);
@@ -415,9 +415,10 @@ public interface PlanPath {
                     robot.stepOnce();
                 } else {
                     //更新路径的情况，分配到港口、分配的货物消失、
-                    if (goal == null || robot.isHasGoods() && robot.targetBerth == robot.getPos().berth) {//先分配去拿货的机器人
+                    if (goal == null || robot.isHasGoods() && !robot.isFromDesertedArea) {//先分配去拿货的机器人
                         continue;
                     }
+                    //if(frameNumber<12000)System.err.println("ASATR!"+start);
 
                     Node startNode = new Node(start.X(), start.Y());
                     Node endNode = new Node(goal.X(), goal.Y());
@@ -429,8 +430,10 @@ public interface PlanPath {
                     List<Pos> path = null;
                     if (intersectionNode != null) {
                         path = reconstructPath(intersectionNode, startNode);
+
                     }
                     if (path != null) {
+                        //if(frameNumber<12000)System.err.println(frameNumber+"  ASATR! "+robot.getId()+path);
                         robot.setPathList(path);
                         robot.stepOnce();
                     } else {
@@ -442,7 +445,7 @@ public interface PlanPath {
             }
             for (Robot robot : robots) {
                 //if(robot.nextPos!=robot.getPos())continue;
-                if (robot.isHasGoods() && robot.targetBerth == robot.getPos().berth) {//前往港口
+                if (robot.isHasGoods() && !robot.isFromDesertedArea) {//前往港口
                     int minDistance = Integer.MAX_VALUE;
                     Pos start = robot.getPos();
                     Pos next = start;
@@ -510,7 +513,9 @@ public interface PlanPath {
                 if (currentForward.x==endNode.x && currentForward.y==endNode.y) {
                     return currentForward;  // 找到相交节点
                 }
-
+                if(!mapPos[currentForward.x][currentForward.y].berth.isDeserted() && mapPos[currentForward.x][currentForward.y].bfsWeightsDistance==0){
+                    return currentForward;
+                }
 
                 exploreNeighbors(currentForward, openSetForward, visitedStart, endNode);
             }
@@ -525,15 +530,11 @@ public interface PlanPath {
                 int neighborX = current.x + direction[0];
                 int neighborY = current.y + direction[1];
 
-                if (isValidPosition(neighborX, neighborY, current.g+1)) {
+                if (isValidPosition(neighborX, neighborY, current.g+1) && !visited[neighborX][neighborY]) {
                     Node neighbor = new Node(neighborX, neighborY);
                     neighbor.parent = current;
                     neighbor.g = current.g + 1;
                     neighbor.h = calculateHeuristic(neighbor, endNode);
-
-                    if (visited[neighborX][neighborY]) {
-                        continue;  // 已在关闭集合中，跳过
-                    }
 
                     Node existingNode = findNodeInOpenSet(neighbor, openSet);
                     if (existingNode == null) {
@@ -561,7 +562,7 @@ public interface PlanPath {
             List<Pos> path = new ArrayList<>();
             visitedRecord[currentNode.x][currentNode.y].add(frameNumber+currentNode.g+1);
             //Pos cur = new Pos(currentNode.x,currentNode.y);
-            while (currentNode != null && currentNode.parent != null) {
+            while (currentNode.parent != null) {
                 visitedRecord[currentNode.x][currentNode.y].add(frameNumber+currentNode.g);
 
                 path.add(mapPos[currentNode.x][currentNode.y]);
@@ -569,6 +570,7 @@ public interface PlanPath {
             }
             // 反转路径，使其从起点到相交节点
             Collections.reverse(path);
+
             return path;
         }
 

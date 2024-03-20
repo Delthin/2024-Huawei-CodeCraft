@@ -112,11 +112,11 @@ public class Robot {
         this.nextPos = nextPos;
     }
 
-    public void setPathList(List path) {
+    public void setPathList(List<Pos> path) {
         this.pathList = path;
     }
 
-    public static void setPathList(int id, List path) {
+    public static void setPathList(int id, List<Pos> path) {
         if (path != null && !path.isEmpty()) {
             Frame.robots[id].setPathList(path);
         }
@@ -164,11 +164,13 @@ public class Robot {
         this.targetPos=null;
         this.setPathList(null);
         this.action[1] = 1;
+        //this.nextPos=null;
     }
 
     public void putDownGoods(int f) {
         this.action[1] = 2;
         this.targetPos=null;
+        //this.nextPos=null;
         this.setPathList(null);
         if(this.nextPos.bfsWeightsDistance!=0){
             System.err.println(this.pos);
@@ -178,7 +180,7 @@ public class Robot {
         }
 
     }
-
+    public boolean isFromDesertedArea;
     public static void setBlocksList(int id, List blocks) {
         Frame.robots[id].setBlocksList(blocks);
     }
