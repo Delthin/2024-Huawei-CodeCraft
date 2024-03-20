@@ -23,6 +23,10 @@ public class Main {
     public static Berth[] berths = new Berth[Cons.MAX_BERTH];
     public static HashSet<Integer>[][] visitedRecord;
     public static int frameNumberLocal = 1;
+    //记录用
+    public static int totalValue = 0;
+    public static int getValue = 0;
+    public static int berthValue = 0;
 
     /**
      * 初始化
@@ -86,7 +90,10 @@ public class Main {
         //todo: 目前采用每一帧都重新计算路径的方式，后续如果跳帧可以考虑优化
         RobotStrategy.process(frame);
         BoatStrategy.process(frame);
-
+        if (frame.getFrameNumber() > 14200 && frame.getFrameNumber() < 14202){
+            Print.printValue();
+            Print.printBerthInfo(frame);
+        }
         //测试
 //        Print.printRobotInfo(frame);
 
@@ -96,7 +103,7 @@ public class Main {
 //        }
 //        if(frameNumber > 13000 && frameNumber < 14203){
 //            System.err.println("frameNo: " + frameNumber);
-////            Print.printGoodsInfo(frame);
+//            Print.printGoodsInfo(frame);
 //            Print.printBerthInfo(frame);
 //            Print.printBoatInfo(frame);}
     }
@@ -267,8 +274,9 @@ public class Main {
 
     public static void main(String[] args) {
         Main mainInstance = new Main();
+        int poop = 0;
         if (args.length > 0) {
-            Para.bfsMaxdistance= Integer.parseInt(args[0]);
+            poop= Integer.parseInt(args[0]);
         }
         visitedRecord = new HashSet[Cons.MAP_SIZE][Cons.MAP_SIZE];
         for (int i = 0; i < Cons.MAP_SIZE; i++) {

@@ -39,5 +39,8 @@ public class Goods {
     public boolean expired(int frameNumber) {
         return frameNumber - summonFrame > Cons.EXPIRE_TIME;
     }
+    public int getRemainingTime(int frameNumber) {
+        return Cons.EXPIRE_TIME - (frameNumber - summonFrame);
+    }
 }
 

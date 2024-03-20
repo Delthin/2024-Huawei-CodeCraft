@@ -440,7 +440,7 @@ public interface AssignTarget {
                 if (!isValidPosition(x,y, curr.tempg) && !isStart) continue;
                 isStart=false;
                 //if(curr.goods!=null && frameNumber<500)System.err.println("frame: "+frameNumber + "   R id: "+robot.getId()+"   goods: "+curr.goods.getPos());
-                if (curr.goods!=null && !curr.goods.isAssigned() && curr.goods.getSummonFrame()+1000>frame0.getFrameNumber() + curr.tempg){
+                if (curr.goods!=null && !curr.goods.isAssigned() && curr.goods.getSummonFrame()+1000>frame0.getFrameNumber() + curr.tempg && curr.goods.getValue() > Para.IGNORE_VALUE){
                     //if(frameNumber<500)System.err.println("frame: "+frameNumber + "   R id: "+robot.getId()+"   goods: "+curr.goods.getPos());
                     targetGoodsPQ.add(curr.goods);
                 }

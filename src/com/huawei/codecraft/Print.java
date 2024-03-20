@@ -11,12 +11,14 @@ public class Print {
             int goodsNum = berth.getGoodsNum();
             int goodsFlow = berth.getGoodsFlow();
             boolean isDeserted = berth.isDeserted();
-            System.err.println("Berth id: " + id + " goodsNum: " + goodsNum + " goodsFlow: " + goodsFlow +  " transportTime: " + transportTime + " loadingSpeed: " + loadingSpeed + " isDeserted: " + isDeserted);
+            System.err.print("id"+id+":"+goodsNum+" ");
+//            System.err.println("Berth id: " + id + " goodsNum: " + goodsNum + " goodsFlow: " + goodsFlow +  " transportTime: " + transportTime + " loadingSpeed: " + loadingSpeed + " isDeserted: " + isDeserted);
 //            System.err.println("pos: " + pos );
 //            System.err.println("transportTime: " + transportTime );
 //            System.err.println("loadingSpeed: " + loadingSpeed );
 //            System.err.println("goodsNum: " + goodsNum );
         }
+        System.err.println();
     }
     public static void printBoatInfo(Frame frame){
         Boat[] boats = frame.getBoats();
@@ -48,6 +50,9 @@ public class Print {
             int assigned = good.isAssigned() ? 1 : 0;
             System.err.println("Goods pos: " + pos + " summonFrame: " + summonFrame + " value: " + value + " assigned: " + assigned);
         }
+    }
+    public static void printValue(){
+        System.err.println("Total value: " + Main.totalValue + " Get value: " + Main.getValue + " Berth value: " + Main.berthValue);
     }
     public static String stateToString(int state){
         if (state == 0){

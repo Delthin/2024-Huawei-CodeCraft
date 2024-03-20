@@ -59,6 +59,9 @@ public class Frame {
                 Frame.goods.remove(i);
             }
         }
+        for (Goods good : goods) {
+            Main.totalValue += good.getValue();
+        }
         Frame.goods.addAll(Arrays.asList(goods));
         Pos p;
         for (Goods good : goods) {

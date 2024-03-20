@@ -164,6 +164,8 @@ public class Robot {
         this.targetPos=null;
         this.setPathList(null);
         this.action[1] = 1;
+        this.goods = goods;
+        Main.getValue += goods.getValue();
         //this.nextPos=null;
     }
 
@@ -172,6 +174,8 @@ public class Robot {
         this.targetPos=null;
         //this.nextPos=null;
         this.setPathList(null);
+        Main.berthValue += this.goods.getValue();
+        this.goods = null;
         if(this.nextPos.bfsWeightsDistance!=0){
             System.err.println(this.pos);
             System.err.println(f);
