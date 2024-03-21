@@ -11,7 +11,7 @@ public class Print {
             int goodsNum = berth.getGoodsNum();
             int goodsFlow = berth.getGoodsFlow();
             boolean isDeserted = berth.isDeserted();
-            System.err.print("id"+id+":"+goodsNum+" ");
+            System.err.print("id"+id+":"+goodsNum+", " +goodsFlow + " ");
 //            System.err.println("Berth id: " + id + " goodsNum: " + goodsNum + " goodsFlow: " + goodsFlow +  " transportTime: " + transportTime + " loadingSpeed: " + loadingSpeed + " isDeserted: " + isDeserted);
 //            System.err.println("pos: " + pos );
 //            System.err.println("transportTime: " + transportTime );
