@@ -125,4 +125,6 @@ public class Para {
         }
         return maxId;
     }
+    public static int FINAL_START_FRAME = 10000;
+    public static int FINAL_SECOND_FRAME = 11000;
 }

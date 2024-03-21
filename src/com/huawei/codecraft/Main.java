@@ -90,9 +90,11 @@ public class Main {
         //todo: 目前采用每一帧都重新计算路径的方式，后续如果跳帧可以考虑优化
         RobotStrategy.process(frame);
         BoatStrategy.process(frame);
-        if (frame.getFrameNumber() == 10000 || frame.getFrameNumber() == 14201){
+        int frameN = frame.getFrameNumber();
+        if (frameN % 1000 == 0 || frame.getFrameNumber() == 14201){
             System.err.print("frameNo: " + frame.getFrameNumber() + " ");
             Print.printValue();
+            System.err.print("desertBoatId:" +AssignTargetBoat.randomAssignTarget.desertBoatId + " ");
             Print.printBerthInfo(frame);
         }
         //测试

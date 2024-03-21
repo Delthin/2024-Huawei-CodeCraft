@@ -112,7 +112,7 @@ public interface AssignTargetBoat {
         /**
          * 一些参数乱调
          */
-        static int berthNo = 0;
+        static int desertBoatId = -1;
 
         @Override
         public void assign(Frame frame) {
@@ -220,6 +220,23 @@ public interface AssignTargetBoat {
         }
 
         private void assignBerth(Frame frame, Boat boat, Berth[] berths) {
+            if(desertBoatId == -1 && frame.getFrameNumber() > Para.FINAL_START_FRAME){
+                //最终时刻分配废品船
+                if (boat.getVacancy() > Boat.getCapacity() / 4 * 3) {
+                    desertBoatId = boat.getId();
+                }
+            }
+            if(boat.getId() == desertBoatId){
+                //专门负责收废品的船只
+                for (Berth berth: berths) {
+                    if (berth.isDeserted() && berth.getGoodsNum() > 2) {
+                        boat.setShipTarget(berth.getId());
+                        boat.setAction(1);
+                        berth.setAssigned(true);
+                        return;
+                    }
+                }
+            }
             int maxId = 0;
             double maxWeight = 0;
             for (Berth berth : berths) {

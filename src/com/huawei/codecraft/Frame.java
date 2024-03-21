@@ -84,6 +84,7 @@ public class Frame {
                 }
             }
         }
+        setSmallAsDesert();
 //        setMaxAsFinal();
         //为适应map6先去掉
 //        setTargetAsFinal();
@@ -113,6 +114,22 @@ public class Frame {
             }
 
 
+        }
+    }
+    private void setSmallAsDesert(){
+        if (frameNumber > Para.FINAL_START_FRAME && frameNumber < Para.FINAL_START_FRAME + 3){
+            for (Berth berth : berths) {
+                if (berth.getGoodsFlow() < 60){
+                    berth.setDeserted();
+                }
+            }
+        }
+        if (frameNumber > Para.FINAL_SECOND_FRAME && frameNumber < Para.FINAL_SECOND_FRAME + 3){
+            for (Berth berth : berths) {
+                if (berth.getGoodsFlow() < 90){
+                    berth.setDeserted();
+                }
+            }
         }
     }
 
