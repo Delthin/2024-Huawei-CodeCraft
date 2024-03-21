@@ -77,20 +77,27 @@ public class Para {
     public static double boatRandomWeight(){
         return new Random().nextDouble();
     }
-    public static int bfsAssignHeapCapacity = 7;
+    public static int bfsAssignHeapCapacity = 6;
     public static int bfsMaxdistance = 150;
-    public static Comparator<Goods> bfsAssignHeapComparator= Comparator.comparingDouble(Para::calculatePriority);
+    public static double averageDistance = 120;
+    public static int scanGoodsNum =0;
+    public static Comparator<Goods> bfsAssignHeapComparator= Comparator.comparingDouble(Para::calculatePriorityWithTimeLimit);
 
 
-    private static double calculatePriority(Goods goods) {
-        int tempg = goods.getPos().tempg;
-        //即将消失时重提高
-        int remainingWeight = goods.getRemainingTime(Main.frameNumberLocal) < (tempg + goods.getPos().bfsRealDistance) ? remainingW : 1;
-        if (tempg > remainDistanceW){
-        return (double)   (tempgW * goods.getPos().tempg + 10 * goods.getPos().bfsRealDistance) /  goods.getValue();}
-        else {
-            return (double)  (tempgW * goods.getPos().tempg + 10 * goods.getPos().bfsRealDistance) /  goods.getValue() / remainingWeight;
+    private static double calculatePriorityWithTimeLimit(Goods goods) {
+        int remainT = goods.getSummonFrame() + 1000 - Main.frameNumberReal;
+        int distance = goods.getPos().tempg + goods.getPos().bfsRealDistance;
+        averageDistance=averageDistance*scanGoodsNum + distance;
+        scanGoodsNum+=1;
+        averageDistance/=scanGoodsNum;
+        if(remainT>goods.getPos().tempg+ averageDistance ){
+            return (double) -goods.getValue() /distance*(bfsAssignHeapCapacity+1);
         }
+        return (double) -goods.getValue() /distance*bfsAssignHeapCapacity;
+        //return (double) (goods.getPos().tempg + goods.getPos().bfsRealDistance) / goods.getValue() ;
+    }
+    private static double calculatePriorityEasy(Goods goods) {
+        return (double) (goods.getPos().tempg + goods.getPos().bfsRealDistance) / goods.getValue() ;
     }
     public static int tempgW = 10;
     public static int remainDistanceW = 30;

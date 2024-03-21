@@ -23,6 +23,7 @@ public class Main {
     public static Berth[] berths = new Berth[Cons.MAX_BERTH];
     public static HashSet<Integer>[][] visitedRecord;
     public static int frameNumberLocal = 1;
+    public static int frameNumberReal ;
     //记录用
     public static int totalValue = 0;
     public static int getValue = 0;
@@ -106,7 +107,7 @@ public class Main {
 //        }
 //        if(frameNumber > 13000 && frameNumber < 14203){
 //            System.err.println("frameNo: " + frameNumber);
-//            Print.printGoodsInfo(frame);
+////            Print.printGoodsInfo(frame);
 //            Print.printBerthInfo(frame);
 //            Print.printBoatInfo(frame);}
     }
@@ -296,6 +297,8 @@ public class Main {
         mainInstance.init();
         for (int zhen = 1; zhen <= Cons.MAX_FRAME; zhen++) {
             // 读取每一帧的输入数据
+            frameNumberReal = zhen;
+
             Frame frame = InputParser.parseFrameData();
             if (frame == null) {
                 break;
