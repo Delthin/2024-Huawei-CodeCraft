@@ -23,6 +23,7 @@ public class Main {
     public static Berth[] berths = new Berth[Cons.MAX_BERTH];
     public static HashSet<Integer>[][] visitedRecord;
     public static int frameNumberLocal = 1;
+    public static int frameNumberReal ;
 
     /**
      * 初始化
@@ -285,6 +286,8 @@ public class Main {
         mainInstance.init();
         for (int zhen = 1; zhen <= Cons.MAX_FRAME; zhen++) {
             // 读取每一帧的输入数据
+            frameNumberReal = zhen;
+
             Frame frame = InputParser.parseFrameData();
             if (frame == null) {
                 break;
