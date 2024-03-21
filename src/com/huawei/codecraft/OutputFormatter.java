@@ -43,7 +43,7 @@ public class OutputFormatter {
         }
         //if(frame.getFrameNumber()<10)System.err.println("frame"+frame.getFrameNumber());
         Main.frameNumberLocal+=1;
-        //if(frame.getFrameNumber()>=Cons.MAX_FRAME-10)System.err.println(Main.frameNumberLocal);
+        if(frame.getFrameNumber()>=Cons.MAX_FRAME-10)System.err.println(Main.frameNumberLocal);
         System.out.println("OK");
         System.out.flush();
     }

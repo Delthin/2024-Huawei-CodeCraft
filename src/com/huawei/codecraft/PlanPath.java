@@ -390,52 +390,8 @@ public interface PlanPath {
             robots = frame.getRobots();
             //plan = 0;
 
-            //存下当前位置，防撞
-            for (Robot robot : robots) {
-                Pos start = robot.getPos();
-                visitedRecord[start.X()][start.Y()].add(frameNumber);
-                if (robot.getState() == 0) {
-                    robot.setPathList(null);
-                    for (int i = 1; i < 20; i++) {
-                        visitedRecord[start.X()][start.Y()].add(frameNumber + i);//todo:撞傻的机器人应该add不止此帧
-                    }
-                }
-            }
-            //前往港口，下降
-            for (Robot robot : robots) {
-                //if(robot.nextPos!=robot.getPos())continue;
-                if (robot.isHasGoods() && !robot.isFromDesertedArea && !robot.hasPath() && robot.getPos().bfsWeightsDistance!=Integer.MAX_VALUE) {//前往港口
-                    Pos start = robot.getPos();
-                    Pos next = start;
-                    List<Pos> path = new ArrayList<>();
-                    int g=1;
-                    while(next.bfsWeightsDistance!=0) {
-                        int minDistance = Integer.MAX_VALUE;
-                        if (isValidPosition(start.X(), start.Y(), g)) minDistance = start.bfsWeightsDistance;
 
-                        for (int[] direction : Cons.DIRECTIONS) {
-                            int neighborX = start.X() + direction[0];
-                            int neighborY = start.Y() + direction[1];
 
-                            if (isValidPosition(neighborX, neighborY, 1)) {
-                                if (mapPos[neighborX][neighborY].bfsWeightsDistance <= minDistance) {
-                                    minDistance = mapPos[neighborX][neighborY].bfsWeightsDistance;
-                                    next = mapPos[neighborX][neighborY];
-                                }
-                            }
-                        }
-                        g++;
-                        path.add(next);
-                        start = next;
-                    }
-                    g=1;
-                    for(Pos pos : path){
-                        visitedRecord[pos.X()][pos.Y()].add(frameNumber + g);
-                        g+=1;
-                    }
-                    robot.setPathList(path);
-                }
-            }
             //A*
             for (Robot robot : robots) {
                 //if (plan >= 500) break;//todo:
