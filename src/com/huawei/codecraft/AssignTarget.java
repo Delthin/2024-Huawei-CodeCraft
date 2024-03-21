@@ -376,6 +376,7 @@ public interface AssignTarget {
     }
     public class planPathAssignTarget implements AssignTarget{
         static int frameNumber;
+        static int frameNumberReal;
         Berth[] berths;
         Pos[][] mapPos;
         private static final HashSet<Integer>[][] visitedRecord = Main.visitedRecord;
@@ -386,6 +387,7 @@ public interface AssignTarget {
         public void assign(Frame frame) {
             frame0=frame;
             frameNumber = Main.frameNumberLocal;
+            frameNumberReal = frame.getFrameNumber();
             Robot[] robots = frame.getRobots(); // 获取机器人列表
             goodsList = frame.getGoods(); // 获取货物列表
             berths = frame.getBerth();
@@ -440,7 +442,7 @@ public interface AssignTarget {
                 if (!isValidPosition(x,y, curr.tempg) && !isStart) continue;
                 isStart=false;
                 //if(curr.goods!=null && frameNumber<500)System.err.println("frame: "+frameNumber + "   R id: "+robot.getId()+"   goods: "+curr.goods.getPos());
-                if (curr.goods!=null && !curr.goods.isAssigned() && curr.goods.getSummonFrame()+1000>frame0.getFrameNumber() + curr.tempg){
+                if (curr.goods!=null && !curr.goods.isAssigned() && curr.goods.getSummonFrame()+1000>frameNumberReal + curr.tempg){
                     //if(frameNumber<500)System.err.println("frame: "+frameNumber + "   R id: "+robot.getId()+"   goods: "+curr.goods.getPos());
                     targetGoodsPQ.add(curr.goods);
                 }
