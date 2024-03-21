@@ -77,10 +77,10 @@ public class Para {
     public static int bfsMaxdistance = 150;
     public static double averageDistance = 120;
     public static int scanGoodsNum =0;
-    public static Comparator<Goods> bfsAssignHeapComparator= Comparator.comparingDouble(Para::calculatePriority);
+    public static Comparator<Goods> bfsAssignHeapComparator= Comparator.comparingDouble(Para::calculatePriorityWithTimeLimit);
 
 
-    private static double calculatePriority(Goods goods) {
+    private static double calculatePriorityWithTimeLimit(Goods goods) {
         int remainT = goods.getSummonFrame() + 1000 - Main.frameNumberReal;
         int distance = goods.getPos().tempg + goods.getPos().bfsRealDistance;
         averageDistance=averageDistance*scanGoodsNum + distance;
@@ -92,7 +92,9 @@ public class Para {
         return (double) -goods.getValue() /distance*bfsAssignHeapCapacity;
         //return (double) (goods.getPos().tempg + goods.getPos().bfsRealDistance) / goods.getValue() ;
     }
-
+    private static double calculatePriorityEasy(Goods goods) {
+        return (double) (goods.getPos().tempg + goods.getPos().bfsRealDistance) / goods.getValue() ;
+    }
     /**
      * 终结时刻泊位选择
      * @param frame
