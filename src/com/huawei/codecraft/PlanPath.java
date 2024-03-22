@@ -408,7 +408,18 @@ public interface PlanPath {
 //                    }
                     robot.stepOnce();
                 } else {
-                    //更新路径的情况，分配到港口、分配的货物消失、
+                    if (goal == null){
+                        Pos pos = robot.getPos();
+                        for (int i = 0; i < 4; i++) {
+                            int neighborX = pos.X() + DIRECTIONS[i][0];
+                            int neighborY = pos.Y() + DIRECTIONS[i][1];
+                            if (isValidPosition(neighborX, neighborY, 1) && new Pos(neighborX,neighborY).bfsRealDistance > pos.bfsRealDistance){
+                                visitedRecord[neighborX][neighborY].add(frameNumber+1);
+                                robot.setTargetPos(mapPos[neighborX][neighborY]);
+                                break;
+                            }
+                        }
+                    }
                     if (goal == null || robot.isHasGoods() && !robot.isFromDesertedArea) {//先分配去拿货的机器人
                         continue;
                     }

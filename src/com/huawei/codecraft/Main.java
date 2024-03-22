@@ -92,12 +92,12 @@ public class Main {
         RobotStrategy.process(frame);
         BoatStrategy.process(frame);
         int frameN = frame.getFrameNumber();
-        if (frameN % 1000 == 0 || frame.getFrameNumber() == 14201){
-            System.err.print("frameNo: " + frame.getFrameNumber() + " ");
-            Print.printValue();
-            System.err.print("desertBoatId:" +AssignTargetBoat.randomAssignTarget.desertBoatId + " ");
-            Print.printBerthInfo(frame);
-        }
+//        if (frameN % 1000 == 0 || frame.getFrameNumber() == 14201){
+//            System.err.print("frameNo: " + frame.getFrameNumber() + " ");
+//            Print.printValue();
+//            System.err.print("desertBoatId:" +AssignTargetBoat.randomAssignTarget.desertBoatId + " ");
+//            Print.printBerthInfo(frame);
+//        }
         //测试
 //        Print.printRobotInfo(frame);
 
