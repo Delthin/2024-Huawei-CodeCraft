@@ -29,7 +29,7 @@ public class InputParser {
             int y = scan.nextInt();
             int value = scan.nextInt();
             goods[i] = new Goods(x, y, value, frameNumber);
-            valueSum+=value;
+            //valueSum+=value;
         }
         Robot[] robots = new Robot[Cons.MAX_ROBOT];
         for (int i = 0; i < Cons.MAX_ROBOT; i++){
