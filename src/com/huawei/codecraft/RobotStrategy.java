@@ -75,7 +75,7 @@ public class RobotStrategy {
                 // 当前处在货物上且空闲，捡起货物
                 robot.pickUpGoods(target);
                 frame.getGoodsList().remove(target);
-                valueSum+=target.getValue();
+                //valueSum+=target.getValue();
             } else if (robot.isHasGoods() && nextPos != null && nextPos.bfsWeightsDistance==0) {
                 // 当前处在停泊点上且携带货物，放下货物
                 robot.putDownGoods(frame.getFrameNumber());
