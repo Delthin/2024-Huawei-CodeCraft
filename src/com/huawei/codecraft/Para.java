@@ -87,8 +87,10 @@ public class Para {
         averageDistance=averageDistance*scanGoodsNum + distance;
         scanGoodsNum+=1;
         averageDistance/=scanGoodsNum;
+        double k= (double) 1 /7;
+        if(Main.frameNumberReal>=14200)k=0;
         if(remainT>goods.getPos().tempg+ averageDistance ){
-            return (double) -goods.getValue() /distance*(bfsAssignHeapCapacity-(remainT-goods.getPos().tempg)/averageDistance/7);
+            return (double) -goods.getValue() /distance*(bfsAssignHeapCapacity-(remainT-goods.getPos().tempg)/averageDistance*k);
         }
         return (double) -goods.getValue() /distance*(bfsAssignHeapCapacity);
         //return (double) (goods.getPos().tempg + goods.getPos().bfsRealDistance) / goods.getValue() ;

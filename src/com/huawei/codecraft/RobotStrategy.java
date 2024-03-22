@@ -9,7 +9,7 @@ import java.util.ArrayList;
  */
 
 public class RobotStrategy {
-    public static int valueSum=0;
+    //public static int valueSum=0;
     /**
      * 机器人策略
      * 1.分配机器人目标 a.如果机器人有货物，将货物送到目的地 b.如果机器人没有货物，选择最近的货物
@@ -26,8 +26,8 @@ public class RobotStrategy {
         planPath.plan(frame);
         //foolishConflictDetect(frame);
         decideInstruction(frame);
-        if(frame.getFrameNumber() %1000==200)System.err.println(frame.getFrameNumber()+"   GET: "+valueSum + "    rate: "+(double)valueSum/InputParser.valueSum);
-        if(frame.getFrameNumber() %1000==200)System.err.println(frame.getFrameNumber()+"   averageDistance "+Para.averageDistance );
+        //if(frame.getFrameNumber() %1000==200)System.err.println(frame.getFrameNumber()+"   GET: "+valueSum + "    rate: "+(double)valueSum/InputParser.valueSum);
+        //if(frame.getFrameNumber() %1000==200)System.err.println(frame.getFrameNumber()+"   averageDistance "+Para.averageDistance );
 
     }
 
