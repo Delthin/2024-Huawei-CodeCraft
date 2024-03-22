@@ -512,7 +512,7 @@ public interface AssignTarget {
             Goods targetGoods = null;
             if(!targetGoodsPQ.isEmpty()){
                 targetGoods=targetGoodsPQ.poll();
-                if(frameNumber<13500 &&frameNumber>12500)System.err.println ("frame: "+frameNumber + "   goods: "+targetGoods.getValue()+"  d "+(targetGoods.getPos().tempg+targetGoods.getPos().bfsRealDistance) +"remainT: "+(targetGoods.getSummonFrame()+1000-frameNumberReal));
+                //if(frameNumber<13500 &&frameNumber>12500)System.err.println ("frame: "+frameNumber + "   goods: "+targetGoods.getValue()+"  d "+(targetGoods.getPos().tempg+targetGoods.getPos().bfsRealDistance) +"remainT: "+(targetGoods.getSummonFrame()+1000-frameNumberReal));
             }
             return targetGoods;
         }

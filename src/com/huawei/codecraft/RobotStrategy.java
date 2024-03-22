@@ -9,6 +9,7 @@ import java.util.ArrayList;
  */
 
 public class RobotStrategy {
+    public static int valueSum=0;
     /**
      * 机器人策略
      * 1.分配机器人目标 a.如果机器人有货物，将货物送到目的地 b.如果机器人没有货物，选择最近的货物
@@ -25,6 +26,9 @@ public class RobotStrategy {
         planPath.plan(frame);
         //foolishConflictDetect(frame);
         decideInstruction(frame);
+        if(frame.getFrameNumber() %1000==200)System.err.println(frame.getFrameNumber()+"   GET: "+valueSum + "    rate: "+(double)valueSum/InputParser.valueSum);
+        if(frame.getFrameNumber() %1000==200)System.err.println(frame.getFrameNumber()+"   averageDistance "+Para.averageDistance );
+
     }
 
     /**
@@ -71,7 +75,7 @@ public class RobotStrategy {
                 // 当前处在货物上且空闲，捡起货物
                 robot.pickUpGoods(target);
                 frame.getGoodsList().remove(target);
-                // todo:如何得到此地的goods对象
+                valueSum+=target.getValue();
             } else if (robot.isHasGoods() && nextPos != null && nextPos.bfsWeightsDistance==0) {
                 // 当前处在停泊点上且携带货物，放下货物
                 robot.putDownGoods(frame.getFrameNumber());
