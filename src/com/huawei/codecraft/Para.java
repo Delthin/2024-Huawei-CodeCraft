@@ -79,7 +79,7 @@ public class Para {
     }
     public static int bfsAssignHeapCapacity = 6;
     public static int bfsMaxdistance = 150;
-    public static double averageDistance = 120;
+    public static double averageDistance = 125.5;
     public static int scanGoodsNum =0;
     public static Comparator<Goods> bfsAssignHeapComparator= Comparator.comparingDouble(Para::calculatePriorityWithTimeLimit);
 
@@ -90,10 +90,12 @@ public class Para {
         averageDistance=averageDistance*scanGoodsNum + distance;
         scanGoodsNum+=1;
         averageDistance/=scanGoodsNum;
+        double k= (double) 1 /7;
+        if(Main.frameNumberReal>=14200)k=0;
         if(remainT>goods.getPos().tempg+ averageDistance ){
-            return (double) -goods.getValue() /distance*(bfsAssignHeapCapacity+1);
+            return (double) -goods.getValue() /distance*(bfsAssignHeapCapacity-(remainT-goods.getPos().tempg)/averageDistance*k);
         }
-        return (double) -goods.getValue() /distance*bfsAssignHeapCapacity;
+        return (double) -goods.getValue() /distance*(bfsAssignHeapCapacity);
         //return (double) (goods.getPos().tempg + goods.getPos().bfsRealDistance) / goods.getValue() ;
     }
     private static double calculatePriorityEasy(Goods goods) {

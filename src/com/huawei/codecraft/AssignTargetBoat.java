@@ -144,6 +144,7 @@ public interface AssignTargetBoat {
                         boat.clearGoods();
                         boat.setAction(0);
                         assignBerth(frame, boat, berths);
+                        //System.err.println("go to berth!  f"+frameNumber+"    berthid"+ boat.getTargetBerthId() + "   boatID"+boat.getId());
 //                        berthNo = (berthNo + 1) % 10;
                     }
                     /**
@@ -157,6 +158,7 @@ public interface AssignTargetBoat {
                             berth.setAssigned(false);
                             //不让机器人再去此港口
                             //todo:港口关闭还能更早
+                            //System.err.println("go back(last)!  f "+frameNumber+"    berthid "+ berth.getId() + "   boatID "+boat.getId());
                             berth.setDeserted();
                         }
                         //装货，泊位的装完就走
@@ -173,7 +175,9 @@ public interface AssignTargetBoat {
                             } else {
                                 boat.setAction(2);
                                 berth.setAssigned(false);
+
                             }
+                            //System.err.println("go away!  f"+frameNumber+"    berthid"+ boat.getTargetBerthId() + "   boatID"+boat.getId());
                         } else {
                             //原地装货
                             boat.setAction(0);
@@ -186,6 +190,7 @@ public interface AssignTargetBoat {
                  */
                 else if (boat.getState() == 2) {
                     Berth berth = berths[boat.getTargetBerthId()];
+                    //System.err.println("waiting!  f"+frameNumber+"    berthid"+ boat.getTargetBerthId() + "   boatID"+boat.getId());
                     if (!enoughToSell(frameNumber, berth.getTransportTime())) {
                         boat.setAction(2);
                         berth.setAssigned(false);
@@ -193,6 +198,7 @@ public interface AssignTargetBoat {
                         berth.setDeserted();
                         continue;
                     }
+
                     else if (berth.getGoodsNum() > Boat.getCapacity() / 2) {
                         //港口货物太多就不走
                         boat.setAction(0);
@@ -200,6 +206,8 @@ public interface AssignTargetBoat {
                         continue;
                     }
                     assignBerth(frame, boat, berths);
+                    //System.err.println("waiting but change!  f"+frameNumber+"    berthid"+ boat.getTargetBerthId() + "   boatID"+boat.getId());
+
                 }
             }
         }

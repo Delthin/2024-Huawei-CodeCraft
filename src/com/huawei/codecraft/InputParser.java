@@ -11,7 +11,7 @@ import java.util.Scanner;
  * 负责解析输入数据,构建相应的对象。
  */
 public class InputParser {
-
+    //public static int valueSum =0;
     public static Frame parseFrameData() {
         /**
          *
@@ -29,6 +29,7 @@ public class InputParser {
             int y = scan.nextInt();
             int value = scan.nextInt();
             goods[i] = new Goods(x, y, value, frameNumber);
+            //valueSum+=value;
         }
         Robot[] robots = new Robot[Cons.MAX_ROBOT];
         for (int i = 0; i < Cons.MAX_ROBOT; i++){
@@ -50,7 +51,7 @@ public class InputParser {
         frame.updateBoats(boats);
         frame.updateMap();
         frame.updateBerths();
-
+        //if(frameNumber%1000==200)System.err.println(frame.getFrameNumber()+"   TOTAL:"+valueSum);
 //        mapPrint(frame.getMap());
 //        if (frameNumber < 2){
 //            initResponsibleBerth(frame.getRobots());
