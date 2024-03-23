@@ -75,7 +75,8 @@ public class Para {
         return new Random().nextDouble();
     }
     public static int bfsAssignHeapCapacity = 6;
-    public static int bfsMaxdistance = 150;
+    public static int bfsMaxdistance1 = 120;
+    public static int bfsMaxdistance2 = 150;
     public static double averageDistance = 125.5;
     public static int scanGoodsNum =0;
     public static Comparator<Goods> bfsAssignHeapComparator= Comparator.comparingDouble(Para::calculatePriorityWithTimeLimit);

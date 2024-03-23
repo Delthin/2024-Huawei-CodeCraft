@@ -226,7 +226,10 @@ public class Main {
                 }
             }
         }
-
+//        berths[0].setDeserted();
+//        berths[2].setDeserted();
+//        berths[4].setDeserted();
+//        berths[6].setDeserted();
         // 进行广度优先搜索
         while (!queue.isEmpty()) {
             Pos currPos = queue.poll();
@@ -268,9 +271,9 @@ public class Main {
 
     public static void main(String[] args) {
         Main mainInstance = new Main();
-        if (args.length > 0) {
-            Para.bfsMaxdistance= Integer.parseInt(args[0]);
-        }
+//        if (args.length > 0) {
+//            Para.bfsMaxdistance= Integer.parseInt(args[0]);
+//        }
         visitedRecord = new HashSet[Cons.MAP_SIZE][Cons.MAP_SIZE];
         for (int i = 0; i < Cons.MAP_SIZE; i++) {
             for (int j = 0; j < Cons.MAP_SIZE; j++) {
@@ -283,6 +286,7 @@ public class Main {
                 mapPos[i][j] = new Pos(i, j);
             }
         }
+
         mainInstance.init();
         for (int zhen = 1; zhen <= Cons.MAX_FRAME; zhen++) {
             // 读取每一帧的输入数据

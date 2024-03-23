@@ -442,7 +442,7 @@ public interface PlanPath {
             //无业游民，给他人让位
             for (Robot robot : robots) {
                 //if(frameNumber>90 || robot.getPos().bfsRealDistance<=2) {
-                    if (robot.nextPos == null || robot.nextPos == robot.getPos() && !robot.hasPath()) {
+                    if (robot.nextPos == null || robot.nextPos == robot.getPos() && !robot.hasPath() ) {
                         Pos start = robot.getPos();
                         int g = start.bfsRealDistance;
                         Pos next = start;
@@ -455,7 +455,7 @@ public interface PlanPath {
 
                             if (isValidPosition(neighborX, neighborY, 1)) {
                                 Pos temp = mapPos[neighborX][neighborY];
-                                if (temp.bfsRealDistance > g) {
+                                if (temp.bfsRealDistance > g ) {
                                     visitedRecord[neighborX][neighborY].add(frameNumber + 1);
                                     robot.nextPos = temp;
                                     break;
@@ -601,7 +601,7 @@ public interface PlanPath {
 
         private static boolean isValidPosition(int x, int y, int g) {
 
-            return x >= 0 && x < gridSizeX && y >= 0 && y < gridSizeY && grid[x][y] != '#' && grid[x][y] != '*' && !visitedRecord[x][y].contains(frameNumber + g) && !visitedRecord[x][y].contains(frameNumber + g - 1);
+            return x >= 0 && x < gridSizeX && y >= 0 && y < gridSizeY && grid[x][y] != '#' && grid[x][y] != '*' && !visitedRecord[x][y].contains(frameNumber + g) && !visitedRecord[x][y].contains(frameNumber + g - 1) ;
         }
     }
 
