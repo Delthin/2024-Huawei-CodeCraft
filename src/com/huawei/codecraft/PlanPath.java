@@ -466,10 +466,12 @@ public interface PlanPath {
 
                             if (isValidPosition(neighborX, neighborY, 1)) {
                                 Pos temp = mapPos[neighborX][neighborY];
-                                if (temp.bfsRealDistance > g ) {
+                                if (Main.mapNo!= 1 && temp.bfsRealDistance > g ) {
                                     visitedRecord[neighborX][neighborY].add(frameNumber + 1);
                                     robot.nextPos = temp;
                                     break;
+                                }else if (Main.mapNo == 1){
+                                    visitedRecord[neighborX][neighborY].add(frameNumber + 1);
                                 }
                                 next = temp;
                             }

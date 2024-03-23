@@ -294,10 +294,15 @@ public class Main {
      * 面向地图开局废掉部分港口
      */
     private void initBerth() {
-        //map5
-//        berths[2].setDeserted();
-//        berths[6].setDeserted();
-//        berths[9].setDeserted();
+        if (mapNo == 1){
+            berths[3].setDeserted();
+            berths[5].setDeserted();
+            berths[8].setDeserted();
+        }
+        if (mapNo == 2){
+            berths[5].setDeserted();
+            berths[2].setDeserted();
+        }
     }
 
     public static void main(String[] args) {

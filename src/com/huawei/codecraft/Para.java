@@ -32,9 +32,7 @@ public class Para {
      */
     public static int IGNORE_VALUE = Main.frameNumberLocal < 1000 ? 0 : 150;
     static {
-        if (Main.frameNumberLocal < 1000){
-            IGNORE_VALUE = 0;
-        }else if (Main.mapNo == 1){
+        if (Main.mapNo == 1){
             IGNORE_VALUE = 50;
         }else {
             IGNORE_VALUE = 60;
@@ -50,7 +48,7 @@ public class Para {
         int loadingSpeed = berth.getLoadingSpeed();
         int transportTime = berth.getTransportTime();
         int flow = berth.getFlow();
-        return assignWeight * (transportTime / 100 + transportW) * Math.log(berth.getGoodsFlow()) * Math.pow(goodsNum, (double )goodsNumW / 100) / Math.pow(loadingSpeed, 2) / Math.sqrt(flow + 1);
+        return assignWeight * (10000.0 / transportTime - transportW) * Math.log(berth.getGoodsFlow()) * Math.pow(goodsNum, (double )goodsNumW / 100) / Math.pow(loadingSpeed, 2) / Math.sqrt(flow + 1);
     }
     public static double boatFinalWeight(Boat boat, Berth berth){
         //哪里多去哪，优先去不废弃和未分配的
@@ -67,8 +65,8 @@ public class Para {
     public static int assignW = 50;
 //    public static int desertW = 1300;//best in map5
     public static int desertW = 13;
-    public static int goodsNumW = 400;
-    public static int transportW = 0;
+    public static int goodsNumW = 420;
+    public static int transportW = 3;
     public static int guessBestBerthId(Berth[] berths){
         double maxWeight = 0;
         int maxId = 0;
@@ -89,7 +87,8 @@ public class Para {
         return new Random().nextDouble();
     }
     public static int bfsAssignHeapCapacity = 6;
-    public static int bfsMaxdistance = Main.mapNo == 1 ? 230 : 125;
+    public static int bfsMaxdistance1 = Main.mapNo == 1 ? 230 : 125;
+    public static int bfsMaxdistance2 = Main.mapNo == 1 ? 230 : 125;
     public static double averageDistance = 125.5;
     public static int scanGoodsNum =0;
     public static Comparator<Goods> bfsAssignHeapComparator= Comparator.comparingDouble(Para::calculatePriorityWithTimeLimit);
@@ -97,22 +96,39 @@ public class Para {
 
     private static double calculatePriorityWithTimeLimit(Goods goods) {
         int remainT = goods.getSummonFrame() + 1000 - Main.frameNumberReal;
-        int distance = goods.getPos().tempg + goods.getPos().bfsRealDistance;
+        double distance = (tempgW * goods.getPos().tempg + 100 * goods.getPos().bfsRealDistance) / 100.0;
         averageDistance=averageDistance*scanGoodsNum + distance;
         scanGoodsNum+=1;
         averageDistance/=scanGoodsNum;
-        double k= (double) 1 /7;
+        double k= (double) 1 / kW;
         if(Main.frameNumberReal>=14200)k=0;
         if(remainT>goods.getPos().tempg+ averageDistance ){
-            return (double) -goods.getValue() /distance*(bfsAssignHeapCapacity-(remainT-goods.getPos().tempg)/averageDistance*k);
+            return (double) -goods.getValue() /(Math.pow(distance, distW / 100))*(bfsAssignHeapCapacity-(remainT-goods.getPos().tempg)/averageDistance*k);
         }
-        return (double) -goods.getValue() /distance*(bfsAssignHeapCapacity);
+        return (double) -goods.getValue() /(Math.pow(distance, distW / 100))*(bfsAssignHeapCapacity);
         //return (double) (goods.getPos().tempg + goods.getPos().bfsRealDistance) / goods.getValue() ;
     }
     private static double calculatePriorityEasy(Goods goods) {
         return (double) (goods.getPos().tempg + goods.getPos().bfsRealDistance) / goods.getValue() ;
     }
-    public static int tempgW = 10;
+    public static double distW = 80;
+    public static int kW = 7;
+    public static int tempgW = Main.mapNo == 1 ? 100 : 2500;
+    static {
+        if (Main.mapNo == 1){
+            distW = 80;
+            tempgW = 200;
+            IGNORE_VALUE = 50;
+        }else if (Main.mapNo == 2){
+            distW = 160;
+            tempgW = 10;
+            IGNORE_VALUE = 60;
+        }else {
+            distW = 80;
+            tempgW = 2500;
+            IGNORE_VALUE = 60;
+        }
+    }
     public static int remainDistanceW = 30;
     public static int remainingW = 15;
     public static int valueW = 10;
