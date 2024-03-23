@@ -253,6 +253,7 @@ public interface AssignTargetBoat {
             int maxId = 0;
             double maxWeight = 0;
             for (Berth berth : berths) {
+                //if(berth.isItAssigned() && frame.getFrameNumber()<12000)continue;
                 double weight = Para.boatAssignWeight(boat, berth);
                 if (frame.getFrameNumber() > Cons.MAX_FRAME - 3 * Berth.maxTransportTime) {
                     //最终时刻权重不同

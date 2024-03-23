@@ -406,6 +406,7 @@ public interface AssignTarget {
             mapData = frame.getMap().getMapData();
             //存下当前位置，防撞
             for (Robot robot : robots) {
+                //if (robot.getState() == 0)System.err.println(frameNumberReal+"id"+robot.getId()+" next"+robot.nextPos+" target"+robot.targetPos+robot.getPathList() );//todo
                 Pos start = robot.getPos();
                 visitedRecord[start.X()][start.Y()].add(frameNumber);
                 if (robot.getState() == 0) {
@@ -419,6 +420,7 @@ public interface AssignTarget {
                 if (robot.hasPath()) {
                     continue;
                 }
+
                 if (robot.getState() == 0 && robot.getPos().bfsWeightsDistance == Integer.MAX_VALUE) continue;
                 Berth berth = robot.getPos().berth;
 
@@ -469,6 +471,7 @@ public interface AssignTarget {
                     robot.setPathList(path);
                 }
             }
+            //分配物品
             for (Robot robot : robots) {
                 if (!robot.isHasGoods() && !robot.hasPath() && robot.getState() != 0 && robot.getPos().bfsWeightsDistance != Integer.MAX_VALUE) {
                     //Goods bestGoods = findClosestGoods(robot, goodsList);
@@ -478,6 +481,10 @@ public interface AssignTarget {
                         bestGoods.setAssigned(true);
                         robot.setPathList(reconstructPath(bestGoods.getPos()));
                     }
+//                    else{
+//                        System.err.println(frameNumberReal+"id"+robot.getId()+" nowPos"+robot.getPos() +robot.nextPos);//todo
+//
+//                    }
                 }
             }
         }
