@@ -21,6 +21,7 @@ public class Berth {
     private boolean isAssigned = false;
     private boolean deserted = false;
     public static int maxTransportTime = 0;
+    public static int minTransportId = -1;
     //船流量（可改为货物）
     private int flow = 0;
     private int goodsFlow = 0;

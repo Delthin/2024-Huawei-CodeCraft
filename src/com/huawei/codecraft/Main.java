@@ -28,6 +28,7 @@ public class Main {
     public static int totalValue = 0;
     public static int getValue = 0;
     public static int berthValue = 0;
+    public static int mapNo = 0;
 
     /**
      * 初始化
@@ -43,16 +44,31 @@ public class Main {
         mapdata = map.getMapData();
         // 读取港口数据
         int maxTransportTime = 0;
+        int minTransportTime = 20000;
+        int minTransportId = 0;
+        int berthYNum1 = 0;//迷宫图
         for (int i = 0; i < Cons.MAX_BERTH; i++) {
             int id = scanf.nextInt();
             int x = scanf.nextInt();
             int y = scanf.nextInt();
+            if (y == 175){
+                berthYNum1++;
+            }
             int transportTime = scanf.nextInt();
             maxTransportTime = Math.max(maxTransportTime, transportTime);
+            if (transportTime < minTransportTime){
+                minTransportTime = transportTime;
+                minTransportId = id;
+            }
             int loadingSpeed = scanf.nextInt();
             berths[id] = new Berth(id, x, y, transportTime, loadingSpeed);
         }
+        if (berthYNum1 == 6){
+            mapNo = 1;
+            System.err.println("mapNo: " + mapNo);
+        }
         Berth.maxTransportTime = maxTransportTime;
+        Berth.minTransportId = minTransportId;
         // 读取船只容量
         Boat.setCapacity(scanf.nextInt());
         scanf.nextLine();//去除最后一个int后的line
@@ -92,13 +108,15 @@ public class Main {
         RobotStrategy.process(frame);
         BoatStrategy.process(frame);
         int frameN = frame.getFrameNumber();
-//        if (frameN % 1000 == 0 || frame.getFrameNumber() == 14201){
-//            System.err.print("frameNo: " + frame.getFrameNumber() + " ");
-//            Print.printValue();
-//            System.err.print("desertBoatId:" +AssignTargetBoat.randomAssignTarget.desertBoatId + " ");
-//            Print.printBerthInfo(frame);
-//        }
-        //测试
+        if (frame.getFrameNumber() == 14201){
+            System.err.print("frameNo: " + frame.getFrameNumber() + " ");
+            Print.printValue();
+            System.err.print("desertBoatId:" +AssignTargetBoat.randomAssignTarget.desertBoatId + " ");
+            Print.printBerthInfo(frame);
+        }
+        initBerth();
+//        测试
+
 //        Print.printRobotInfo(frame);
 
 //        int frameNumber = frame.getFrameNumber();
@@ -270,17 +288,20 @@ public class Main {
      * 面向地图开局废掉部分港口
      */
     private void initBerth() {
-        //map5
-//        berths[2].setDeserted();
-//        berths[6].setDeserted();
-//        berths[9].setDeserted();
+        //map2
+        if (mapNo == 1) {
+            berths[3].setDeserted();
+            berths[5].setDeserted();
+            berths[8].setDeserted();
+//            berths[1].setDeserted();
+        }
     }
 
     public static void main(String[] args) {
         Main mainInstance = new Main();
         int poop = 0;
         if (args.length > 0) {
-            poop= Integer.parseInt(args[0]);
+//            Para.STAY_GODDS_FLOW = Integer.parseInt(args[0]);
         }
         visitedRecord = new HashSet[Cons.MAP_SIZE][Cons.MAP_SIZE];
         for (int i = 0; i < Cons.MAP_SIZE; i++) {

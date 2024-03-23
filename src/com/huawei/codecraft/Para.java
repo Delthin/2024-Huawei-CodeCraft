@@ -32,6 +32,7 @@ public class Para {
      */
     public static int IGNORE_VALUE = Main.frameNumberLocal < 1000 ? 0 : 150;
     public static int NOT_IGNORE_DISTANCE = 12;
+    public static int STAY_GODDS_FLOW = 60;
 //    public static int IGNORE_VALUE = 150;
     public static double boatAssignWeight(Boat boat, Berth berth){
         boolean isAssigned = berth.isItAssigned();

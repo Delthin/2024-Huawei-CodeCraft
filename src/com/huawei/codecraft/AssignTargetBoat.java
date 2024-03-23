@@ -172,7 +172,12 @@ public interface AssignTargetBoat {
                                 berth.setAssigned(false);
                                 //不加setAssigned意味这个港口也别来了
                                 continue;
-                            } else {
+                            } else if (frame.getFrameNumber() > 13000 && berth.getGoodsFlow() > 133){
+                                //最后货流量大就继续装
+                                boat.setAction(0);
+                                loading(boat);
+                            }
+                            else {
                                 boat.setAction(2);
                                 berth.setAssigned(false);
 
