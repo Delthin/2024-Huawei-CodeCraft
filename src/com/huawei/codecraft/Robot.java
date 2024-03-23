@@ -174,6 +174,9 @@ public class Robot {
         this.targetPos=null;
         //this.nextPos=null;
         this.setPathList(null);
+        if (this.goods == null){
+            return;
+        }
         Main.berthValue += this.goods.getValue();
         this.goods = null;
         if(this.nextPos.bfsWeightsDistance!=0){
@@ -229,6 +232,11 @@ public class Robot {
     public void waitRecover() {
         this.pathList = null;
         this.nextPos = null;
+    }
+    public void clearTarget(){
+        this.targetPos = null;
+        this.targetGoods = null;
+        this.targetBerth = null;
     }
     public void setResponsibleBerthId(int id) {
         this.responsibleBerthId = id;

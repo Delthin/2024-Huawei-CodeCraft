@@ -31,6 +31,15 @@ public class Para {
      * 分配货物时忽视的小货物
      */
     public static int IGNORE_VALUE = Main.frameNumberLocal < 1000 ? 0 : 150;
+    static {
+        if (Main.frameNumberLocal < 1000){
+            IGNORE_VALUE = 0;
+        }else if (Main.mapNo == 1){
+            IGNORE_VALUE = 50;
+        }else {
+            IGNORE_VALUE = 60;
+        }
+    }
     public static int NOT_IGNORE_DISTANCE = 12;
     public static int STAY_GODDS_FLOW = 60;
 //    public static int IGNORE_VALUE = 150;
@@ -80,7 +89,7 @@ public class Para {
         return new Random().nextDouble();
     }
     public static int bfsAssignHeapCapacity = 6;
-    public static int bfsMaxdistance = 150;
+    public static int bfsMaxdistance = Main.mapNo == 1 ? 230 : 125;
     public static double averageDistance = 125.5;
     public static int scanGoodsNum =0;
     public static Comparator<Goods> bfsAssignHeapComparator= Comparator.comparingDouble(Para::calculatePriorityWithTimeLimit);

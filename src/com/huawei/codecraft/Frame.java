@@ -169,13 +169,14 @@ public class Frame {
     }
 
     public void updateMap() {
+
+        for (int i = 0; i < goods.size(); i++) {
+            map.setGoods(goods.get(i).getPos());
+        }
         for (int i = 0; i < Cons.MAX_ROBOT; i++) {
             if (robots[i] != null) {
                 map.setRobot(robots[i].getPos());
             }
-        }
-        for (int i = 0; i < goods.size(); i++) {
-            map.setGoods(goods.get(i).getPos());
         }
     }
 

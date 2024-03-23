@@ -47,10 +47,14 @@ public class Main {
         int minTransportTime = 20000;
         int minTransportId = 0;
         int berthYNum1 = 0;//迷宫图
+        int berthXNum2 = 0;
         for (int i = 0; i < Cons.MAX_BERTH; i++) {
             int id = scanf.nextInt();
             int x = scanf.nextInt();
             int y = scanf.nextInt();
+            if (x == 87 || x ==106 || x ==107){
+                berthXNum2++;
+            }
             if (y == 175){
                 berthYNum1++;
             }
@@ -65,7 +69,9 @@ public class Main {
         }
         if (berthYNum1 == 6){
             mapNo = 1;
-            System.err.println("mapNo: " + mapNo);
+//            System.err.println("mapNo: " + mapNo);
+        }else if (berthXNum2 == 6){
+            mapNo = 2;
         }
         Berth.maxTransportTime = maxTransportTime;
         Berth.minTransportId = minTransportId;
@@ -292,8 +298,11 @@ public class Main {
         if (mapNo == 1) {
             berths[3].setDeserted();
             berths[5].setDeserted();
-            berths[8].setDeserted();
-//            berths[1].setDeserted();
+            berths[1].setDeserted();
+        }else if (mapNo == 2){
+//            berths[3].setDeserted();
+//            berths[5].setDeserted();
+            berths[2].setDeserted();
         }
     }
 
@@ -301,7 +310,7 @@ public class Main {
         Main mainInstance = new Main();
         int poop = 0;
         if (args.length > 0) {
-//            Para.STAY_GODDS_FLOW = Integer.parseInt(args[0]);
+            Para.IGNORE_VALUE = Integer.parseInt(args[0]);
         }
         visitedRecord = new HashSet[Cons.MAP_SIZE][Cons.MAP_SIZE];
         for (int i = 0; i < Cons.MAP_SIZE; i++) {

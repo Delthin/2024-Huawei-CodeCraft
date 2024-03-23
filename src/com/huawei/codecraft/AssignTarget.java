@@ -410,7 +410,7 @@ public interface AssignTarget {
                 Pos start = robot.getPos();
                 visitedRecord[start.X()][start.Y()].add(frameNumber);
                 if (robot.getState() == 0) {
-                    robot.setPathList(null);
+                    robot.waitRecover();
                     for (int i = 1; i < 20; i++) {
                         visitedRecord[start.X()][start.Y()].add(frameNumber + i);//todo:撞傻的机器人应该add不止此帧
                     }
@@ -418,6 +418,13 @@ public interface AssignTarget {
             }
             for (Robot robot : robots) {
                 if (robot.hasPath()) {
+//                    Pos nextPos = (Pos) robot.getPathList().get(0);
+//                    int x = nextPos.X();
+//                    int y = nextPos.Y();
+//                    if (mapData[x][y] == 'R'){
+//                        robot.clearTarget();
+//                        robot.waitRecover();
+//                    }
                     continue;
                 }
 
@@ -438,7 +445,7 @@ public interface AssignTarget {
 
             for (Robot robot : robots) {
                 //前往港口，下降
-                if (robot.isHasGoods() && !robot.isFromDesertedArea && !robot.hasPath() && robot.getPos().bfsWeightsDistance != Integer.MAX_VALUE) {//前往港口
+                if ((robot.isHasGoods() && !robot.isFromDesertedArea && !robot.hasPath() && robot.getPos().bfsWeightsDistance != Integer.MAX_VALUE)) {//前往港口
                     Pos start = robot.getPos();
                     Pos next = start;
                     List<Pos> path = new ArrayList<>();
@@ -487,6 +494,20 @@ public interface AssignTarget {
 //                    }
                 }
             }
+//            for (Robot robot : robots){
+//
+//                if (robot.getPathList() == null || robot.getPathList().isEmpty()){
+//                    continue;
+//                }
+//                Pos nextPos = (Pos) robot.getPathList().get(0);
+//                int x = nextPos.X();
+//                int y = nextPos.Y();
+//                if (mapData[x][y] == 'R'){
+//                    System.err.println("Id: " +robot.getId() + "now " + robot.getPos() + " next " + nextPos + " pathlist" + robot.getPathList());
+//                    robot.clearTarget();
+//                    robot.waitRecover();
+//                }
+//            }
         }
 
         private Goods bfsfindBestGoods(Robot robot) {

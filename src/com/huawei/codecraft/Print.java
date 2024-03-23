@@ -35,19 +35,28 @@ public class Print {
 
     public static void printRobotInfo(Frame frame) {
         Robot[] robots = frame.getRobots();
-        if (frame.getFrameNumber() > 10250 && frame.getFrameNumber() < 10500) {
-            System.err.println("frameNo: " + frame.getFrameNumber());
-        }
+        boolean flag = false;
         for (Robot robot : robots) {
             int id = robot.getId();
             Pos pos = robot.getPos();
             int state = robot.getState();
             int responsibleBerthId = robot.getResponsibleBerthId();
-            if ((id == 1 || id == 5 || id == 3) && frame.getFrameNumber() > 10250 && frame.getFrameNumber() < 10500) {
-                System.err.println("Robot id: " + id + " pos: " + pos + " state: " + stateToString(state) + " action: " + robot.getAction() + " nextPos: " + robot.getNextPos() +
-                        " pathlist: " + robot.getPathList());
+            if (!robot.nextPos.equals(robot.getPos())&&frame.getMap().isRobot(robot.nextPos)) {
+                flag = true;
             }
 //            System.err.println("Robot id: " + id + " pos: " + pos + " state: " + stateToString(state) + " responsibleBerthId: " + responsibleBerthId);
+        }
+        if (flag){
+            for (Robot robot : robots) {
+                int id = robot.getId();
+                Pos pos = robot.getPos();
+                int state = robot.getState();
+                Pos target = robot.getTargetPos();
+                if (id == 9){
+                System.err.println("frameNo: " + frame.getFrameNumber());
+                System.err.println("Robot id: " + id + " pos: " + pos + " state: " + stateToString(state) + " action: " + robot.getAction() + " nextPos: " + robot.getNextPos() +
+                            " pathlist: " + robot.getPathList() + " target:" + target);}
+            }
         }
     }
 

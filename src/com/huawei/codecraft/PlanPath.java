@@ -600,7 +600,6 @@ public interface PlanPath {
             }
             // 反转路径，使其从起点到相交节点
             Collections.reverse(path);
-
             return path;
         }
 

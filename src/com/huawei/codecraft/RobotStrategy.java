@@ -24,7 +24,7 @@ public class RobotStrategy {
         PlanPath planPath = new PlanPath.BFSPlanPath();
         assignTarget.assign(frame);
         planPath.plan(frame);
-        //foolishConflictDetect(frame);
+//        foolishConflictDetect(frame);
         decideInstruction(frame);
         //if(frame.getFrameNumber() %1000==200)System.err.println(frame.getFrameNumber()+"   GET: "+valueSum + "    rate: "+(double)valueSum/InputParser.valueSum);
         //if(frame.getFrameNumber() %1000==200)System.err.println(frame.getFrameNumber()+"   averageDistance "+Para.averageDistance );
