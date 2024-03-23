@@ -136,6 +136,7 @@ public class Frame {
         for (int i = 0; i < robots.length; i++) {
             Frame.robots[i].setState(robots[i].getState());
             Frame.robots[i].setPos(robots[i].getPos());
+            robots[i].getPos().robot=Frame.robots[i];
             Frame.robots[i].setHasGoods(robots[i].isHasGoods());
             Frame.robots[i].clear();
         }

@@ -395,11 +395,13 @@ public interface AssignTarget {
             mapData=frame.getMap().getMapData();
             //存下当前位置，防撞
             for (Robot robot : robots) {
-                //if (robot.getState() == 0)System.err.println(frameNumberReal+"id"+robot.getId()+" next"+robot.nextPos+" target"+robot.targetPos+robot.getPathList() );//todo
                 Pos start = robot.getPos();
+
                 visitedRecord[start.X()][start.Y()].add(frameNumber);
                 if (robot.getState() == 0) {
-                    robot.setPathList(null);
+                    if(robot.hasPath())System.err.println(frame.getFrameNumber()+"id"+robot.getId()+" now"+robot.getPos()+robot.getPathList()+robot.isHasGoods());//todo
+                    robot.waitRecover();
+
                     for (int i = 1; i < 20; i++) {
                         visitedRecord[start.X()][start.Y()].add(frameNumber + i);//todo:撞傻的机器人应该add不止此帧
                     }
@@ -409,7 +411,6 @@ public interface AssignTarget {
                 if (robot.hasPath()) {
                     continue;
                 }
-
                 if (robot.getState() == 0 && robot.getPos().bfsWeightsDistance == Integer.MAX_VALUE) continue;
                 Berth berth = robot.getPos().berth;
 
@@ -432,7 +433,9 @@ public interface AssignTarget {
                     Pos next = start;
                     List<Pos> path = new ArrayList<>();
                     int g = 1;
+                    int k =0;
                     while (next.bfsWeightsDistance != 0) {
+                        //next==null;
                         int minDistance = Integer.MAX_VALUE;
                         if (isValidPosition(start.X(), start.Y(), g)) minDistance = start.bfsWeightsDistance;
 
@@ -441,18 +444,27 @@ public interface AssignTarget {
                             int neighborY = start.Y() + direction[1];
 
                             if (isValidPosition(neighborX, neighborY, g)) {
-                                if (mapPos[neighborX][neighborY].bfsWeightsDistance <= minDistance) {
+                                next = mapPos[neighborX][neighborY];
+                                if (mapPos[neighborX][neighborY].bfsWeightsDistance < start.bfsWeightsDistance) {
                                     minDistance = mapPos[neighborX][neighborY].bfsWeightsDistance;
                                     next = mapPos[neighborX][neighborY];
+                                    break;
                                 }
                             }
                         }
                         g++;
+                        if(next==start)k+=1;
+                        else k=0;
+                        if(k>=3 || path.size()>2 && next == path.get(path.size()-2)){
+                            path = null;
+                            break;
+                        }
                         //if (frameNumber < 200) System.err.println("frame" + (frameNumber) + next);
                         path.add(next);
                         start = next;
                     }
                     g = 1;
+                    if(path==null)continue;
                     for (Pos pos : path) {
                         visitedRecord[pos.X()][pos.Y()].add(frameNumber + g);
                         g += 1;
@@ -460,7 +472,6 @@ public interface AssignTarget {
                     robot.setPathList(path);
                 }
             }
-            //分配物品
             for (Robot robot : robots) {
                 if(!robot.isHasGoods() && !robot.hasPath() && robot.getState() != 0 && robot.getPos().bfsWeightsDistance != Integer.MAX_VALUE){
                     //Goods bestGoods = findClosestGoods(robot, goodsList);
@@ -470,10 +481,6 @@ public interface AssignTarget {
                         bestGoods.setAssigned(true);
                         robot.setPathList(reconstructPath(bestGoods.getPos()));
                     }
-//                    else{
-//                        System.err.println(frameNumberReal+"id"+robot.getId()+" nowPos"+robot.getPos() +robot.nextPos);//todo
-//
-//                    }
                 }
             }
         }
@@ -491,9 +498,12 @@ public interface AssignTarget {
             queue.offer(curr);
             visited[start_x][start_y] = true;
             boolean isStart = true;
-            while (!queue.isEmpty() && targetGoodsPQ.size() < Para.bfsAssignHeapCapacity  && curr.tempg<Para.bfsMaxdistance) {
+            while (!queue.isEmpty() && targetGoodsPQ.size() < Para.bfsAssignHeapCapacity  ) {
                 //if(frameNumber<100 && frameNumber>50)System.err.println("frame: "+frameNumber + "   R id: "+robot.getId() + "queueNum"+ queue.size());
-
+                if(curr.tempg>=Para.bfsMaxdistance1){
+                    if(targetGoodsPQ.size()>=1)break;
+                    if(curr.tempg>Para.bfsMaxdistance2)break;
+                }
                 curr = queue.poll();
                 int x = curr.X();
                 int y = curr.Y();
@@ -507,8 +517,9 @@ public interface AssignTarget {
                 for (int[] dir : directions) {
                     int nx = x + dir[0];
                     int ny = y + dir[1];
-                    if (isValidPosition(nx,ny,curr.tempg+1) && !visited[nx][ny]) {
+                    if (isValidPosition(nx,ny,curr.tempg+1) && !visited[nx][ny] ) {
                         Pos next = mapPos[nx][ny];
+                        if(next == curr.tempParent)continue;
                         next.tempParent=curr;
                         next.tempg= curr.tempg+1;
                         queue.offer(next);
