@@ -14,7 +14,7 @@ public class Pos {
     public Berth berth;
     public int tempg;
     public Goods goods;
-
+    public Robot robot;
     public Pos tempParent;
     public Pos(int x, int y) {
         this.x = x;
@@ -23,6 +23,7 @@ public class Pos {
         this.bfsWeightsDistance=Integer.MAX_VALUE;
         this.goods=null;
         this.tempParent=null;
+        this.robot = null;
     }
 
     public Pos(Pos pos) {
